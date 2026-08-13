@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Big Shoulders";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/bigshoulders.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/archivo.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Chivo Mono";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/chivomono.woff2") format("woff2");
+}
+
+@theme {
+  --color-bog: #0c231a;
+  --color-bog-deep: #081711;
+  --color-field: #0f7b3f;
+  --color-field-bright: #3fb873;
+  --color-tape: #f4520b;
+  --color-chalk: #f3f2ec;
+  --color-stone: #5c6b60;
+  --color-moss: #d9dcd0;
+
+  --font-display: "Big Shoulders", sans-serif;
+  --font-sans: "Archivo", system-ui, sans-serif;
+  --font-mono: "Chivo Mono", monospace;
+}
+
+:root {
+  --bg: var(--color-chalk);
+  --panel: #faf9f4;
+  --ink: #12291e;
+  --sub: var(--color-stone);
+  --line: var(--color-moss);
+  --accent: var(--color-field);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: var(--color-bog-deep);
+    --panel: var(--color-bog);
+    --ink: #e9ece4;
+    --sub: #94a79a;
+    --line: #1e3a2b;
+    --accent: var(--color-field-bright);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: var(--color-bog-deep);
+  --panel: var(--color-bog);
+  --ink: #e9ece4;
+  --sub: #94a79a;
+  --line: #1e3a2b;
+  --accent: var(--color-field-bright);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-sub: var(--sub);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.tape-stripe {
+  height: 14px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-tape) 0 22px,
+    var(--color-bog) 22px 44px
+  );
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-tape);
+  outline-offset: 3px;
+}
