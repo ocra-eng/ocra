@@ -1,17 +1,13 @@
-import { Hero, RecognitionStrip, SiteFooter, SiteHeader } from "@/features/home"
+import { Hero, RecognitionStrip } from "@/features/home"
 import { useSeo } from "@/features/seo"
 
 export const Home = () => {
-  useSeo()
+  useSeo("home", "")
 
   return (
-    <div className="flex min-h-dvh flex-col bg-bg text-ink">
-      <SiteHeader />
-      <main className="flex-1">
-        <Hero />
-        <RecognitionStrip />
-      </main>
-      <SiteFooter />
-    </div>
+    <>
+      <Hero />
+      <RecognitionStrip />
+    </>
   )
 }

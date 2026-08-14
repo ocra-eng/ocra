@@ -13,8 +13,8 @@ export const ORG: Org = {
 export const NAV_ITEMS: NavItem[] = [
   { key: "events", href: "#events" },
   { key: "membership", href: "#membership" },
-  { key: "coaching", href: "#coaching" },
-  { key: "about", href: "#about" },
+  { key: "coaching", href: "/coaching", isRoute: true },
+  { key: "about", href: "/about", isRoute: true },
 ]
 
 export interface RecognitionLogo {
@@ -52,3 +52,15 @@ export const RECOGNITION_LOGOS: RecognitionLogo[] = [
     height: 35,
   },
 ]
+
+export interface SocialLink {
+  key: string
+  href: string
+}
+
+export const SOCIAL_LINKS: SocialLink[] = [
+  { key: "facebook", href: "https://www.facebook.com/ocrassociationireland/" },
+  { key: "instagram", href: "https://www.instagram.com/ocrireland" },
+]
+
+export const CONTACT_EMAIL = "info@ocra.ie"

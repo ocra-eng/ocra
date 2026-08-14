@@ -61,14 +61,16 @@ const upsertJsonLd = () => {
   document.head.appendChild(el)
 }
 
-export const useSeo = () => {
-  const { t, i18n } = useTranslation("home")
+// pagePath is the site-relative path of the page without a language prefix:
+// "" for home, "about/" for the about page, etc.
+export const useSeo = (namespace: string, pagePath: string) => {
+  const { t, i18n } = useTranslation(namespace)
   const lang = i18n.resolvedLanguage ?? DEFAULT_LANGUAGE_CODE
 
   useEffect(() => {
     const title = t("meta.title")
     const description = t("meta.description")
-    const pageUrl = siteUrlFor(lang, DEFAULT_LANGUAGE_CODE)
+    const pageUrl = `${siteUrlFor(lang, DEFAULT_LANGUAGE_CODE)}${pagePath}`
     const image = `${SITE_URL}img/og.png`
 
     document.title = title
@@ -89,10 +91,14 @@ export const useSeo = () => {
     upsertMeta("name", "twitter:image", image)
 
     for (const code of RELEASED_LANGUAGE_CODES) {
-      upsertLink("alternate", siteUrlFor(code, DEFAULT_LANGUAGE_CODE), code)
+      upsertLink(
+        "alternate",
+        `${siteUrlFor(code, DEFAULT_LANGUAGE_CODE)}${pagePath}`,
+        code
+      )
     }
-    upsertLink("alternate", SITE_URL, "x-default")
+    upsertLink("alternate", `${SITE_URL}${pagePath}`, "x-default")
 
     upsertJsonLd()
-  }, [t, lang])
+  }, [t, lang, pagePath])
 }

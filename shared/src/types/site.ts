@@ -10,6 +10,7 @@ export interface Org {
 export interface NavItem {
   key: string
   href: string
+  isRoute?: boolean
 }
 
 export interface HeroContent {

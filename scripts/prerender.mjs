@@ -9,6 +9,7 @@ import puppeteer from "puppeteer-core"
 
 const SITE_URL = "https://ocra.ie/"
 const LOCALES = ["ga", "pl", "ru", "be"]
+const PAGES = ["", "about/", "coaching/"]
 const BASE = process.env.BASE_PATH ?? "/"
 
 const root = resolve(import.meta.dirname, "..")
@@ -66,31 +67,35 @@ const browser = await puppeteer.launch({ executablePath, headless: true })
 const snapshots = new Map()
 
 for (const locale of ["en", ...LOCALES]) {
-  const routePath = locale === "en" ? "" : `${locale}/`
-  const page = await browser.newPage()
-  await page.goto(`${origin}${BASE}${routePath}`, {
-    waitUntil: "networkidle0",
-  })
-  await page.waitForFunction(
-    (lang) =>
-      document.documentElement.lang === lang &&
-      document.querySelector("link[rel=canonical]") !== null &&
-      (document.getElementById("root")?.children.length ?? 0) > 0,
-    { timeout: 15000 },
-    locale
-  )
-  const html = await page.evaluate(
-    () => "<!doctype html>" + document.documentElement.outerHTML
-  )
-  snapshots.set(locale, html)
-  await page.close()
-  console.log(`snapshot: ${BASE}${routePath} (${locale})`)
+  for (const pagePath of PAGES) {
+    const routePath = (locale === "en" ? "" : `${locale}/`) + pagePath
+    const expectedCanonical = `https://ocra.ie/${routePath}`
+    const page = await browser.newPage()
+    await page.goto(`${origin}${BASE}${routePath}`, {
+      waitUntil: "networkidle0",
+    })
+    await page.waitForFunction(
+      (lang, canonical) =>
+        document.documentElement.lang === lang &&
+        document.querySelector("link[rel=canonical]")?.href === canonical &&
+        (document.getElementById("root")?.children.length ?? 0) > 0,
+      { timeout: 15000 },
+      locale,
+      expectedCanonical
+    )
+    const html = await page.evaluate(
+      () => "<!doctype html>" + document.documentElement.outerHTML
+    )
+    snapshots.set(routePath, html)
+    await page.close()
+    console.log(`snapshot: ${BASE}${routePath} (${locale})`)
+  }
 }
 await browser.close()
 server.close()
 
-for (const [locale, html] of snapshots) {
-  const dir = locale === "en" ? dist : join(dist, locale)
+for (const [routePath, html] of snapshots) {
+  const dir = join(dist, routePath)
   mkdirSync(dir, { recursive: true })
   writeFileSync(join(dir, "index.html"), html)
 }
@@ -98,6 +103,7 @@ writeFileSync(join(dist, "404.html"), shell)
 
 const today = new Date().toISOString().slice(0, 10)
 const urls = ["", ...LOCALES.map((l) => `${l}/`)]
+  .flatMap((prefix) => PAGES.map((p) => `${prefix}${p}`))
   .map(
     (p) =>
       `  <url><loc>${SITE_URL}${p}</loc><lastmod>${today}</lastmod></url>`
@@ -111,4 +117,4 @@ writeFileSync(
   join(dist, "robots.txt"),
   `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}sitemap.xml\n`
 )
-console.log("prerender complete: 5 pages, 404.html, sitemap.xml, robots.txt")
+console.log(`prerender complete: ${snapshots.size} pages, 404.html, sitemap.xml, robots.txt`)

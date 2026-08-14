@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest"
+import { aboutResources } from "../src/features/about/i18n"
+import { coachingResources } from "../src/features/coaching/i18n"
 import { homeResources } from "../src/features/home/i18n"
 import { themeResources } from "../src/features/theme/i18n"
 
@@ -12,6 +14,8 @@ const keyTree = (value: unknown, prefix = ""): string[] => {
 const NAMESPACES = [
   ["home", homeResources],
   ["theme", themeResources],
+  ["about", aboutResources],
+  ["coaching", coachingResources],
 ] as const
 
 describe.each(NAMESPACES)("%s resources", (_ns, resources) => {

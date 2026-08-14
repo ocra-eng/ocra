@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next"
 import type { HeroContent, NavItem, Org } from "@ocra/shared"
+import { useLocalizedPath } from "@/features/language"
 import { NAV_ITEMS, ORG } from "../constants"
 
 interface NavLink extends NavItem {
@@ -20,6 +21,7 @@ interface UseHomeResult {
 
 export const useHome = (): UseHomeResult => {
   const { t } = useTranslation("home")
+  const localize = useLocalizedPath()
 
   return {
     org: ORG,
@@ -31,6 +33,7 @@ export const useHome = (): UseHomeResult => {
     },
     navLinks: NAV_ITEMS.map((item) => ({
       ...item,
+      href: item.isRoute ? localize(item.href) : item.href,
       label: t(`nav.${item.key}`),
     })),
     joinLabel: t("join"),

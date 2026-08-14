@@ -1,4 +1,5 @@
 export { SiteHeader } from "./ui/SiteHeader"
+export { SiteShell } from "./ui/SiteShell"
 export { Hero } from "./ui/Hero"
 export { RecognitionStrip } from "./ui/RecognitionStrip"
 export { SiteFooter } from "./ui/SiteFooter"

@@ -1,7 +1,15 @@
+import { Mail } from "lucide-react"
 import { LanguageSwitcher } from "@/features/language"
 import { ThemeToggle } from "@/features/theme"
+import { CONTACT_EMAIL, SOCIAL_LINKS } from "../constants"
 import { useHome } from "../model/useHome"
+import { FacebookIcon, InstagramIcon } from "./SocialIcons"
 import { Wordmark } from "./Wordmark"
+
+const SOCIAL_ICONS: Record<string, typeof FacebookIcon> = {
+  facebook: FacebookIcon,
+  instagram: InstagramIcon,
+}
 
 export const SiteFooter = () => {
   const { footerRecognition, footerCopyright } = useHome()
@@ -11,7 +19,31 @@ export const SiteFooter = () => {
       <div className="mx-auto max-w-[1160px] px-5 py-10 md:px-11 md:py-12">
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-8">
           <Wordmark />
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-1">
+              {SOCIAL_LINKS.map((social) => {
+                const Icon = SOCIAL_ICONS[social.key]
+                return (
+                  <a
+                    key={social.key}
+                    href={social.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={social.key}
+                    className="flex h-9 w-9 items-center justify-center text-sub hover:text-ink"
+                  >
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </a>
+                )
+              })}
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                aria-label={CONTACT_EMAIL}
+                className="flex h-9 w-9 items-center justify-center text-sub hover:text-ink"
+              >
+                <Mail className="h-5 w-5" aria-hidden="true" />
+              </a>
+            </div>
             <LanguageSwitcher />
             <ThemeToggle />
           </div>

@@ -1,4 +1,5 @@
 import { X } from "lucide-react"
+import { Link } from "react-router"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -52,16 +53,27 @@ export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
         </div>
 
         <nav className="mt-8 flex flex-col">
-          {navLinks.map((item) => (
-            <a
-              key={item.key}
-              href={item.href}
-              onClick={onClose}
-              className="border-b border-[#1E4433] py-4 font-display text-3xl font-bold uppercase tracking-[0.03em] text-chalk hover:text-[#5FBF87]"
-            >
-              {item.label}
-            </a>
-          ))}
+          {navLinks.map((item) =>
+            item.isRoute ? (
+              <Link
+                key={item.key}
+                to={item.href}
+                onClick={onClose}
+                className="border-b border-[#1E4433] py-4 font-display text-3xl font-bold uppercase tracking-[0.03em] text-chalk hover:text-[#5FBF87]"
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <a
+                key={item.key}
+                href={item.href}
+                onClick={onClose}
+                className="border-b border-[#1E4433] py-4 font-display text-3xl font-bold uppercase tracking-[0.03em] text-chalk hover:text-[#5FBF87]"
+              >
+                {item.label}
+              </a>
+            )
+          )}
         </nav>
 
         <div className="mt-auto flex flex-col gap-6">
