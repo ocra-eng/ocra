@@ -1,4 +1,4 @@
-import type { HeroContent, NavItem, Org } from "@ocra/shared"
+import type { NavItem, Org } from "@ocra/shared"
 
 export const ORG: Org = {
   name: "OCRA Ireland",
@@ -7,20 +7,48 @@ export const ORG: Org = {
   fullNameGa: "Cumann Rásaíochta Constaicí na hÉireann",
   strapline: "The national governing body for obstacle sports in Ireland.",
   recognition:
-    "Recognised by World Obstacle (FISO) and the European Obstacle Sports Federation (EOSF).",
+    "Recognised by World Obstacle (FISO), the European Obstacle Sports Federation (EOSF) and the Union Internationale de Pentathlon Moderne (UIPM).",
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Events", href: "#events" },
-  { label: "Membership", href: "#membership" },
-  { label: "Coaching", href: "#coaching" },
-  { label: "About", href: "#about" },
+  { key: "events", href: "#events" },
+  { key: "membership", href: "#membership" },
+  { key: "coaching", href: "#coaching" },
+  { key: "about", href: "#about" },
 ]
 
-export const HERO: HeroContent = {
-  statementLines: ["Over every", "obstacle"],
-  support:
-    "The standard for obstacle sport in Ireland — sanctioning races, ranking athletes, and certifying coaches across the island.",
-  ctaLabel: "Become a member",
-  ctaNote: "Insurance · rankings · national team pathway",
+export interface RecognitionLogo {
+  src: string
+  alt: string
+  inverse: boolean
+  tall: boolean
+  width: number
+  height: number
 }
+
+export const RECOGNITION_LOGOS: RecognitionLogo[] = [
+  {
+    src: `${import.meta.env.BASE_URL}img/logo-wo.png`,
+    alt: "World Obstacle — Fédération Internationale de Sports d'Obstacles",
+    inverse: false,
+    tall: true,
+    width: 683,
+    height: 225,
+  },
+  {
+    src: `${import.meta.env.BASE_URL}img/logo-eosf.png`,
+    alt: "European Obstacle Sports Federation",
+    inverse: false,
+    tall: true,
+    width: 1149,
+    height: 414,
+  },
+  {
+    src: `${import.meta.env.BASE_URL}img/logo-uipm.png`,
+    alt: "Union Internationale de Pentathlon Moderne",
+    inverse: true,
+    tall: false,
+    width: 111,
+    height: 35,
+  },
+]

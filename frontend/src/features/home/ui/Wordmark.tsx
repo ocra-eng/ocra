@@ -1,22 +1,44 @@
-import { TriskeleMark } from "@/components/brand/TriskeleMark"
 import { cn } from "@/lib/utils"
 
 interface WordmarkProps {
   className?: string
+  onDark?: boolean
 }
 
-export const Wordmark = ({ className }: WordmarkProps) => {
+const BRAND_BASE = `${import.meta.env.BASE_URL}brand/`
+const WORDMARK_WIDTH = 1022
+const WORDMARK_HEIGHT = 292
+
+export const Wordmark = ({ className, onDark = false }: WordmarkProps) => {
+  if (onDark) {
+    return (
+      <img
+        src={`${BRAND_BASE}wordmark_white.svg`}
+        alt="OCRA Éireann"
+        width={WORDMARK_WIDTH}
+        height={WORDMARK_HEIGHT}
+        className={cn("h-10 w-auto md:h-11", className)}
+      />
+    )
+  }
+
   return (
-    <span className={cn("flex items-center gap-2.5", className)}>
-      <TriskeleMark className="h-10 w-10 shrink-0 md:h-11 md:w-11" />
-      <span className="flex flex-col justify-center font-display uppercase leading-none tracking-[0.06em]">
-        <span lang="ga" className="text-[15px] font-bold md:text-[17px]">
-          OCRA Éireann
-        </span>
-        <span className="mt-[3px] text-[15px] font-normal md:text-[17px]">
-          OCRA Ireland
-        </span>
-      </span>
+    <span className={cn("flex items-center", className)}>
+      <img
+        src={`${BRAND_BASE}wordmark_bog.svg`}
+        alt="OCRA Éireann"
+        width={WORDMARK_WIDTH}
+        height={WORDMARK_HEIGHT}
+        className="wordmark-light h-10 w-auto md:h-11"
+      />
+      <img
+        src={`${BRAND_BASE}wordmark_white.svg`}
+        alt=""
+        aria-hidden="true"
+        width={WORDMARK_WIDTH}
+        height={WORDMARK_HEIGHT}
+        className="wordmark-dark h-10 w-auto md:h-11"
+      />
     </span>
   )
 }

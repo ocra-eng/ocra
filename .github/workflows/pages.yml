@@ -27,9 +27,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run lint
+      - run: npm test
       - run: npm run build
         env:
           BASE_PATH: /ocra/
+      - run: cp frontend/dist/index.html frontend/dist/404.html
       - uses: actions/configure-pages@v5
         with:
           enablement: true

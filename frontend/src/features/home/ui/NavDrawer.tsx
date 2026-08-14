@@ -2,8 +2,8 @@ import { X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useHome } from "../model/useHome"
 import { Wordmark } from "./Wordmark"
-import { NAV_ITEMS } from "../constants"
 
 interface NavDrawerProps {
   isOpen: boolean
@@ -12,6 +12,8 @@ interface NavDrawerProps {
 }
 
 export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
+  const { navLinks, joinLabel, menuCloseLabel } = useHome()
+
   return (
     <div className="md:hidden">
       <div
@@ -36,13 +38,13 @@ export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
         )}
       >
         <div className="flex items-center justify-between">
-          <Wordmark className="text-chalk" />
+          <Wordmark onDark />
           <Button
             type="button"
             variant="ghost"
             size="icon"
             onClick={onClose}
-            aria-label="Close menu"
+            aria-label={menuCloseLabel}
             className="h-10 w-10 rounded-none text-chalk hover:bg-chalk/10 hover:text-chalk"
           >
             <X className="h-5 w-5" />
@@ -50,9 +52,9 @@ export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
         </div>
 
         <nav className="mt-8 flex flex-col">
-          {NAV_ITEMS.map((item) => (
+          {navLinks.map((item) => (
             <a
-              key={item.href}
+              key={item.key}
               href={item.href}
               onClick={onClose}
               className="border-b border-[#1E4433] py-4 font-display text-3xl font-bold uppercase tracking-[0.03em] text-chalk hover:text-[#5FBF87]"
@@ -65,7 +67,7 @@ export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
         <div className="mt-auto flex flex-col gap-6">
           <Button variant="tape" size="brand" asChild className="w-full">
             <a href="#membership" onClick={onClose}>
-              Join
+              {joinLabel}
             </a>
           </Button>
         </div>

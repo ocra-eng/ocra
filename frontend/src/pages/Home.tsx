@@ -1,4 +1,4 @@
-import { Hero, SiteHeader } from "@/features/home"
+import { Hero, RecognitionStrip, SiteFooter, SiteHeader } from "@/features/home"
 
 export const Home = () => {
   return (
@@ -6,7 +6,9 @@ export const Home = () => {
       <SiteHeader />
       <main className="flex-1">
         <Hero />
+        <RecognitionStrip />
       </main>
+      <SiteFooter />
     </div>
   )
 }

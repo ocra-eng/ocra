@@ -8,7 +8,7 @@ export interface Org {
 }
 
 export interface NavItem {
-  label: string
+  key: string
   href: string
 }
 

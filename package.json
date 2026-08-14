@@ -8,7 +8,8 @@
   "scripts": {
     "build": "npm run build -w @ocra/shared && npm run build -w frontend",
     "dev": "npm run dev -w frontend",
-    "lint": "npm run lint -w frontend"
+    "lint": "npm run lint -w frontend",
+    "test": "npm run test -w frontend"
   },
   "devDependencies": {
     "puppeteer-core": "^25.6.0"
