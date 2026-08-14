@@ -1,4 +1,9 @@
 export const en = {
+  meta: {
+    title: "OCRA Ireland — National Governing Body for Obstacle Sport",
+    description:
+      "OCRA Ireland is the national governing body for obstacle sport in Ireland — sanctioning races, ranking athletes, and certifying coaches across the island.",
+  },
   nav: {
     events: "Events",
     membership: "Membership",

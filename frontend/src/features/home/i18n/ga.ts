@@ -1,4 +1,9 @@
 export const ga = {
+  meta: {
+    title: "OCRA Éireann — Comhlacht Náisiúnta Rialaithe an Spóirt Constaicí",
+    description:
+      "Is é OCRA Éireann an comhlacht náisiúnta rialaithe don spórt constaicí in Éirinn — rásaí a cheadú, lúthchleasaithe a rangú agus cóitseálaithe a dheimhniú ar fud an oileáin.",
+  },
   nav: {
     events: "Imeachtaí",
     membership: "Ballraíocht",

@@ -32,7 +32,9 @@ jobs:
       - run: npm run build
         env:
           BASE_PATH: /ocra/
-      - run: cp frontend/dist/index.html frontend/dist/404.html
+      - run: npm run prerender
+        env:
+          BASE_PATH: /ocra/
       - uses: actions/configure-pages@v5
         with:
           enablement: true

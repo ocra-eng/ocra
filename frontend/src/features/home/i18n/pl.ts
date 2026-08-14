@@ -1,4 +1,9 @@
 export const pl = {
+  meta: {
+    title: "OCRA Ireland — krajowa federacja sportów przeszkodowych w Irlandii",
+    description:
+      "OCRA Ireland to krajowa federacja sportów przeszkodowych w Irlandii — sankcjonuje zawody, prowadzi rankingi zawodników i certyfikuje trenerów w całym kraju.",
+  },
   nav: {
     events: "Wydarzenia",
     membership: "Członkostwo",

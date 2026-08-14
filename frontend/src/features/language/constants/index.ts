@@ -11,3 +11,5 @@ export const ALL_LANGUAGES: Language[] = [
 export const RELEASED_LANGUAGE_CODES: string[] = ["en", "ru", "pl", "be", "ga"];
 
 export const DEFAULT_LANGUAGE_CODE = "en";
+
+export const LANGUAGE_STORAGE_KEY = "ocra-lang";
