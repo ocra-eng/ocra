@@ -1,5 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "include": ["src"],
-  "compilerOptions": { "noEmit": false }
+  "compilerOptions": {
+    "noEmit": false,
+    // src (not ".") so output is dist/index.js, matching the start command.
+    "rootDir": "src"
+  }
 }

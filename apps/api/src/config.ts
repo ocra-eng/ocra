@@ -5,7 +5,11 @@ import { z } from "zod"
  * and 500s later is worse than one that refuses to start.
  */
 const schema = z.object({
+  // NODE_ENV is about runtime optimisation and is "production" on every
+  // deployed host, dev included. APP_ENV is what this environment *is*,
+  // and it decides whether missing Stripe config is fatal.
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  APP_ENV: z.enum(["local", "dev", "production"]).default("local"),
   PORT: z.coerce.number().default(4000),
   DATABASE_URL: z.string().min(1),
   /** Supabase project URL, e.g. https://abc.supabase.co — used for JWKS. */
@@ -43,9 +47,9 @@ export const loadConfig = (env: NodeJS.ProcessEnv = process.env): Config => {
     throw new Error(`Invalid environment configuration:\n${issues}`)
   }
   const missingStripe = STRIPE_KEYS.filter((key) => !parsed.data[key])
-  if (parsed.data.NODE_ENV === "production" && missingStripe.length > 0) {
+  if (parsed.data.APP_ENV === "production" && missingStripe.length > 0) {
     throw new Error(
-      `Stripe configuration is required in production. Missing: ${missingStripe.join(", ")}`
+      `Stripe configuration is required when APP_ENV=production. Missing: ${missingStripe.join(", ")}`
     )
   }
   if (missingStripe.length > 0) {

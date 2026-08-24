@@ -20,16 +20,23 @@ services:
     # paid plans — so on free they run at the end of the build, before the
     # new instance starts serving. Safe while migrations stay additive;
     # move to preDeployCommand when this service goes paid.
+    # --include=dev because NODE_ENV=production makes npm skip devDeps,
+    # and TypeScript lives there. Migrations run from compiled JS so tsx
+    # is not needed in production.
     buildCommand: >-
-      npm ci &&
+      npm ci --include=dev &&
       npm run build -w @ocra/shared &&
       npm run build -w @ocra/api &&
-      npm run db:migrate -w @ocra/api
+      npm run db:migrate:dist -w @ocra/api
     startCommand: npm run start -w @ocra/api
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
+      # dev: the API boots without Stripe and reports billing: "disabled".
+      # Set to "production" on the prod service so missing keys are fatal.
+      - key: APP_ENV
+        value: dev
       - key: DATABASE_URL
         sync: false
       - key: SUPABASE_URL
@@ -51,7 +58,7 @@ services:
   - type: web
     name: ocra-members-dev
     runtime: static
-    buildCommand: npm ci && npm run build -w @ocra/shared && npm run build -w @ocra/members
+    buildCommand: npm ci --include=dev && npm run build -w @ocra/shared && npm run build -w @ocra/members
     staticPublishPath: apps/members/dist
     routes:
       - type: rewrite
@@ -77,7 +84,7 @@ services:
     # Prerender drives a real browser, so the build installs one into the
     # puppeteer cache that scripts/prerender.mjs already searches.
     buildCommand: >-
-      npm ci &&
+      npm ci --include=dev &&
       npx -y @puppeteer/browsers install chrome@stable &&
       npm run build &&
       npm run prerender

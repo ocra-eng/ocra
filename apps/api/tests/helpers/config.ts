@@ -2,6 +2,7 @@ import type { Config } from "../../src/config.js"
 
 export const testConfig = (overrides: Partial<Config> = {}): Config => ({
   NODE_ENV: "test",
+  APP_ENV: "local",
   PORT: 4000,
   DATABASE_URL: "pglite://memory",
   SUPABASE_URL: "https://test.supabase.co",
