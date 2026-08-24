@@ -1,8 +1,8 @@
 export const en = {
   meta: {
-    title: "OCRA Ireland — National Governing Body for Obstacle Sport",
+    title: "OCRA ÉIREANN — National Governing Body for Obstacle Sport",
     description:
-      "OCRA Ireland is the national governing body for obstacle sport in Ireland — sanctioning races, ranking athletes, and certifying coaches across the island.",
+      "OCRA ÉIREANN is the national governing body for obstacle sport in Ireland — sanctioning races, ranking athletes, and certifying coaches across the island.",
   },
   nav: {
     compete: "Compete",
@@ -57,6 +57,6 @@ export const en = {
   footer: {
     recognition:
       "Recognised by World Obstacle (FISO), the European Obstacle Sports Federation (EOSF) and the Union Internationale de Pentathlon Moderne (UIPM).",
-    copyright: "© {{year}} OCRA Ireland",
+    copyright: "© {{year}} OCRA ÉIREANN",
   },
 } as const

@@ -1,8 +1,8 @@
 export const pl = {
   meta: {
-    title: "OCRA Ireland — krajowa federacja sportów przeszkodowych w Irlandii",
+    title: "OCRA ÉIREANN — krajowa federacja sportów przeszkodowych w Irlandii",
     description:
-      "OCRA Ireland to krajowa federacja sportów przeszkodowych w Irlandii — sankcjonuje zawody, prowadzi rankingi zawodników i certyfikuje trenerów w całym kraju.",
+      "OCRA ÉIREANN to krajowa federacja sportów przeszkodowych w Irlandii — sankcjonuje zawody, prowadzi rankingi zawodników i certyfikuje trenerów w całym kraju.",
   },
   nav: {
     compete: "Zawody",
@@ -57,6 +57,6 @@ export const pl = {
   footer: {
     recognition:
       "Uznana przez World Obstacle (FISO), Europejską Federację Sportów Przeszkodowych (EOSF) i Union Internationale de Pentathlon Moderne (UIPM).",
-    copyright: "© {{year}} OCRA Ireland",
+    copyright: "© {{year}} OCRA ÉIREANN",
   },
 }

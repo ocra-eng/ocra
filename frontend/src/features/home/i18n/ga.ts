@@ -57,6 +57,6 @@ export const ga = {
   footer: {
     recognition:
       "Aitheanta ag World Obstacle (FISO), ag Cónaidhm Eorpach na Spórt Constaicí (EOSF) agus ag Union Internationale de Pentathlon Moderne (UIPM).",
-    copyright: "© {{year}} OCRA Ireland",
+    copyright: "© {{year}} OCRA ÉIREANN",
   },
 }

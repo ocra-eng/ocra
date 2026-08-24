@@ -1,13 +1,17 @@
 export const en = {
   meta: {
-    title: "Governance & Integrity — OCRA Ireland",
+    title: "Governance & Integrity — OCRA ÉIREANN",
     description:
-      "How OCRA Ireland is run — constitution, policies, safeguarding, anti-doping, codes of conduct, complaints, inclusion, and data protection.",
+      "How OCRA ÉIREANN is run — constitution, policies, safeguarding, anti-doping, codes of conduct, complaints, inclusion, and data protection.",
   },
   title: "Governance & Integrity",
   intro:
     "How the sport is run, and how we hold ourselves to it. Everything is public.",
   cards: {
+    structure: {
+      title: "How OCRA is Governed",
+      body: "The General Assembly, the Board, committees, and the principles OCRA operates by.",
+    },
     constitution: {
       title: "Constitution & Bylaws",
       body: "The rules OCRA itself runs on — structure, membership, and decision-making.",

@@ -7,14 +7,15 @@ import { registerPageResources } from "@/i18n"
 registerPageResources("governance", governanceResources)
 
 const CARDS = [
-  { key: "constitution", href: "#" },
-  { key: "policies", href: "#" },
-  { key: "safeguarding", href: "#" },
-  { key: "antiDoping", href: "#" },
-  { key: "codes", href: "#" },
-  { key: "complaints", href: "#" },
-  { key: "equality", href: "#" },
-  { key: "data", href: "#" },
+  { key: "structure", href: "/governance/structure", isRoute: true },
+  { key: "constitution", href: "/governance/constitution-bylaws", isRoute: true },
+  { key: "policies", href: "/governance/policies", isRoute: true },
+  { key: "safeguarding", href: "/governance/safeguarding", isRoute: true },
+  { key: "antiDoping", href: "/governance/anti-doping", isRoute: true },
+  { key: "codes", href: "/governance/codes-of-conduct", isRoute: true },
+  { key: "complaints", href: "/governance/complaints", isRoute: true },
+  { key: "equality", href: "/governance/equality-inclusion", isRoute: true },
+  { key: "data", href: "/governance/data-protection", isRoute: true },
 ]
 
 export const Governance = () => {

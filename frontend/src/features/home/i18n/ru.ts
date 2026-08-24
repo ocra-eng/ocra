@@ -1,8 +1,8 @@
 export const ru = {
   meta: {
-    title: "OCRA Ireland — национальная федерация спорта с препятствиями Ирландии",
+    title: "OCRA ÉIREANN — национальная федерация спорта с препятствиями Ирландии",
     description:
-      "OCRA Ireland — национальная федерация спорта с препятствиями в Ирландии: санкционирование гонок, рейтинги атлетов и сертификация тренеров по всему острову.",
+      "OCRA ÉIREANN — национальная федерация спорта с препятствиями в Ирландии: санкционирование гонок, рейтинги атлетов и сертификация тренеров по всему острову.",
   },
   nav: {
     compete: "Соревнования",
@@ -57,6 +57,6 @@ export const ru = {
   footer: {
     recognition:
       "Признана World Obstacle (FISO), Европейской федерацией спорта с препятствиями (EOSF) и Union Internationale de Pentathlon Moderne (UIPM).",
-    copyright: "© {{year}} OCRA Ireland",
+    copyright: "© {{year}} OCRA ÉIREANN",
   },
 }

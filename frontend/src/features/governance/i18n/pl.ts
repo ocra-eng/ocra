@@ -1,13 +1,17 @@
 export const pl = {
   meta: {
-    title: "Zarządzanie i uczciwość — OCRA Ireland",
+    title: "Zarządzanie i uczciwość — OCRA ÉIREANN",
     description:
-      "Jak działa OCRA Ireland — statut, polityki, ochrona, antydoping, kodeksy postępowania, skargi, inkluzywność i ochrona danych.",
+      "Jak działa OCRA ÉIREANN — statut, polityki, ochrona, antydoping, kodeksy postępowania, skargi, inkluzywność i ochrona danych.",
   },
   title: "Zarządzanie i uczciwość",
   intro:
     "Jak zarządzany jest sport i jak się z tego rozliczamy. Wszystko jest jawne.",
   cards: {
+    structure: {
+      title: "Jak zarządzana jest OCRA",
+      body: "Walne Zgromadzenie, Zarząd, komitety i zasady, według których działa OCRA.",
+    },
     constitution: {
       title: "Statut i regulamin",
       body: "Zasady, według których działa sama OCRA — struktura, członkostwo i podejmowanie decyzji.",

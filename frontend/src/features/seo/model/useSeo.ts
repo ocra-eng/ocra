@@ -14,7 +14,11 @@ const OG_LOCALES: Record<string, string> = {
   be: "be_BY",
 }
 
-const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
+export const upsertMeta = (
+  attr: "name" | "property",
+  key: string,
+  content: string
+) => {
   let el = document.head.querySelector<HTMLMetaElement>(
     `meta[${attr}="${key}"]`
   )
@@ -26,7 +30,7 @@ const upsertMeta = (attr: "name" | "property", key: string, content: string) => 
   el.setAttribute("content", content)
 }
 
-const upsertLink = (rel: string, href: string, hreflang?: string) => {
+export const upsertLink = (rel: string, href: string, hreflang?: string) => {
   const selector = hreflang
     ? `link[rel="${rel}"][hreflang="${hreflang}"]`
     : `link[rel="${rel}"]`
@@ -40,7 +44,7 @@ const upsertLink = (rel: string, href: string, hreflang?: string) => {
   el.setAttribute("href", href)
 }
 
-const upsertJsonLd = () => {
+export const upsertJsonLd = () => {
   const id = "ld-organization"
   if (document.getElementById(id)) return
   const el = document.createElement("script")
@@ -49,10 +53,10 @@ const upsertJsonLd = () => {
   el.textContent = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "SportsOrganization",
-    name: "OCRA Ireland",
+    name: "OCRA ÉIREANN",
     alternateName: [
-      "OCRA Éireann",
-      "Obstacle Course Racing Association Ireland",
+      "OCRA Ireland",
+      "Obstacle Course Racing Association of Ireland",
     ],
     url: SITE_URL,
     logo: `${SITE_URL}brand/green.svg`,
@@ -77,7 +81,7 @@ export const useSeo = (namespace: string, pagePath: string) => {
     upsertMeta("name", "description", description)
     upsertLink("canonical", pageUrl)
 
-    upsertMeta("property", "og:site_name", "OCRA Ireland")
+    upsertMeta("property", "og:site_name", "OCRA ÉIREANN")
     upsertMeta("property", "og:type", "website")
     upsertMeta("property", "og:title", title)
     upsertMeta("property", "og:description", description)

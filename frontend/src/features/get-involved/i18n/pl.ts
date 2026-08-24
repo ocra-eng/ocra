@@ -1,6 +1,6 @@
 export const pl = {
   meta: {
-    title: "Zaangażuj się — OCRA Ireland",
+    title: "Zaangażuj się — OCRA ÉIREANN",
     description:
       "Siedem dróg do sportów przeszkodowych w Irlandii — członkostwo, wolontariat, trenerstwo, sędziowanie, kluby, zawody i współpraca z OCRA.",
   },

@@ -3,21 +3,39 @@
 // Also writes 404.html (SPA fallback), sitemap.xml and robots.txt into dist.
 // Usage: node scripts/prerender.mjs   (BASE_PATH must match the vite build)
 import { createServer } from "node:http"
-import { existsSync, readFileSync, mkdirSync, writeFileSync } from "node:fs"
+import {
+  existsSync,
+  readFileSync,
+  readdirSync,
+  mkdirSync,
+  writeFileSync,
+} from "node:fs"
 import { extname, join, resolve } from "node:path"
 import puppeteer from "puppeteer-core"
 
 const SITE_URL = "https://ocra.ie/"
 const LOCALES = ["ga", "pl", "ru", "be"]
-const PAGES = [
-  "",
-  "about/",
-  "coaching/",
-  "get-involved/",
-  "membership/",
-  "race-organisers/",
-  "governance/",
-]
+// Localized routes: prerendered per locale.
+const PAGES = ["", "get-involved/", "governance/", "race-organisers/"]
+// Content pages are English-only for now: prerendered at the default locale,
+// derived from the content registry so the list cannot drift.
+const ROUTE_OVERRIDES = {
+  "about/index": "about",
+  "education/coaching": "coaching",
+  "get-involved/membership": "membership",
+}
+const contentRoot = resolve(
+  import.meta.dirname,
+  "../frontend/src/content/pages"
+)
+const CONTENT_PAGES = readdirSync(contentRoot).flatMap((section) =>
+  readdirSync(join(contentRoot, section))
+    .filter((f) => f.endsWith(".ts"))
+    .map((f) => {
+      const slug = f.replace(/\.ts$/, "")
+      return (ROUTE_OVERRIDES[`${section}/${slug}`] ?? `${section}/${slug}`) + "/"
+    })
+)
 const BASE = process.env.BASE_PATH ?? "/"
 
 const root = resolve(import.meta.dirname, "..")
@@ -74,25 +92,64 @@ const origin = `http://localhost:${port}`
 const browser = await puppeteer.launch({ executablePath, headless: true })
 const snapshots = new Map()
 
-for (const locale of ["en", ...LOCALES]) {
-  for (const pagePath of PAGES) {
-    const routePath = (locale === "en" ? "" : `${locale}/`) + pagePath
-    const expectedCanonical = `https://ocra.ie/${routePath}`
+const targets = []
+for (const locale of ["en", ...LOCALES])
+  for (const pagePath of PAGES)
+    targets.push({
+      locale,
+      routePath: (locale === "en" ? "" : `${locale}/`) + pagePath,
+      canonicalPath: (locale === "en" ? "" : `${locale}/`) + pagePath,
+    })
+for (const pagePath of CONTENT_PAGES)
+  targets.push({ locale: "en", routePath: pagePath, canonicalPath: pagePath })
+
+{
+  for (const { locale, routePath, canonicalPath } of targets) {
+    const expectedCanonical = `https://ocra.ie/${canonicalPath}`
     const page = await browser.newPage()
+    // Pages share a browser profile: clear recalled language/theme prefs so a
+    // previously snapshotted locale can't redirect an unprefixed route.
+    await page.evaluateOnNewDocument(() => {
+      try {
+        localStorage.clear()
+      } catch {
+        /* storage unavailable */
+      }
+    })
+    page.on("pageerror", (e) =>
+      console.error(`pageerror ${routePath}: ${e.message}`)
+    )
+    page.on("requestfailed", (r) =>
+      console.error(`requestfailed ${routePath}: ${r.url()} ${r.failure()?.errorText}`)
+    )
     await page.goto(`${origin}${BASE}${routePath}`, {
       waitUntil: "networkidle0",
     })
-    await page.waitForFunction(
-      (lang, canonical) =>
-        document.documentElement.lang === lang &&
-        document.querySelector("link[rel=canonical]")?.href === canonical &&
-        // main must have content: lazy routes render a Suspense fallback
-        // (empty main) before the page chunk arrives
-        (document.querySelector("main")?.children.length ?? 0) > 0,
-      { timeout: 15000 },
-      locale,
-      expectedCanonical
-    )
+    try {
+      await page.waitForFunction(
+        (lang, canonical) =>
+          document.documentElement.lang === lang &&
+          document.querySelector("link[rel=canonical]")?.href === canonical &&
+          // main must have content: lazy routes render a Suspense fallback
+          // (empty main) before the page chunk arrives
+          (document.querySelector("main")?.children.length ?? 0) > 0,
+        { timeout: 15000 },
+        locale,
+        expectedCanonical
+      )
+    } catch (err) {
+      const state = await page.evaluate(() => ({
+        lang: document.documentElement.lang,
+        canonical: document.querySelector("link[rel=canonical]")?.href,
+        mainChildren: document.querySelector("main")?.children.length,
+        url: location.href,
+      }))
+      console.error(
+        `wait failed for ${routePath} (expected ${expectedCanonical}):`,
+        JSON.stringify(state)
+      )
+      throw err
+    }
     const html = await page.evaluate(
       () => "<!doctype html>" + document.documentElement.outerHTML
     )
@@ -112,8 +169,12 @@ for (const [routePath, html] of snapshots) {
 writeFileSync(join(dist, "404.html"), shell)
 
 const today = new Date().toISOString().slice(0, 10)
-const urls = ["", ...LOCALES.map((l) => `${l}/`)]
-  .flatMap((prefix) => PAGES.map((p) => `${prefix}${p}`))
+const urls = [
+  ...["", ...LOCALES.map((l) => `${l}/`)].flatMap((prefix) =>
+    PAGES.map((p) => `${prefix}${p}`)
+  ),
+  ...CONTENT_PAGES,
+]
   .map(
     (p) =>
       `  <url><loc>${SITE_URL}${p}</loc><lastmod>${today}</lastmod></url>`

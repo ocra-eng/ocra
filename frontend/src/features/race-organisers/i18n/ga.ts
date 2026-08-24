@@ -8,6 +8,10 @@ export const ga = {
   intro:
     "Reáchtáil rásaí le tacaíocht OCRA — aitheantas, caighdeáin agus tacaíocht a bhfuil muinín ag lúthchleasaithe astu.",
   cards: {
+    workWithOcra: {
+      title: "Oibrigh le OCRA",
+      body: "Leibhéil éagsúla rannpháirtíochta — ó liostú féilire go ceadú agus craobhchomórtais.",
+    },
     recognition: {
       title: "Aitheantas & Ceadú Imeachtaí",
       body: "Faigh aitheantas don imeacht ón gcomhlacht náisiúnta rialaithe — oiriúnach d'árachas, incháilithe don rangú.",

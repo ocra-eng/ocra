@@ -1,13 +1,17 @@
 export const pl = {
   meta: {
-    title: "Organizatorzy zawodów — OCRA Ireland",
+    title: "Organizatorzy zawodów — OCRA ÉIREANN",
     description:
-      "Współpracuj z OCRA Ireland — uznawanie i sankcjonowanie zawodów, standardy, zgłoszenia i materiały dla organizatorów biegów przeszkodowych.",
+      "Współpracuj z OCRA ÉIREANN — uznawanie i sankcjonowanie zawodów, standardy, zgłoszenia i materiały dla organizatorów biegów przeszkodowych.",
   },
   title: "Organizatorzy zawodów",
   intro:
     "Organizuj zawody ze wsparciem OCRA — uznanie, standardy i zaplecze, któremu ufają zawodnicy.",
   cards: {
+    workWithOcra: {
+      title: "Współpraca z OCRA",
+      body: "Różne poziomy współpracy — od wpisu do kalendarza po sankcjonowanie i mistrzostwa.",
+    },
     recognition: {
       title: "Uznanie i sankcjonowanie zawodów",
       body: "Uzyskaj uznanie krajowej federacji — przyjazne ubezpieczeniom, liczące się do rankingów.",

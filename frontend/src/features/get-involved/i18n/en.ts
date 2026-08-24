@@ -1,6 +1,6 @@
 export const en = {
   meta: {
-    title: "Get Involved — OCRA Ireland",
+    title: "Get Involved — OCRA ÉIREANN",
     description:
       "Seven ways into obstacle sport in Ireland — membership, volunteering, coaching, officiating, clubs, events, and partnership with OCRA.",
   },

@@ -7,10 +7,11 @@ import { registerPageResources } from "@/i18n"
 registerPageResources("raceOrganisers", raceOrganisersResources)
 
 const CARDS = [
-  { key: "recognition", href: "#" },
-  { key: "standards", href: "#" },
-  { key: "submit", href: "#" },
-  { key: "resources", href: "#" },
+  { key: "workWithOcra", href: "/race-organisers/work-with-ocra", isRoute: true },
+  { key: "recognition", href: "/race-organisers/sanctioning", isRoute: true },
+  { key: "standards", href: "/race-organisers/standards", isRoute: true },
+  { key: "submit", href: "/race-organisers/submit-an-event", isRoute: true },
+  { key: "resources", href: "/race-organisers/resources", isRoute: true },
 ]
 
 export const RaceOrganisers = () => {

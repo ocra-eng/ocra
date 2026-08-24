@@ -17,7 +17,7 @@ export const SiteHeader = () => {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-panel">
       <div className="mx-auto flex max-w-[1160px] items-center gap-2 px-5 py-3 md:px-11 md:py-4">
-        <Link to={localize("/")} aria-label="OCRA Ireland home" className="mr-auto">
+        <Link to={localize("/")} aria-label="OCRA ÉIREANN home" className="mr-auto">
           <Wordmark />
         </Link>
 

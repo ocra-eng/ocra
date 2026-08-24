@@ -8,6 +8,10 @@ export const ga = {
   intro:
     "Conas a rialaítear an spórt, agus conas a chloímid leis. Tá gach rud poiblí.",
   cards: {
+    structure: {
+      title: "Conas a Rialaítear OCRA",
+      body: "An Tionól Ginearálta, an Bord, coistí agus na prionsabail faoina bhfeidhmíonn OCRA.",
+    },
     constitution: {
       title: "Bunreacht & Fodhlíthe",
       body: "Na rialacha faoina bhfeidhmíonn OCRA féin — struchtúr, ballraíocht agus cinnteoireacht.",

@@ -8,12 +8,12 @@ registerPageResources("getInvolved", getInvolvedResources)
 
 const CARDS = [
   { key: "membership", href: "/membership", isRoute: true },
-  { key: "volunteer", href: "#" },
+  { key: "volunteer", href: "/get-involved/volunteer", isRoute: true },
   { key: "coach", href: "/coaching", isRoute: true },
-  { key: "official", href: "#" },
-  { key: "club", href: "#" },
+  { key: "official", href: "/education/technical-officials", isRoute: true },
+  { key: "club", href: "/clubs/start-a-club", isRoute: true },
   { key: "event", href: "/race-organisers", isRoute: true },
-  { key: "partner", href: "#" },
+  { key: "partner", href: "/get-involved/partner", isRoute: true },
 ]
 
 export const GetInvolved = () => {
