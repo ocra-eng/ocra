@@ -1,5 +1,9 @@
 import { useTranslation } from "react-i18next"
+import { aboutResources } from "@/features/about/i18n"
 import { useSeo } from "@/features/seo"
+import { registerPageResources } from "@/i18n"
+
+registerPageResources("about", aboutResources)
 
 const SECTIONS = ["mission", "community", "recognition", "who"] as const
 

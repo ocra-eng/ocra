@@ -1,5 +1,9 @@
 import { useTranslation } from "react-i18next"
+import { coachingResources } from "@/features/coaching/i18n"
 import { useSeo } from "@/features/seo"
+import { registerPageResources } from "@/i18n"
+
+registerPageResources("coaching", coachingResources)
 
 const LIST_SECTIONS = ["objectives", "pathway", "principles"] as const
 const PROSE_SECTIONS = ["progression", "adaptive", "assessment", "contact"] as const

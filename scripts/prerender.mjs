@@ -78,7 +78,9 @@ for (const locale of ["en", ...LOCALES]) {
       (lang, canonical) =>
         document.documentElement.lang === lang &&
         document.querySelector("link[rel=canonical]")?.href === canonical &&
-        (document.getElementById("root")?.children.length ?? 0) > 0,
+        // main must have content: lazy routes render a Suspense fallback
+        // (empty main) before the page chunk arrives
+        (document.querySelector("main")?.children.length ?? 0) > 0,
       { timeout: 15000 },
       locale,
       expectedCanonical
