@@ -1,6 +1,6 @@
-// Post-build prerender: snapshots each locale route of the built SPA to static
-// HTML so crawlers get real content and GitHub Pages serves 200s for /:lang.
-// Also writes 404.html (SPA fallback), sitemap.xml and robots.txt into dist.
+// Post-build prerender: snapshots each locale route of the built SPA to
+// static HTML so crawlers get real content and the host serves 200s for
+// /:lang. Also writes 404.html (SPA fallback), sitemap.xml and robots.txt.
 // Usage: node scripts/prerender.mjs   (BASE_PATH must match the vite build)
 import { createServer } from "node:http"
 import {
@@ -45,14 +45,34 @@ if (!existsSync(join(dist, "index.html"))) {
 }
 const shell = readFileSync(join(dist, "index.html"))
 
+// Build hosts differ: Render installs Chrome into the puppeteer cache,
+// CI has it on PATH, macOS has the app bundle. Look in all of them.
+const puppeteerCache = () => {
+  const root = join(process.env.HOME ?? "", ".cache/puppeteer/chrome")
+  if (!existsSync(root)) return []
+  return readdirSync(root).flatMap((version) => [
+    join(root, version, "chrome-linux64/chrome"),
+    join(root, version, "chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"),
+  ])
+}
+
 const CHROME_PATHS = [
   process.env.CHROME_PATH,
+  ...puppeteerCache(),
   "/usr/bin/google-chrome",
   "/usr/bin/google-chrome-stable",
+  "/usr/bin/chromium",
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
 ].filter(Boolean)
 const executablePath = CHROME_PATHS.find((p) => existsSync(p))
-if (!executablePath) throw new Error("no Chrome found; set CHROME_PATH")
+if (!executablePath) {
+  throw new Error(
+    `No Chrome found. Set CHROME_PATH, or install one with:\n` +
+      `  npx @puppeteer/browsers install chrome@stable\nTried:\n  ` +
+      CHROME_PATHS.join("\n  ")
+  )
+}
+console.log(`using chrome: ${executablePath}`)
 
 const MIME = {
   ".html": "text/html",

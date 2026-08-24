@@ -1,0 +1,84 @@
+# Render blueprint for the OCRA monorepo.
+#
+# Three services from one repo — which is why we moved off GitHub Pages:
+# Pages allows one site per repository, Render does not care.
+#
+# Dev is what exists today. Production services are added at cutover, when
+# ocra.ie moves off WordPress and members.ocra.ie moves off Vercel; until
+# then nothing here touches a live domain.
+#
+# Secrets are `sync: false` — set them in the Render dashboard, never here.
+
+services:
+  # ---------------------------------------------------------------- API
+  - type: web
+    name: ocra-api-dev
+    runtime: node
+    plan: free # sleeps when idle; the app's health gate covers the wake
+    region: frankfurt # closest to the Supabase eu-west project
+    buildCommand: npm ci && npm run build -w @ocra/shared && npm run build -w @ocra/api
+    # Migrations run before the new code serves traffic, never after.
+    preDeployCommand: npm run db:migrate -w @ocra/api
+    startCommand: npm run start -w @ocra/api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: MEMBERS_APP_URL
+        value: https://dev-members.ocra.ie
+      - key: ALLOWED_ORIGINS
+        value: https://dev-members.ocra.ie
+      # Billing stays off until Stripe test keys are set; the API reports
+      # billing: "disabled" rather than refusing to boot.
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_ATHLETE_PRICE_ID
+        sync: false
+
+  # ------------------------------------------------------------ members
+  - type: web
+    name: ocra-members-dev
+    runtime: static
+    buildCommand: npm ci && npm run build -w @ocra/shared && npm run build -w @ocra/members
+    staticPublishPath: apps/members/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      # Auth-gated app: keep it out of search results entirely.
+      - path: /*
+        name: X-Robots-Tag
+        value: noindex
+    envVars:
+      - key: VITE_API_URL
+        value: https://dev-api.ocra.ie
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_PUBLISHABLE_KEY
+        sync: false
+
+  # ---------------------------------------------------------- marketing
+  - type: web
+    name: ocra-marketing-dev
+    runtime: static
+    # Prerender drives a real browser, so the build installs one into the
+    # puppeteer cache that scripts/prerender.mjs already searches.
+    buildCommand: >-
+      npm ci &&
+      npx -y @puppeteer/browsers install chrome@stable &&
+      npm run build &&
+      npm run prerender
+    staticPublishPath: apps/marketing/dist
+    routes:
+      # Prerendered locale routes are real files, so only unmatched paths
+      # fall through to the SPA shell.
+      - type: rewrite
+        source: /*
+        destination: /404.html

@@ -1,0 +1,39 @@
+name: Keep Supabase awake
+
+# Supabase pauses free-tier projects after ~7 days idle and does NOT resume
+# on request — it needs a manual restore in the dashboard. A trivial query
+# every other day keeps the dev project alive. Delete this once the project
+# is on a paid plan.
+
+on:
+  schedule:
+    # 06:17 UTC every second day; odd minute so we're not in the rush.
+    - cron: "17 6 */2 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Query the dev database
+        env:
+          DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::DEV_DATABASE_URL secret is not set"
+            exit 1
+          fi
+          node -e "
+            const postgres = require('postgres');
+            const sql = postgres(process.env.DATABASE_URL, { max: 1 });
+            sql\`select count(*)::int as members from members\`
+              .then(([row]) => console.log('awake —', row.members, 'members'))
+              .catch((error) => { console.error(error.message); process.exit(1); })
+              .finally(() => sql.end());
+          "
