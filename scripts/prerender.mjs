@@ -9,7 +9,15 @@ import puppeteer from "puppeteer-core"
 
 const SITE_URL = "https://ocra.ie/"
 const LOCALES = ["ga", "pl", "ru", "be"]
-const PAGES = ["", "about/", "coaching/"]
+const PAGES = [
+  "",
+  "about/",
+  "coaching/",
+  "get-involved/",
+  "membership/",
+  "race-organisers/",
+  "governance/",
+]
 const BASE = process.env.BASE_PATH ?? "/"
 
 const root = resolve(import.meta.dirname, "..")

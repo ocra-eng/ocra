@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest"
 import { aboutResources } from "../src/features/about/i18n"
 import { coachingResources } from "../src/features/coaching/i18n"
+import { getInvolvedResources } from "../src/features/get-involved/i18n"
+import { governanceResources } from "../src/features/governance/i18n"
 import { homeResources } from "../src/features/home/i18n"
+import { membershipResources } from "../src/features/membership/i18n"
+import { raceOrganisersResources } from "../src/features/race-organisers/i18n"
 import { themeResources } from "../src/features/theme/i18n"
 
 const keyTree = (value: unknown, prefix = ""): string[] => {
@@ -16,6 +20,10 @@ const NAMESPACES = [
   ["theme", themeResources],
   ["about", aboutResources],
   ["coaching", coachingResources],
+  ["getInvolved", getInvolvedResources],
+  ["membership", membershipResources],
+  ["raceOrganisers", raceOrganisersResources],
+  ["governance", governanceResources],
 ] as const
 
 describe.each(NAMESPACES)("%s resources", (_ns, resources) => {

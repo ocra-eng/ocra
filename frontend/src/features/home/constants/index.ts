@@ -30,9 +30,9 @@ const CLUB_LINKS: NavItem[] = [
 export const NAV_ITEMS: NavItem[] = [
   { key: "compete", children: COMPETE_LINKS },
   { key: "clubs", children: CLUB_LINKS },
-  { key: "getInvolved", href: "#" },
+  { key: "getInvolved", href: "/get-involved", isRoute: true },
   { key: "about", href: "/about", isRoute: true },
-  { key: "governance", href: "#" },
+  { key: "governance", href: "/governance", isRoute: true },
 ]
 
 export interface FooterColumnDef {
@@ -46,12 +46,12 @@ export const FOOTER_SITEMAP: FooterColumnDef[] = [
   {
     key: "getInvolved",
     items: [
-      { key: "membership", href: "#" },
+      { key: "membership", href: "/membership", isRoute: true },
       { key: "volunteer", href: "#" },
       { key: "coaching", href: "/coaching", isRoute: true },
       { key: "technicalOfficials", href: "#" },
       { key: "coursesTraining", href: "#" },
-      { key: "raceOrganisers", href: "#" },
+      { key: "raceOrganisers", href: "/race-organisers", isRoute: true },
       { key: "partner", href: "#" },
     ],
   },

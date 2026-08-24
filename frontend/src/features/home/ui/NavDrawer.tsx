@@ -3,6 +3,7 @@ import { ChevronDown, X } from "lucide-react"
 import { Link } from "react-router"
 
 import { Button } from "@/components/ui/button"
+import { useLocalizedPath } from "@/features/language"
 import { cn } from "@/lib/utils"
 import type { NavLink } from "../model/useHome"
 import { useHome } from "../model/useHome"
@@ -38,6 +39,7 @@ const DrawerLink = ({
 
 export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
   const { navLinks, joinLabel, menuCloseLabel } = useHome()
+  const localize = useLocalizedPath()
   const [expanded, setExpanded] = useState<string | null>(null)
 
   return (
@@ -134,9 +136,9 @@ export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
 
         <div className="mt-auto flex flex-col gap-6 pt-8">
           <Button variant="tape" size="brand" asChild className="w-full">
-            <a href="#" onClick={onClose}>
+            <Link to={localize("/membership")} onClick={onClose}>
               {joinLabel}
-            </a>
+            </Link>
           </Button>
         </div>
       </aside>

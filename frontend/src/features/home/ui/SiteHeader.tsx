@@ -63,7 +63,7 @@ export const SiteHeader = () => {
             )
           )}
           <Button variant="tape" size="brand" asChild>
-            <a href="#">{joinLabel}</a>
+            <Link to={localize("/membership")}>{joinLabel}</Link>
           </Button>
         </nav>
       </div>

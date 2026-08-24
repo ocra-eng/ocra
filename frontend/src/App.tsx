@@ -12,6 +12,29 @@ const About = lazy(() =>
 const Coaching = lazy(() =>
   import("@/pages/Coaching").then((m) => ({ default: m.Coaching }))
 )
+const GetInvolved = lazy(() =>
+  import("@/pages/GetInvolved").then((m) => ({ default: m.GetInvolved }))
+)
+const Membership = lazy(() =>
+  import("@/pages/Membership").then((m) => ({ default: m.Membership }))
+)
+const RaceOrganisers = lazy(() =>
+  import("@/pages/RaceOrganisers").then((m) => ({ default: m.RaceOrganisers }))
+)
+const Governance = lazy(() =>
+  import("@/pages/Governance").then((m) => ({ default: m.Governance }))
+)
+
+const pageRoutes = (
+  <>
+    <Route path="about" element={<About />} />
+    <Route path="coaching" element={<Coaching />} />
+    <Route path="get-involved" element={<GetInvolved />} />
+    <Route path="membership" element={<Membership />} />
+    <Route path="race-organisers" element={<RaceOrganisers />} />
+    <Route path="governance" element={<Governance />} />
+  </>
+)
 
 export const App = () => {
   return (
@@ -20,12 +43,10 @@ export const App = () => {
         <Route element={<LanguageRoute />}>
           <Route element={<SiteShell />}>
             <Route path="/" element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="coaching" element={<Coaching />} />
+            {pageRoutes}
             <Route path=":lang">
               <Route index element={<Home />} />
-              <Route path="about" element={<About />} />
-              <Route path="coaching" element={<Coaching />} />
+              {pageRoutes}
             </Route>
           </Route>
         </Route>
