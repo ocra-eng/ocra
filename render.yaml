@@ -16,9 +16,15 @@ services:
     runtime: node
     plan: free # sleeps when idle; the app's health gate covers the wake
     region: frankfurt # closest to the Supabase eu-west project
-    buildCommand: npm ci && npm run build -w @ocra/shared && npm run build -w @ocra/api
-    # Migrations run before the new code serves traffic, never after.
-    preDeployCommand: npm run db:migrate -w @ocra/api
+    # Migrations belong in preDeployCommand, but Render reserves that for
+    # paid plans — so on free they run at the end of the build, before the
+    # new instance starts serving. Safe while migrations stay additive;
+    # move to preDeployCommand when this service goes paid.
+    buildCommand: >-
+      npm ci &&
+      npm run build -w @ocra/shared &&
+      npm run build -w @ocra/api &&
+      npm run db:migrate -w @ocra/api
     startCommand: npm run start -w @ocra/api
     healthCheckPath: /health
     envVars:
