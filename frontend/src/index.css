@@ -53,6 +53,7 @@
   --sub: var(--color-stone);
   --line: var(--color-moss);
   --accent: var(--color-field);
+  --mist: #e8ebde;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -71,6 +72,7 @@
     --sub: #94a79a;
     --line: #1e3a2b;
     --accent: var(--color-field-bright);
+    --mist: #1e4433;
   }
 }
 :root[data-theme="dark"] {
@@ -87,6 +89,7 @@
   --sub: #94a79a;
   --line: #1e3a2b;
   --accent: var(--color-field-bright);
+  --mist: #1e4433;
 }
 
 @theme inline {
@@ -96,6 +99,7 @@
   --color-sub: var(--sub);
   --color-line: var(--line);
   --color-accent: var(--accent);
+  --color-mist: var(--mist);
 }
 
 body {

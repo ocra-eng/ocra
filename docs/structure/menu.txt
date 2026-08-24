@@ -1,0 +1,53 @@
+ABOUT
+├── About OCRA 
+├── What is OCR?
+└── Contact
+
+COMPETE
+├── Events
+├── Championships
+├── Team Ireland
+├── Qualification
+├── Rules & Regulations
+├── Results
+└── Rankings
+
+CLUBS & COMMUNITY
+├── Find a Club
+├── Find a Gym
+├── Start a Club
+├── Club Affiliation
+└── Community
+
+EDUCATION
+├── Coaching
+├── Technical Officials
+└── Courses & Training
+
+GET INVOLVED
+├── Membership
+├── Volunteer
+├── Become a Coach
+├── Become a TO
+├── Start a Club
+├── Organise an Event
+└── Partner with OCRA
+
+GOVERNANCE & INTEGRITY
+├── Governance
+├── Constitution & Bylaws
+├── Policies
+├── Safeguarding
+├── Anti-Doping
+├── Codes of Conduct
+├── Complaints & Disciplinary
+├── Equality & Inclusion
+└── Data Protection
+
+RACE ORGANISERS
+├── Work With OCRA
+├── Event Recognition / Sanctioning
+├── Event Standards
+├── Submit an Event
+└── Organiser Resources
+

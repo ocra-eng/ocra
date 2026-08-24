@@ -10,11 +10,70 @@ export const ORG: Org = {
     "Recognised by World Obstacle (FISO), the European Obstacle Sports Federation (EOSF) and the Union Internationale de Pentathlon Moderne (UIPM).",
 }
 
+// Spike: sub-links are placeholders ("#") until their pages exist.
+// Structure follows docs/structure/menu-proposed.txt.
+const COMPETE_LINKS: NavItem[] = [
+  { key: "events", href: "#" },
+  { key: "championships", href: "#" },
+  { key: "teamIreland", href: "#" },
+  { key: "resultsRankings", href: "#" },
+  { key: "rules", href: "#" },
+]
+
+const CLUB_LINKS: NavItem[] = [
+  { key: "findClubGym", href: "#" },
+  { key: "startClub", href: "#" },
+  { key: "affiliation", href: "#" },
+  { key: "community", href: "#" },
+]
+
 export const NAV_ITEMS: NavItem[] = [
-  { key: "events", href: "#events" },
-  { key: "membership", href: "#membership" },
-  { key: "coaching", href: "/coaching", isRoute: true },
+  { key: "compete", children: COMPETE_LINKS },
+  { key: "clubs", children: CLUB_LINKS },
+  { key: "getInvolved", href: "#" },
   { key: "about", href: "/about", isRoute: true },
+  { key: "governance", href: "#" },
+]
+
+export interface FooterColumnDef {
+  key: string
+  items: NavItem[]
+}
+
+export const FOOTER_SITEMAP: FooterColumnDef[] = [
+  { key: "compete", items: COMPETE_LINKS },
+  { key: "clubsCommunity", items: CLUB_LINKS },
+  {
+    key: "getInvolved",
+    items: [
+      { key: "membership", href: "#" },
+      { key: "volunteer", href: "#" },
+      { key: "coaching", href: "/coaching", isRoute: true },
+      { key: "technicalOfficials", href: "#" },
+      { key: "coursesTraining", href: "#" },
+      { key: "raceOrganisers", href: "#" },
+      { key: "partner", href: "#" },
+    ],
+  },
+  {
+    key: "governance",
+    items: [
+      { key: "safeguarding", href: "#" },
+      { key: "antiDoping", href: "#" },
+      { key: "policies", href: "#" },
+      { key: "codesOfConduct", href: "#" },
+      { key: "complaints", href: "#" },
+      { key: "equality", href: "#" },
+      { key: "dataProtection", href: "#" },
+    ],
+  },
+]
+
+export const FOOTER_META_LINKS: NavItem[] = [
+  { key: "aboutOcra", href: "/about", isRoute: true },
+  { key: "whatIsOcr", href: "#" },
+  { key: "contact", href: "#" },
+  { key: "constitution", href: "#" },
 ]
 
 export interface RecognitionLogo {

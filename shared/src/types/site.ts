@@ -9,8 +9,9 @@ export interface Org {
 
 export interface NavItem {
   key: string
-  href: string
+  href?: string
   isRoute?: boolean
+  children?: NavItem[]
 }
 
 export interface HeroContent {

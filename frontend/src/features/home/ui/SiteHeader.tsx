@@ -6,6 +6,7 @@ import { useLocalizedPath } from "@/features/language"
 import { useHome } from "../model/useHome"
 import { useMenu } from "../model/useMenu"
 import { NavDrawer } from "./NavDrawer"
+import { NavDropdown } from "./NavDropdown"
 import { Wordmark } from "./Wordmark"
 
 export const SiteHeader = () => {
@@ -29,33 +30,40 @@ export const SiteHeader = () => {
           aria-expanded={isOpen}
           aria-controls="site-nav"
           aria-label={menuOpenLabel}
-          className="h-10 w-10 rounded-none text-ink md:hidden"
+          className="h-10 w-10 rounded-none text-ink lg:hidden"
         >
           <Menu className="h-5 w-5" />
         </Button>
 
-        <nav className="hidden md:flex md:items-center md:gap-7">
+        <nav className="hidden lg:flex lg:items-center lg:gap-2 xl:gap-4">
           {navLinks.map((item) =>
-            item.isRoute ? (
+            item.children ? (
+              <NavDropdown
+                key={item.key}
+                id={`nav-${item.key}`}
+                label={item.label}
+                items={item.children}
+              />
+            ) : item.isRoute && item.href ? (
               <Link
                 key={item.key}
                 to={item.href}
-                className="text-[15px] font-semibold text-ink hover:text-field"
+                className="rounded-sm px-2.5 py-1.5 text-[15px] font-semibold text-ink hover:bg-mist"
               >
                 {item.label}
               </Link>
             ) : (
               <a
                 key={item.key}
-                href={item.href}
-                className="text-[15px] font-semibold text-ink hover:text-field"
+                href={item.href ?? "#"}
+                className="rounded-sm px-2.5 py-1.5 text-[15px] font-semibold text-ink hover:bg-mist"
               >
                 {item.label}
               </a>
             )
           )}
           <Button variant="tape" size="brand" asChild>
-            <a href="#membership">{joinLabel}</a>
+            <a href="#">{joinLabel}</a>
           </Button>
         </nav>
       </div>

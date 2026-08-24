@@ -1,0 +1,146 @@
+OCRA NAVIGATION — PROPOSED v2
+(supersedes: menu.txt · decisions resolved 2026-08-24)
+
+Principle: the menu routes to sections; hub pages route the rest.
+Every one of the original 37 links keeps a home — see coverage map
+at the bottom. Footer carries the full sitemap.
+
+
+HEADER (desktop: plain dropdowns / mobile: drawer)
+==================================================
+
+COMPETE ▾
+├── Events
+├── Championships          (Qualification lives on this page)
+├── Team Ireland
+├── Results & Rankings     (one page, two tabs)
+└── Rules & Regulations
+
+CLUBS ▾
+├── Find a Club or Gym     (one finder, club/gym filter toggle)
+├── Start a Club           (canonical — everything else links here)
+├── Club Affiliation
+└── Community
+
+GET INVOLVED               (no dropdown — straight to hub page)
+
+ABOUT                      (no dropdown — single page; What is OCR?
+                            is a child page linked from it + footer)
+
+GOVERNANCE                 (no dropdown — straight to hub page)
+
+[ MEMBERSHIP ]             (persistent header button → Membership
+                            page, which routes to Athlete membership
+                            and Organisational membership)
+
+
+MOBILE DRAWER
+==================================================
+Full-screen sheet. Five rows + pinned CTA. Only two accordions.
+
+  Compete            ▸ expands (5 items)
+  Clubs              ▸ expands (4 items)
+  Get Involved       → page
+  About              → page
+  Governance         → page
+  ------------------------------------
+  [ Membership ]       pinned button
+
+
+HUB PAGES (nav that lives in the page, not the menu)
+==================================================
+
+MEMBERSHIP — router page:
+├── Athlete membership
+└── Organisational membership
+
+GET INVOLVED — card grid, one card per path in:
+├── Membership                 → Membership router page
+├── Volunteer
+├── Become a Coach             → Education: Coaching
+├── Become a Technical Official→ Education: Technical Officials
+├── Start a Club               → Clubs: Start a Club
+├── Organise an Event          → Race Organisers hub
+└── Partner with OCRA
+
+EDUCATION — quiet hub, reached via Get Involved + footer:
+├── Coaching
+├── Technical Officials
+└── Courses & Training
+
+RACE ORGANISERS — quiet hub, reached via Get Involved + footer:
+├── Work With OCRA             (intro section on the hub itself)
+├── Event Recognition / Sanctioning
+├── Event Standards
+├── Submit an Event
+└── Organiser Resources
+
+GOVERNANCE & INTEGRITY — hub with persistent section sidebar:
+├── Governance (overview)
+├── Constitution & Bylaws
+├── Policies
+├── Safeguarding
+├── Anti-Doping
+├── Codes of Conduct
+├── Complaints & Disciplinary
+├── Equality & Inclusion
+└── Data Protection
+
+ABOUT — single page:
+├── About OCRA                 (the page itself)
+├── What is OCR?               (child page, linked from About + footer)
+└── Contact                    (own page, reached via footer + About)
+
+
+FOOTER (full sitemap — all links, four columns)
+==================================================
+
+COMPETE            CLUBS & COMMUNITY    GET INVOLVED           GOVERNANCE
+Events             Find a Club or Gym   Membership             Governance
+Championships      Start a Club         Volunteer              Safeguarding
+Team Ireland       Club Affiliation     Coaching               Anti-Doping
+Results & Rankings Community            Technical Officials    Policies
+Rules & Regs                            Courses & Training     Codes of Conduct
+                                        Race Organisers        Complaints
+                                        Partner with OCRA      Equality & Inclusion
+                                                               Data Protection
+About OCRA · What is OCR? · Contact · Constitution & Bylaws
+
+
+COVERAGE MAP (original → new home)
+==================================================
+Events, Championships, Team Ireland,
+Rules & Regulations ................ Compete dropdown (unchanged)
+Qualification ...................... section on Championships page
+Results / Rankings ................. merged: Results & Rankings
+Find a Club / Find a Gym ........... merged: Find a Club or Gym
+Start a Club ....................... Clubs dropdown (canonical);
+                                     card on Get Involved hub
+Club Affiliation, Community ........ Clubs dropdown (unchanged)
+Coaching, Technical Officials,
+Courses & Training ................. Education hub (via Get Involved
+                                     cards + footer)
+Membership ......................... header MEMBERSHIP button;
+                                     router page: athlete / org
+Volunteer, Partner with OCRA ....... Get Involved hub cards
+Become a Coach / Become a TO ....... Get Involved cards → Education
+Organise an Event .................. Get Involved card → Race Organisers
+All 5 Race Organisers items ........ Race Organisers hub + footer
+All 9 Governance items ............. Governance hub sidebar + footer
+About OCRA ......................... About page (header link)
+What is OCR? ....................... child of About + footer link
+Contact ............................ footer + About page
+
+
+DECISION LOG (resolved 2026-08-24)
+==================================================
+1. Results & Rankings ....... MERGED (one page, two tabs)
+2. Find a Club / Find a Gym . MERGED (one finder, filter toggle)
+3. Education ................ quiet hub; promote to header if coach
+                              development becomes a strategic push
+4. About .................... single page, no dropdown; Contact via
+                              footer + About page
+5. CTA label ................ "Membership" — not "Join", because
+                              membership splits into athlete and
+                              organisational; the button leads to a
+                              router page for both

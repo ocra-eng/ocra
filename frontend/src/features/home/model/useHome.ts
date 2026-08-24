@@ -1,16 +1,28 @@
 import { useTranslation } from "react-i18next"
 import type { HeroContent, NavItem, Org } from "@ocra/shared"
 import { useLocalizedPath } from "@/features/language"
-import { NAV_ITEMS, ORG } from "../constants"
+import { FOOTER_META_LINKS, FOOTER_SITEMAP, NAV_ITEMS, ORG } from "../constants"
 
-interface NavLink extends NavItem {
+export interface NavLink {
+  key: string
   label: string
+  href?: string
+  isRoute?: boolean
+  children?: NavLink[]
+}
+
+export interface FooterColumn {
+  key: string
+  heading: string
+  items: NavLink[]
 }
 
 interface UseHomeResult {
   org: Org
   hero: HeroContent
   navLinks: NavLink[]
+  footerColumns: FooterColumn[]
+  footerMetaLinks: NavLink[]
   joinLabel: string
   menuOpenLabel: string
   menuCloseLabel: string
@@ -23,6 +35,14 @@ export const useHome = (): UseHomeResult => {
   const { t } = useTranslation("home")
   const localize = useLocalizedPath()
 
+  const toNavLink = (item: NavItem): NavLink => ({
+    key: item.key,
+    label: t(`nav.${item.key}`),
+    href: item.isRoute && item.href ? localize(item.href) : item.href,
+    isRoute: item.isRoute,
+    children: item.children?.map(toNavLink),
+  })
+
   return {
     org: ORG,
     hero: {
@@ -31,12 +51,14 @@ export const useHome = (): UseHomeResult => {
       ctaLabel: t("hero.ctaLabel"),
       ctaNote: t("hero.ctaNote"),
     },
-    navLinks: NAV_ITEMS.map((item) => ({
-      ...item,
-      href: item.isRoute ? localize(item.href) : item.href,
-      label: t(`nav.${item.key}`),
+    navLinks: NAV_ITEMS.map(toNavLink),
+    footerColumns: FOOTER_SITEMAP.map((column) => ({
+      key: column.key,
+      heading: t(`nav.${column.key}`),
+      items: column.items.map(toNavLink),
     })),
-    joinLabel: t("join"),
+    footerMetaLinks: FOOTER_META_LINKS.map(toNavLink),
+    joinLabel: t("nav.membership"),
     menuOpenLabel: t("menu.open"),
     menuCloseLabel: t("menu.close"),
     footerRecognition: t("footer.recognition"),
