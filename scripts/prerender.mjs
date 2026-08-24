@@ -45,20 +45,34 @@ if (!existsSync(join(dist, "index.html"))) {
 }
 const shell = readFileSync(join(dist, "index.html"))
 
-// Build hosts differ: Render installs Chrome into the puppeteer cache,
-// CI has it on PATH, macOS has the app bundle. Look in all of them.
-const puppeteerCache = () => {
-  const root = join(process.env.HOME ?? "", ".cache/puppeteer/chrome")
-  if (!existsSync(root)) return []
-  return readdirSync(root).flatMap((version) => [
-    join(root, version, "chrome-linux64/chrome"),
-    join(root, version, "chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"),
-  ])
+// Build hosts differ: CI has Chrome on PATH, macOS has the app bundle, and
+// Render installs one via @puppeteer/browsers. That installer lays out
+// <root>/<platform>-<version>/chrome-<platform>/<exe>, so walk it rather
+// than hardcoding a version.
+const EXECUTABLES = [
+  "chrome-linux64/chrome",
+  "chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+  "chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+]
+
+const installedChromes = () => {
+  const roots = [
+    process.env.PUPPETEER_CACHE_DIR,
+    join(root, ".chrome/chrome"),
+    join(process.env.HOME ?? "", ".cache/puppeteer/chrome"),
+  ].filter((dir) => dir && existsSync(dir))
+
+  return roots.flatMap((dir) =>
+    readdirSync(dir).flatMap((version) =>
+      EXECUTABLES.map((exe) => join(dir, version, exe))
+    )
+  )
 }
+
 
 const CHROME_PATHS = [
   process.env.CHROME_PATH,
-  ...puppeteerCache(),
+  ...installedChromes(),
   "/usr/bin/google-chrome",
   "/usr/bin/google-chrome-stable",
   "/usr/bin/chromium",

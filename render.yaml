@@ -83,9 +83,12 @@ services:
     runtime: static
     # Prerender drives a real browser, so the build installs one into the
     # puppeteer cache that scripts/prerender.mjs already searches.
+    # The installer prints "chrome@<version> <absolute path>", so take the
+    # path from its own output rather than guessing the layout. prerender
+    # also searches .chrome/ as a fallback.
     buildCommand: >-
       npm ci --include=dev &&
-      npx -y @puppeteer/browsers install chrome@stable &&
+      export CHROME_PATH=$(npx -y @puppeteer/browsers install chrome@stable --path "$PWD/.chrome" | cut -d' ' -f2-) &&
       npm run build &&
       npm run prerender
     staticPublishPath: apps/marketing/dist

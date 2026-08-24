@@ -9,7 +9,18 @@
           document.documentElement.setAttribute("data-theme", t)
       } catch (e) {}
     </script>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Brand mark, swapping with the OS theme; PNGs for home screens,
+         which cannot use SVG and composite transparency onto black. -->
+    <link rel="icon" type="image/svg+xml" href="/brand/green.svg" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/brand/white.svg"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="OCRA Members" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <meta name="theme-color" content="#0c231a" />
