@@ -11,9 +11,12 @@
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "prerender": "node scripts/prerender.mjs"
+    "prerender": "node scripts/prerender.mjs",
+    "migrate:report": "node scripts/migration/reconcile.mjs"
   },
   "devDependencies": {
-    "puppeteer-core": "^25.6.0"
+    "puppeteer-core": "^25.6.0",
+    "mongodb": "^6.20.0",
+    "stripe": "^18.4.0"
   }
 }

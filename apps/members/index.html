@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      try {
+        var t = localStorage.getItem("ocra-theme")
+        if (t === "dark" || t === "light")
+          document.documentElement.setAttribute("data-theme", t)
+      } catch (e) {}
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#0c231a" />
+    <title>OCRA ÉIREANN — Members</title>
+    <!--
+      The splash lives here, not in React, so it paints before the bundle
+      loads. The spinner is a dashed circle cut to the same radius, stroke
+      width and arc length as the logo's semi-arc, so "settling" the spinner
+      IS the logo's arc — no swap, no seam. Geometry comes from the logo
+      artwork: r=177.5, stroke 11.3, arc spans 312°→46° of a 571 viewBox.
+      Reveal order: arc settles, wordmark rotates in, triskele fades,
+      tricolour notches land. Driven by the .is-ready class from useSplash.
+    -->
+    <style>
+      #splash {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        background: #0c231a;
+        transition: opacity 420ms ease;
+      }
+      #splash.is-leaving {
+        opacity: 0;
+      }
+
+      .splash-stack {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+      }
+      .splash-signature {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+      .splash-wordmark {
+        width: min(56vw, 236px);
+        transform: translateY(8px);
+        transition:
+          opacity 480ms ease 880ms,
+          transform 480ms cubic-bezier(0.22, 1, 0.36, 1) 880ms;
+      }
+      .splash-logo {
+        position: relative;
+        width: min(46vw, 200px);
+        aspect-ratio: 1;
+      }
+      .splash-logo > * {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Spinner / arc */
+      .splash-ring {
+        transform-origin: 50% 50%;
+        animation: splash-spin 1.15s linear infinite;
+      }
+      .splash-ring circle {
+        fill: none;
+        stroke: #f3f2ec;
+        stroke-width: 11.3;
+        /* 94° of a 1115.3 circumference, then the remaining gap */
+        stroke-dasharray: 291 825;
+        stroke-linecap: round;
+      }
+      @keyframes splash-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Parts revealed after the arc settles */
+      .splash-part {
+        opacity: 0;
+      }
+      .splash-text {
+        transform: rotate(-18deg);
+        transform-origin: 50% 50%;
+        transition:
+          opacity 520ms ease,
+          transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .splash-triskele {
+        transform: scale(0.94);
+        transform-origin: 50% 50%;
+        transition:
+          opacity 520ms ease 260ms,
+          transform 520ms cubic-bezier(0.22, 1, 0.36, 1) 260ms;
+      }
+      .splash-notch {
+        transform: scale(0.96);
+        transform-origin: 50% 50%;
+        transition:
+          opacity 300ms ease,
+          transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .splash-notch-1 {
+        transition-delay: 560ms;
+      }
+      .splash-notch-2 {
+        transition-delay: 640ms;
+      }
+      .splash-notch-3 {
+        transition-delay: 720ms;
+      }
+      .splash-notch-4 {
+        transition-delay: 800ms;
+      }
+      .splash-label {
+        margin: 0;
+        transform: translateY(6px);
+        font-family: "Chivo Mono", ui-monospace, monospace;
+        font-size: 17px;
+        letter-spacing: 0.38em;
+        text-indent: 0.38em; /* keeps the tracking from off-centring it */
+        text-transform: uppercase;
+        color: #f3f2ec;
+        transition:
+          opacity 420ms ease 1060ms,
+          transform 420ms cubic-bezier(0.22, 1, 0.36, 1) 1060ms;
+      }
+
+      #splash.is-ready .splash-part {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #splash,
+        #splash * {
+          transition-duration: 1ms !important;
+          transition-delay: 0ms !important;
+          animation: none !important;
+        }
+        .splash-part {
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="splash">
+     <div class="splash-stack">
+      <div class="splash-logo" role="img" aria-label="OCRA ÉIREANN">
+        <svg class="splash-ring" viewBox="0 0 571 571" aria-hidden="true">
+          <circle cx="285.5" cy="285.5" r="177.5" />
+        </svg>
+        <img class="splash-part splash-text" src="/brand/splash/text.svg" alt="" />
+        <img
+          class="splash-part splash-triskele"
+          src="/brand/splash/triskele.svg"
+          alt=""
+        />
+        <img
+          class="splash-part splash-notch splash-notch-1"
+          src="/brand/splash/flag-orange.svg"
+          alt=""
+        />
+        <img
+          class="splash-part splash-notch splash-notch-2"
+          src="/brand/splash/flag-white.svg"
+          alt=""
+        />
+        <img
+          class="splash-part splash-notch splash-notch-3"
+          src="/brand/splash/flag-green.svg"
+          alt=""
+        />
+        <img
+          class="splash-part splash-notch splash-notch-4"
+          src="/brand/splash/notch.svg"
+          alt=""
+        />
+      </div>
+      <div class="splash-signature">
+        <img
+          class="splash-part splash-wordmark"
+          src="/brand/splash/wordmark-text.svg"
+          alt="OCRA ÉIREANN"
+        />
+        <p class="splash-part splash-label">Members</p>
+      </div>
+     </div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

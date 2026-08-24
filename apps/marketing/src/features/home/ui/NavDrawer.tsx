@@ -7,7 +7,7 @@ import { useLocalizedPath } from "@/features/language"
 import { cn } from "@ocra/ui"
 import type { NavLink } from "../model/useHome"
 import { useHome } from "../model/useHome"
-import { Wordmark } from "./Wordmark"
+import { Wordmark } from "@ocra/ui"
 
 interface NavDrawerProps {
   isOpen: boolean

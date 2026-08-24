@@ -20,6 +20,7 @@ export {
 } from "./ui/select"
 
 export { TriskeleMark } from "./brand/TriskeleMark"
+export { Wordmark } from "./brand/Wordmark"
 
 export {
   ThemeToggle,

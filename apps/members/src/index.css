@@ -1,0 +1,57 @@
+@import "@ocra/ui/theme.css";
+
+/*
+ * Mobile shell: a persistent action bar sits at the bottom and the nav sheet
+ * rises to just above it, so the bar stays visible and tappable while the
+ * menu is open (same pattern as rops).
+ */
+:root {
+  --bar-h: 60px;
+  --bar-total: calc(var(--bar-h) + env(safe-area-inset-bottom, 0px));
+}
+
+@keyframes sheet-in-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes sheet-out-bottom {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+[data-slot="nav-sheet"][data-state="open"] {
+  animation: sheet-in-bottom 220ms ease-out;
+}
+[data-slot="nav-sheet"][data-state="closed"] {
+  animation: sheet-out-bottom 180ms ease-in;
+}
+[data-slot="nav-overlay"][data-state="open"] {
+  animation: overlay-in 180ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="nav-sheet"],
+  [data-slot="nav-overlay"] {
+    animation: none !important;
+  }
+}

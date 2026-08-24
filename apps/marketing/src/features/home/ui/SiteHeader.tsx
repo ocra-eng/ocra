@@ -7,7 +7,7 @@ import { useHome } from "../model/useHome"
 import { useMenu } from "../model/useMenu"
 import { NavDrawer } from "./NavDrawer"
 import { NavDropdown } from "./NavDropdown"
-import { Wordmark } from "./Wordmark"
+import { Wordmark } from "@ocra/ui"
 
 export const SiteHeader = () => {
   const { isOpen, toggle, close, toggleRef, drawerRef } = useMenu()

@@ -6,7 +6,7 @@ import { CONTACT_EMAIL, SOCIAL_LINKS } from "../constants"
 import type { NavLink } from "../model/useHome"
 import { useHome } from "../model/useHome"
 import { FacebookIcon, InstagramIcon } from "./SocialIcons"
-import { Wordmark } from "./Wordmark"
+import { Wordmark } from "@ocra/ui"
 
 const SOCIAL_ICONS: Record<string, typeof FacebookIcon> = {
   facebook: FacebookIcon,
