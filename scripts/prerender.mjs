@@ -26,7 +26,7 @@ const ROUTE_OVERRIDES = {
 }
 const contentRoot = resolve(
   import.meta.dirname,
-  "../frontend/src/content/pages"
+  "../apps/marketing/src/content/pages"
 )
 const CONTENT_PAGES = readdirSync(contentRoot).flatMap((section) =>
   readdirSync(join(contentRoot, section))
@@ -39,9 +39,9 @@ const CONTENT_PAGES = readdirSync(contentRoot).flatMap((section) =>
 const BASE = process.env.BASE_PATH ?? "/"
 
 const root = resolve(import.meta.dirname, "..")
-const dist = resolve(root, "frontend/dist")
+const dist = resolve(root, "apps/marketing/dist")
 if (!existsSync(join(dist, "index.html"))) {
-  throw new Error("frontend/dist/index.html missing — run the build first")
+  throw new Error("apps/marketing/dist/index.html missing — run the build first")
 }
 const shell = readFileSync(join(dist, "index.html"))
 

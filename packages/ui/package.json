@@ -1,0 +1,20 @@
+{
+  "name": "@ocra/ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./theme.css": "./src/styles/theme.css",
+    "./fonts/*": "./public/fonts/*"
+  },
+  "scripts": {
+    "lint": "oxlint"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-i18next": "^17.0.0",
+    "react-redux": "^9.0.0"
+  }
+}

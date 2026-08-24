@@ -2,14 +2,15 @@
   "name": "ocra",
   "private": true,
   "workspaces": [
-    "shared",
-    "frontend"
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
-    "build": "npm run build -w @ocra/shared && npm run build -w frontend",
-    "dev": "npm run dev -w frontend",
-    "lint": "npm run lint -w frontend",
-    "test": "npm run test -w frontend",
+    "build": "npm run build -w @ocra/shared && npm run build -w @ocra/marketing",
+    "dev": "npm run dev -w @ocra/marketing",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
     "prerender": "node scripts/prerender.mjs"
   },
   "devDependencies": {
