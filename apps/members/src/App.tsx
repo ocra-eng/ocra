@@ -16,7 +16,7 @@ export const App = () => {
       <Routes>
         {/* Public */}
         <Route path="/login" element={<Login />} />
-        <Route path="/verify/:memberNumber" element={<Verify />} />
+        <Route path="/verify/:token" element={<Verify />} />
 
         {/* Members */}
         <Route element={<RequireAuth />}>
@@ -28,7 +28,8 @@ export const App = () => {
 
         {/* Admin */}
         <Route element={<RequireAuth adminOnly />}>
-          <Route element={<AppShell />}>
+          {/* fill: the admin list owns its own scrolling */}
+          <Route element={<AppShell fill />}>
             <Route path="/admin/members" element={<AdminMembers />} />
           </Route>
         </Route>

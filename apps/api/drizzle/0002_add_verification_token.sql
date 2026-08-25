@@ -1,0 +1,2 @@
+ALTER TABLE "memberships" ADD COLUMN "verification_token" uuid DEFAULT gen_random_uuid() NOT NULL;--> statement-breakpoint
+CREATE UNIQUE INDEX "memberships_token_idx" ON "memberships" USING btree ("verification_token");

@@ -15,6 +15,12 @@ export const membershipResources = {
       scanHint:
         "Show this at registration. Scanning the code confirms your membership without sharing your contact details.",
     },
+    share: {
+      title: "My OCRA membership",
+      share: "Share card",
+      copy: "Copy link",
+      copied: "Link copied",
+    },
     empty: {
       none: {
         title: "You're not a member yet",
@@ -52,8 +58,10 @@ export const membershipResources = {
       validUntil: "Valid until {{date}}",
       notFound: {
         title: "No membership found",
-        body: "We couldn't find a membership with the number {{memberNumber}}.",
+        bodyToken: "This code does not match an active OCRA membership.",
       },
+      confirmed: "This membership is active and in good standing.",
+      notActive: "This membership is not currently active.",
     },
   },
   ga: {
@@ -71,6 +79,12 @@ export const membershipResources = {
       qrLabel: "Cód QR a nascann le do sheiceáil ballraíochta poiblí",
       scanHint:
         "Taispeáin é seo ag an gclárú. Deimhníonn scanadh an chóid do bhallraíocht gan do shonraí teagmhála a roinnt.",
+    },
+    share: {
+      title: "Mo bhallraíocht OCRA",
+      share: "Roinn an cárta",
+      copy: "Cóipeáil an nasc",
+      copied: "Nasc cóipeáilte",
     },
     empty: {
       none: {
@@ -109,8 +123,10 @@ export const membershipResources = {
       validUntil: "Bailí go dtí {{date}}",
       notFound: {
         title: "Níor aimsíodh ballraíocht",
-        body: "Níorbh fhéidir linn ballraíocht leis an uimhir {{memberNumber}} a aimsiú.",
+        bodyToken: "Ní ionann an cód seo agus ballraíocht ghníomhach OCRA.",
       },
+      confirmed: "Tá an ballraíocht seo gníomhach agus in ord.",
+      notActive: "Níl an ballraíocht seo gníomhach faoi láthair.",
     },
   },
   pl: {
@@ -128,6 +144,12 @@ export const membershipResources = {
       qrLabel: "Kod QR prowadzący do publicznej weryfikacji członkostwa",
       scanHint:
         "Pokaż to przy rejestracji. Zeskanowanie kodu potwierdza członkostwo bez udostępniania danych kontaktowych.",
+    },
+    share: {
+      title: "Moje członkostwo OCRA",
+      share: "Udostępnij kartę",
+      copy: "Kopiuj link",
+      copied: "Link skopiowany",
     },
     empty: {
       none: {
@@ -166,8 +188,10 @@ export const membershipResources = {
       validUntil: "Ważne do {{date}}",
       notFound: {
         title: "Nie znaleziono członkostwa",
-        body: "Nie znaleźliśmy członkostwa o numerze {{memberNumber}}.",
+        bodyToken: "Ten kod nie odpowiada aktywnemu członkostwu OCRA.",
       },
+      confirmed: "To członkostwo jest aktywne i w porządku.",
+      notActive: "To członkostwo nie jest obecnie aktywne.",
     },
   },
   ru: {
@@ -185,6 +209,12 @@ export const membershipResources = {
       qrLabel: "QR-код для публичной проверки членства",
       scanHint:
         "Покажите это при регистрации. Сканирование кода подтверждает членство без передачи ваших контактов.",
+    },
+    share: {
+      title: "Моё членство OCRA",
+      share: "Поделиться картой",
+      copy: "Копировать ссылку",
+      copied: "Ссылка скопирована",
     },
     empty: {
       none: {
@@ -223,8 +253,10 @@ export const membershipResources = {
       validUntil: "Действительно до {{date}}",
       notFound: {
         title: "Членство не найдено",
-        body: "Мы не нашли членство с номером {{memberNumber}}.",
+        bodyToken: "Этот код не соответствует активному членству OCRA.",
       },
+      confirmed: "Членство активно и в порядке.",
+      notActive: "Это членство сейчас не активно.",
     },
   },
   be: {
@@ -242,6 +274,12 @@ export const membershipResources = {
       qrLabel: "QR-код для публічнай праверкі сяброўства",
       scanHint:
         "Пакажыце гэта пры рэгістрацыі. Сканаванне коду пацвярджае сяброўства без перадачы вашых кантактаў.",
+    },
+    share: {
+      title: "Маё сяброўства OCRA",
+      share: "Падзяліцца картай",
+      copy: "Скапіяваць спасылку",
+      copied: "Спасылка скапіявана",
     },
     empty: {
       none: {
@@ -280,8 +318,10 @@ export const membershipResources = {
       validUntil: "Дзейнічае да {{date}}",
       notFound: {
         title: "Сяброўства не знойдзена",
-        body: "Мы не знайшлі сяброўства з нумарам {{memberNumber}}.",
+        bodyToken: "Гэты код не адпавядае актыўнаму сяброўству OCRA.",
       },
+      confirmed: "Сяброўства актыўнае і ў парадку.",
+      notActive: "Гэта сяброўства зараз не актыўнае.",
     },
   },
 } as const

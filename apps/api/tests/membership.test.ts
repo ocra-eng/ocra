@@ -156,7 +156,8 @@ describe("public verification", () => {
       year: 2026,
     })
 
-    const result = await findVerification(db, "OCRA-2026-0001")
+    const [row] = await db.select().from(memberships)
+    const result = await findVerification(db, row.verificationToken)
 
     expect(result).toMatchObject({
       memberNumber: "OCRA-2026-0001",
@@ -164,13 +165,28 @@ describe("public verification", () => {
       type: "athlete",
       status: "active",
     })
-    // The v1 endpoint leaked these; the v2 one must not.
+    // The photo is intended here (the public card matches My Card), but the
+    // email must never appear.
     expect(JSON.stringify(result)).not.toContain("private@example.com")
-    expect(JSON.stringify(result)).not.toContain("face.jpg")
   })
 
-  it("returns null for an unknown number", async () => {
-    expect(await findVerification(db, "OCRA-2026-9999")).toBeNull()
+  it("returns null for an unknown token", async () => {
+    expect(
+      await findVerification(db, "00000000-0000-0000-0000-000000000000")
+    ).toBeNull()
+  })
+
+  it("returns null for a member number, which must not be a valid key", async () => {
+    const member = await addMember("enumerate@example.com")
+    await upsertMembership(db, {
+      memberId: member.id,
+      type: "athlete",
+      status: "active",
+      stripeSubscriptionId: "sub_e",
+      currentPeriodEnd: null,
+      year: 2026,
+    })
+    expect(await findVerification(db, "OCRA-2026-0001")).toBeNull()
   })
 
   it("hides memberships that no webhook has confirmed", async () => {

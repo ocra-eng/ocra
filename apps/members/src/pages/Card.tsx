@@ -5,6 +5,7 @@ import {
   MembershipCard,
   NoMembership,
   RenewPrompt,
+  ShareCard,
   useMembership,
   useVerificationUrl,
 } from "@/features/membership"
@@ -13,7 +14,7 @@ export const Card = () => {
   const { t } = useTranslation("membership")
   const { member } = useSession()
   const { membership, isLoading } = useMembership()
-  const verificationUrl = useVerificationUrl(membership?.memberNumber ?? "")
+  const verificationUrl = useVerificationUrl(membership?.verificationToken ?? "")
 
   const isLapsed = membership?.status === "expired"
   // A pending membership has no number to show yet, so it reads as "not a
@@ -35,7 +36,10 @@ export const Card = () => {
       ) : (
         <>
           <MembershipCard
-            member={member}
+            holder={{
+              displayName: member.profileName ?? member.displayName,
+              photoUrl: member.photoUrl,
+            }}
             membership={membership}
             verificationUrl={verificationUrl}
             muted={isLapsed}
@@ -43,9 +47,14 @@ export const Card = () => {
           {isLapsed ? (
             <RenewPrompt />
           ) : (
-            <p className="mt-4 text-sm leading-relaxed text-sub">
-              {t("card.scanHint")}
-            </p>
+            <>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <ShareCard url={verificationUrl} />
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-sub">
+                {t("card.scanHint")}
+              </p>
+            </>
           )}
         </>
       )}

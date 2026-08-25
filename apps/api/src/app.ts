@@ -103,6 +103,7 @@ export const createApp = ({ config, db, stripe, verifyToken }: AppDeps) => {
       membership: membership
         ? {
             memberNumber: membership.memberNumber,
+            verificationToken: membership.verificationToken,
             type: membership.type,
             status: membership.status,
             currentPeriodEnd: membership.currentPeriodEnd?.toISOString(),
@@ -126,8 +127,10 @@ export const createApp = ({ config, db, stripe, verifyToken }: AppDeps) => {
 
   // -------------------------------------------------------------- public
 
-  app.get("/verify/:memberNumber", async (c) => {
-    const result = await findVerification(db, c.req.param("memberNumber"))
+  // Keyed on the QR's opaque token, not the member number — see the
+  // service for why.
+  app.get("/verify/:token", async (c) => {
+    const result = await findVerification(db, c.req.param("token"))
     if (!result) return c.json({ error: "not-found" }, 404)
     return c.json(result)
   })

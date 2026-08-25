@@ -5,6 +5,7 @@ interface RouteTransitionProps {
   children: ReactNode
   /** Skip the scroll reset when the surrounding layout handles it. */
   preserveScroll?: boolean
+  className?: string
 }
 
 /**
@@ -20,6 +21,7 @@ interface RouteTransitionProps {
 export const RouteTransition = ({
   children,
   preserveScroll = false,
+  className,
 }: RouteTransitionProps) => {
   const { pathname } = useLocation()
 
@@ -28,7 +30,10 @@ export const RouteTransition = ({
   }, [pathname, preserveScroll])
 
   return (
-    <div key={pathname} className="route-enter">
+    <div
+      key={pathname}
+      className={className ? `route-enter ${className}` : "route-enter"}
+    >
       {children}
     </div>
   )

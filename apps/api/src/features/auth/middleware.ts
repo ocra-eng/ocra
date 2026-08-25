@@ -9,6 +9,9 @@ import type { Member } from "../../db/schema.js"
 export interface AuthedUser {
   supabaseUserId: string
   email: string
+  /** From the provider, via Supabase user_metadata. */
+  name?: string
+  avatarUrl?: string
 }
 
 /** Verified caller plus their member row, attached by requireMember. */
@@ -33,7 +36,24 @@ export const createSupabaseVerifier = (supabaseUrl: string): Verifier => {
     if (!payload.sub || !email) {
       throw new HTTPException(401, { message: "Token missing subject or email" })
     }
-    return { supabaseUserId: payload.sub, email: email.trim().toLowerCase() }
+
+    // Supabase puts the provider's profile in user_metadata. Google spells
+    // these two ways depending on the flow, so accept either.
+    const metadata = (payload.user_metadata ?? {}) as Record<string, unknown>
+    const pick = (...keys: string[]) => {
+      for (const key of keys) {
+        const value = metadata[key]
+        if (typeof value === "string" && value.trim()) return value.trim()
+      }
+      return undefined
+    }
+
+    return {
+      supabaseUserId: payload.sub,
+      email: email.trim().toLowerCase(),
+      name: pick("full_name", "name"),
+      avatarUrl: pick("avatar_url", "picture"),
+    }
   }
 }
 
@@ -81,16 +101,30 @@ export const requireMember = (db: Database): MiddlewareHandler => {
       .limit(1)
 
     if (existing) {
-      // First sign-in after migration: bind the row to the Supabase user.
-      const member = existing.supabaseUserId
-        ? existing
-        : (
-            await db
-              .update(members)
-              .set({ supabaseUserId: user.supabaseUserId, updatedAt: new Date() })
-              .where(eq(members.id, existing.id))
-              .returning()
-          )[0]
+      // Bind the row to the Supabase user on first sign-in after migration,
+      // and refresh the provider photo — Google's avatar URLs rotate, and a
+      // stale one renders as a broken image on the member's card.
+      const patch: Partial<typeof members.$inferInsert> = {}
+      if (!existing.supabaseUserId) patch.supabaseUserId = user.supabaseUserId
+      if (user.avatarUrl && user.avatarUrl !== existing.photoUrl) {
+        patch.photoUrl = user.avatarUrl
+      }
+      // Only fill a name we do not already have: an admin or the member may
+      // have corrected it, and the provider should not overwrite that.
+      if (user.name && !existing.displayName.trim()) {
+        patch.displayName = user.name
+      }
+
+      const member =
+        Object.keys(patch).length === 0
+          ? existing
+          : (
+              await db
+                .update(members)
+                .set({ ...patch, updatedAt: new Date() })
+                .where(eq(members.id, existing.id))
+                .returning()
+            )[0]
       c.set("member", member)
     } else {
       const [created] = await db
@@ -98,7 +132,8 @@ export const requireMember = (db: Database): MiddlewareHandler => {
         .values({
           supabaseUserId: user.supabaseUserId,
           email: user.email,
-          displayName: user.email.split("@")[0] ?? user.email,
+          displayName: user.name ?? user.email.split("@")[0] ?? user.email,
+          photoUrl: user.avatarUrl,
         })
         .returning()
       c.set("member", created)

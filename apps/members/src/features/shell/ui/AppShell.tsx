@@ -15,7 +15,16 @@ const navClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "text-accent" : "text-ink"
   )
 
-export const AppShell = () => {
+interface AppShellProps {
+  /**
+   * Constrain the shell to the viewport so the page can own its scrolling
+   * (the admin list scrolls its rows while filters stay put). Default is a
+   * normally-scrolling document.
+   */
+  fill?: boolean
+}
+
+export const AppShell = ({ fill = false }: AppShellProps) => {
   const { t } = useTranslation("shell")
   const { member, signOut } = useSession()
   const entries = useNavEntries()
@@ -27,7 +36,14 @@ export const AppShell = () => {
   useEffect(() => setMenuOpen(false), [location.pathname])
 
   return (
-    <div className="flex min-h-dvh flex-col bg-bg text-ink">
+    <div
+      className={cn(
+        "flex flex-col bg-bg text-ink",
+        fill
+          ? "h-dvh overflow-hidden pb-[var(--bar-total)] lg:pb-0"
+          : "min-h-dvh"
+      )}
+    >
       <header className="sticky top-0 z-40 border-b border-line bg-panel">
         <div className="mx-auto flex max-w-[960px] items-center gap-3 px-5 py-3 md:px-8">
           <Link to="/" aria-label={t("home")} className="mr-auto">
@@ -60,13 +76,25 @@ export const AppShell = () => {
       </header>
 
       {/* pb clears the fixed action bar on mobile */}
-      <main className="flex-1 pb-[calc(var(--bar-total)+8px)] lg:pb-0">
-        <RouteTransition>
+      <main
+        className={cn(
+          "flex-1",
+          fill
+            ? "min-h-0 overflow-hidden"
+            : "pb-[calc(var(--bar-total)+8px)] lg:pb-0"
+        )}
+      >
+        <RouteTransition className={fill ? "h-full" : undefined}>
           <Outlet />
         </RouteTransition>
       </main>
 
-      <footer className="hidden border-t border-line bg-panel lg:block">
+      <footer
+        className={cn(
+          "hidden border-t border-line bg-panel",
+          fill ? "" : "lg:block"
+        )}
+      >
         <div className="mx-auto flex max-w-[960px] flex-wrap items-center justify-between gap-4 px-5 py-6 md:px-8">
           <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-sub">
             {t("footer", { year: new Date().getFullYear() })}

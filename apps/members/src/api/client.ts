@@ -17,10 +17,12 @@ export interface AdminMemberRow {
   id: string
   email: string
   displayName: string
+  photoUrl?: string
   role: "member" | "admin"
   createdAt: string
   membership: {
     memberNumber: string
+    verificationToken: string
     type: "athlete" | "organisation"
     status: "active" | "expired" | "pending"
     currentPeriodEnd?: string

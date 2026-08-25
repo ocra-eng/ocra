@@ -62,6 +62,12 @@ export const memberships = pgTable(
       .references(() => members.id, { onDelete: "cascade" }),
     /** OCRA-YYYY-NNNN. Minted once at first activation, never reassigned. */
     memberNumber: text("member_number").notNull(),
+    /**
+     * Opaque token the QR encodes. Member numbers are sequential, so keying
+     * public verification on them would let anyone enumerate the membership
+     * — names and photos included. Only a scanned QR reaches the card.
+     */
+    verificationToken: uuid("verification_token").notNull().defaultRandom(),
     type: membershipType("type").notNull().default("athlete"),
     status: membershipStatus("status").notNull(),
     stripeSubscriptionId: text("stripe_subscription_id"),
@@ -77,6 +83,7 @@ export const memberships = pgTable(
   },
   (table) => [
     uniqueIndex("memberships_number_idx").on(table.memberNumber),
+    uniqueIndex("memberships_token_idx").on(table.verificationToken),
     uniqueIndex("memberships_subscription_idx").on(table.stripeSubscriptionId),
     index("memberships_member_idx").on(table.memberId),
   ]

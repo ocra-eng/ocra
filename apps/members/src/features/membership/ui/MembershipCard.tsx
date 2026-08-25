@@ -1,14 +1,19 @@
 import { useTranslation } from "react-i18next"
 import QRCode from "react-qr-code"
-import type { Member, Membership } from "@ocra/shared"
+import type { Membership } from "@ocra/shared"
 import { TriskeleMark, Wordmark, cn } from "@ocra/ui"
 import { MemberAvatar } from "./MemberAvatar"
 import { StatusBadge } from "./StatusBadge"
 
 interface MembershipCardProps {
-  member: Member
-  membership: Membership
-  verificationUrl: string
+  /** Name and photo. The public card passes the verification payload. */
+  holder: { displayName: string; photoUrl?: string }
+  membership: Pick<
+    Membership,
+    "memberNumber" | "type" | "status" | "currentPeriodEnd"
+  >
+  /** Omitted on the public card — it is already the scanned destination. */
+  verificationUrl?: string
   /** Drain the colour when the membership is no longer valid. */
   muted?: boolean
 }
@@ -25,7 +30,7 @@ const formatDate = (iso: string, locale: string) =>
  * it represents a physical card, not a page surface.
  */
 export const MembershipCard = ({
-  member,
+  holder,
   membership,
   verificationUrl,
   muted = false,
@@ -50,8 +55,8 @@ export const MembershipCard = ({
       <div className="flex flex-col gap-6 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-start gap-4">
           <MemberAvatar
-            name={member.profileName ?? member.displayName}
-            photoUrl={member.photoUrl}
+            name={holder.displayName}
+            photoUrl={holder.photoUrl}
             className="h-16 w-16"
           />
           <div className="min-w-0">
@@ -59,7 +64,7 @@ export const MembershipCard = ({
             {t(`type.${membership.type}`)}
           </p>
           <p className="mt-1 truncate font-display text-3xl font-bold uppercase leading-tight">
-            {member.profileName ?? member.displayName}
+            {holder.displayName}
           </p>
           <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
             <div>
@@ -82,15 +87,17 @@ export const MembershipCard = ({
           </div>
         </div>
 
-        <div className="shrink-0 self-center bg-chalk p-2.5">
-          <QRCode
-            value={verificationUrl}
-            size={112}
-            bgColor="#f3f2ec"
-            fgColor="#0c231a"
-            aria-label={t("card.qrLabel")}
-          />
-        </div>
+        {verificationUrl && (
+          <div className="shrink-0 self-center bg-chalk p-2.5">
+            <QRCode
+              value={verificationUrl}
+              size={112}
+              bgColor="#f3f2ec"
+              fgColor="#0c231a"
+              aria-label={t("card.qrLabel")}
+            />
+          </div>
+        )}
       </div>
     </article>
   )

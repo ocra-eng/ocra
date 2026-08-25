@@ -301,7 +301,7 @@ describe("admin", () => {
 })
 
 describe("public verification", () => {
-  it("exposes only non-identifying fields", async () => {
+  const seedActive = async () => {
     const [member] = await db
       .insert(members)
       .values({
@@ -310,7 +310,7 @@ describe("public verification", () => {
         photoUrl: "https://example.com/face.jpg",
       })
       .returning()
-    await upsertMembership(db, {
+    const membership = await upsertMembership(db, {
       memberId: member.id,
       type: "athlete",
       status: "active",
@@ -318,24 +318,37 @@ describe("public verification", () => {
       currentPeriodEnd: null,
       year: 2026,
     })
+    return membership
+  }
 
-    const res = await get("/verify/OCRA-2026-0001")
+  it("returns the card, with the photo but never the email", async () => {
+    const membership = await seedActive()
+    const res = await get(`/verify/${membership.verificationToken}`)
     expect(res.status).toBe(200)
 
     const raw = await res.text()
     expect(raw).toContain("Public Person")
+    // The photo is intentional: the public card matches the member's own.
+    expect(raw).toContain("face.jpg")
     expect(raw).not.toContain("member@example.com")
-    expect(raw).not.toContain("face.jpg")
   })
 
-  it("404s an unknown number without leaking whether it existed", async () => {
-    const res = await get("/verify/OCRA-2026-9999")
+  it("refuses the member number, so the membership cannot be enumerated", async () => {
+    await seedActive()
+    expect((await get("/verify/OCRA-2026-0001")).status).toBe(404)
+  })
+
+  it("404s an unknown token without leaking whether it existed", async () => {
+    const res = await get("/verify/00000000-0000-0000-0000-000000000000")
     expect(res.status).toBe(404)
     expect(await res.json()).toEqual({ error: "not-found" })
   })
 
   it("needs no authentication", async () => {
-    expect((await get("/verify/OCRA-2026-0001")).status).toBe(404)
+    const membership = await seedActive()
+    expect((await get(`/verify/${membership.verificationToken}`)).status).toBe(
+      200
+    )
   })
 })
 

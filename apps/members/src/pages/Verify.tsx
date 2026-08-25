@@ -2,23 +2,24 @@ import { useTranslation } from "react-i18next"
 import { useParams } from "react-router"
 import { Wordmark } from "@ocra/ui"
 import { useGetVerificationQuery } from "@/api/client"
-import { CardSkeleton, StatusBadge } from "@/features/membership"
+import { CardSkeleton, MembershipCard } from "@/features/membership"
 
 /**
- * Public page reached by scanning a member's QR. Shows only what someone
- * checking a membership at a race needs — the API redacts the rest.
+ * The public card, reached by scanning a member's QR. Renders the same card
+ * component as My Card so an official sees exactly what the member sees —
+ * minus the QR, since this page is already the scan's destination.
  */
 export const Verify = () => {
-  const { t, i18n } = useTranslation("membership")
-  const { memberNumber = "" } = useParams()
-  const { data, isLoading, isError } = useGetVerificationQuery(memberNumber, {
-    skip: !memberNumber,
+  const { t } = useTranslation("membership")
+  const { token = "" } = useParams()
+  const { data, isLoading, isError } = useGetVerificationQuery(token, {
+    skip: !token,
   })
 
   return (
     <div className="flex min-h-dvh flex-col bg-bg text-ink">
-      <div className="mx-auto w-full max-w-[520px] px-5 py-14">
-        <Wordmark className="mb-10" />
+      <div className="mx-auto w-full max-w-[560px] px-5 py-12">
+        <Wordmark className="mb-8" />
         <h1 className="font-display text-3xl font-extrabold uppercase leading-[0.95]">
           {t("verify.title")}
           <span className="text-tape">.</span>
@@ -33,34 +34,27 @@ export const Verify = () => {
                 {t("verify.notFound.title")}
               </p>
               <p className="mt-3 text-sm leading-relaxed text-sub">
-                {t("verify.notFound.body", { memberNumber })}
+                {t("verify.notFound.bodyToken")}
               </p>
             </div>
           ) : (
-            <div className="border border-line bg-panel p-6">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-sub">
-                    {t(`type.${data.type}`)}
-                  </p>
-                  <p className="mt-1 font-display text-2xl font-bold uppercase leading-tight">
-                    {data.displayName}
-                  </p>
-                  <p className="mt-2 font-mono text-sm">{data.memberNumber}</p>
-                </div>
-                <StatusBadge status={data.status} />
-              </div>
-              {data.currentPeriodEnd && (
-                <p className="mt-4 border-t border-line pt-4 text-sm text-sub">
-                  {t("verify.validUntil", {
-                    date: new Date(data.currentPeriodEnd).toLocaleDateString(
-                      i18n.resolvedLanguage ?? "en",
-                      { day: "numeric", month: "long", year: "numeric" }
-                    ),
-                  })}
-                </p>
-              )}
-            </div>
+            <>
+              <MembershipCard
+                holder={{
+                  displayName: data.displayName,
+                  photoUrl: data.photoUrl,
+                }}
+                membership={data}
+                muted={data.status !== "active"}
+              />
+              <p className="mt-4 text-sm leading-relaxed text-sub">
+                {t(
+                  data.status === "active"
+                    ? "verify.confirmed"
+                    : "verify.notActive"
+                )}
+              </p>
+            </>
           )}
         </div>
       </div>

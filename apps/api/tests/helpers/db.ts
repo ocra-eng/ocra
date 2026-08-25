@@ -38,6 +38,7 @@ export const createTestDb = async (): Promise<Database> => {
       id uuid primary key default gen_random_uuid(),
       member_id uuid not null references members (id) on delete cascade,
       member_number text not null,
+      verification_token uuid not null default gen_random_uuid(),
       type membership_type not null default 'athlete',
       status membership_status not null,
       stripe_subscription_id text,
@@ -47,6 +48,7 @@ export const createTestDb = async (): Promise<Database> => {
       updated_at timestamptz not null default now()
     );
     create unique index memberships_number_idx on memberships (member_number);
+    create unique index memberships_token_idx on memberships (verification_token);
     create unique index memberships_subscription_idx
       on memberships (stripe_subscription_id);
     create index memberships_member_idx on memberships (member_id);

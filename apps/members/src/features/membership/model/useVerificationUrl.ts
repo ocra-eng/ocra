@@ -1,9 +1,9 @@
 /**
- * Public verification URL for a member number. Derived from config, never
- * hardcoded — the v1 app pinned members.ocra.ie into the QR and broke on
- * every other environment.
+ * Public verification URL for a membership. Keyed on the opaque token, not
+ * the member number: numbers are sequential, so using them would let anyone
+ * walk the membership list. Base comes from config, never hardcoded.
  */
-export const useVerificationUrl = (memberNumber: string): string => {
+export const useVerificationUrl = (verificationToken: string): string => {
   const base = import.meta.env.VITE_PUBLIC_URL ?? window.location.origin
-  return `${base.replace(/\/$/, "")}/verify/${memberNumber}`
+  return `${base.replace(/\/$/, "")}/verify/${verificationToken}`
 }

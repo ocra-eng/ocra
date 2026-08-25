@@ -141,10 +141,17 @@ export const findMembershipForMember = async (
 }
 
 /**
- * Public verification lookup. Returns only what a person checking a card at
- * a race needs — never email, never photo.
+ * Public verification, keyed on the opaque token the QR encodes — never on
+ * the member number, which is sequential and would let anyone enumerate the
+ * membership. Because reaching this requires scanning a real card, it can
+ * safely return the photo, so the public card matches the member's own.
+ *
+ * Email is still never returned: it is not needed to check a card.
  */
-export const findVerification = async (db: Database, memberNumber: string) => {
+export const findVerification = async (db: Database, token: string) => {
+  // An invalid uuid would otherwise throw rather than 404.
+  if (!/^[0-9a-f-]{36}$/i.test(token)) return null
+
   const [row] = await db
     .select({
       memberNumber: memberships.memberNumber,
@@ -153,12 +160,13 @@ export const findVerification = async (db: Database, memberNumber: string) => {
       currentPeriodEnd: memberships.currentPeriodEnd,
       displayName: members.displayName,
       profileName: members.profileName,
+      photoUrl: members.photoUrl,
     })
     .from(memberships)
     .innerJoin(members, eq(memberships.memberId, members.id))
     .where(
       and(
-        eq(memberships.memberNumber, memberNumber),
+        eq(memberships.verificationToken, token),
         eq(memberships.confirmed, true)
       )
     )
@@ -168,6 +176,7 @@ export const findVerification = async (db: Database, memberNumber: string) => {
   return {
     memberNumber: row.memberNumber,
     displayName: row.profileName?.trim() || row.displayName,
+    photoUrl: row.photoUrl ?? undefined,
     type: row.type,
     status: row.status,
     currentPeriodEnd: row.currentPeriodEnd?.toISOString(),
@@ -180,10 +189,12 @@ export interface AdminMemberRow {
   id: string
   email: string
   displayName: string
+  photoUrl?: string
   role: "member" | "admin"
   createdAt: string
   membership: {
     memberNumber: string
+    verificationToken: string
     type: "athlete" | "organisation"
     status: "active" | "expired" | "pending"
     currentPeriodEnd?: string
@@ -206,9 +217,11 @@ export const listMembersForAdmin = async (
       email: members.email,
       displayName: members.displayName,
       profileName: members.profileName,
+      photoUrl: members.photoUrl,
       role: members.role,
       createdAt: members.createdAt,
       memberNumber: memberships.memberNumber,
+      verificationToken: memberships.verificationToken,
       type: memberships.type,
       status: memberships.status,
       currentPeriodEnd: memberships.currentPeriodEnd,
@@ -241,11 +254,13 @@ export const listMembersForAdmin = async (
     id: row.id,
     email: row.email,
     displayName: row.profileName?.trim() || row.displayName,
+    photoUrl: row.photoUrl ?? undefined,
     role: row.role,
     createdAt: row.createdAt.toISOString(),
     membership: row.memberNumber
       ? {
           memberNumber: row.memberNumber,
+          verificationToken: row.verificationToken!,
           type: row.type!,
           status: row.status!,
           currentPeriodEnd: row.currentPeriodEnd?.toISOString(),
