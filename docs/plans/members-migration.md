@@ -99,19 +99,65 @@ member number (see §7).
 
 ## 6. Order of operations at cutover
 
-1. **Freeze**: put the v1 app into read-only by disabling its Stripe
-   checkout route (a one-line deploy), so no new subscriptions appear
-   mid-migration. Announce a short window.
-2. **Final report**: re-run the reconciliation and confirm the exception
-   buckets match what was already worked.
-3. **Migrate**: run the write migration against the production Supabase
-   project. It is idempotent — safe to re-run.
-4. **Verify**: automated checks (§8) plus a manual spot-check of five known
-   members, including one admin and one lapsed member.
-5. **Point Stripe's webhook** at api.ocra.ie and replay recent events with
-   the Stripe CLI so anything that happened during the freeze lands.
-6. **DNS**: members.ocra.ie → Pages, api.ocra.ie → Render.
-7. **Watch** for 48 hours before decommissioning anything.
+Everything up to step 8 is reversible by doing nothing.
+
+**Prepare (days before, no downtime)**
+
+1. **Supabase production project**, in eu-west-1. Configure, in this order,
+   because each has a lead time:
+   - Google provider, with the production callback added to the *existing*
+     Google OAuth client (add, never replace — v1 must keep working)
+   - Redirect URLs for `https://members.ocra.ie/**` **and** the Render
+     `*.onrender.com` host, so a DNS delay cannot lock everyone out
+   - Custom SMTP (Workspace or Resend) — templates cannot be edited without
+     it, and the built-in sender only reaches project members
+   - Both email templates carrying `{{ .Token }}`. **Confirm signup matters
+     most**: every migrated member hits that one, not Magic Link, because
+     none of them exist in Supabase auth yet
+   - "Confirm email" **off** — otherwise OTP sign-in sends a confirmation
+     link instead of a code
+   - Email OTP length, which must equal `OTP_LENGTH` in
+     `apps/members/src/features/auth/constants.ts`
+2. **Render production services** from `render.yaml`, with:
+   - `DATABASE_URL` from Supabase's **session pooler**, never the direct
+     `db.<ref>.supabase.co` host — that is IPv6-only and unreachable from
+     Render (§12)
+   - `APP_ENV=production`, which makes missing Stripe config fatal rather
+     than silently disabling billing
+   - `ALLOWED_ORIGINS` and `MEMBERS_APP_URL` set to whatever host is
+     actually serving, onrender or custom domain
+3. **Live Stripe**: customer portal configuration (none exists on the live
+   account today, so cancel and card-update would 503), a restricted API
+   key, and a webhook endpoint at `https://api.ocra.ie/webhooks/stripe`
+   subscribed to `checkout.session.completed` and
+   `customer.subscription.created|updated|deleted`. Create the endpoint
+   **at cutover**, not before: Stripe disables endpoints that fail
+   repeatedly, and the URL will not resolve until then.
+4. **Dry run** the migration against production Supabase and read the
+   report. Work every exception bucket while there is time.
+
+**Cut over (short window)**
+
+5. **Freeze**: disable v1's Stripe checkout route so no new subscriptions
+   appear mid-migration. Announce the window.
+6. **Final reconciliation**, then the write migration. Idempotent, so this
+   is just the delta.
+7. **Verify** (§8) before touching DNS.
+8. **DNS**: `api.ocra.ie` and `members.ocra.ie` → Render. Specific records
+   override the `*.ocra.ie` wildcard that currently answers for every
+   subdomain.
+9. **Live Stripe webhook** created and its secret set; replay any events
+   from the freeze window with the Stripe CLI.
+
+**After**
+
+10. **Watch for 48 hours.** Then disable the two legacy Stripe webhook
+    endpoints (a Supabase edge function on an unrelated project, and a
+    Firestore Stripe extension) — leaving them means three consumers of the
+    same events and no way to tell which is authoritative.
+11. **Rotate every credential** that has been shared during the build,
+    including the live Stripe secret key and the Mongo admin password.
+12. Archive both v1 repos; tear down the Vercel projects and Atlas.
 
 ## 7. Idempotency and re-running
 
@@ -128,12 +174,27 @@ freeze to catch the delta, without duplicating anyone or churning numbers.
 
 Automated, run immediately after the migration:
 
-- Count of active memberships in Postgres equals count of active
-  subscriptions in Stripe for the membership product — exactly.
+- Every migrated subscription active in Postgres exactly when Stripe says
+  it is. The script gates on **the subscriptions it touched**, not on every
+  active row — a database that also holds direct purchases would otherwise
+  always fail.
 - No duplicate member numbers; no duplicate emails.
 - Every membership row resolves to a member row.
-- Every admin in Mongo is an admin in Postgres.
-- Spot-check five members end to end, including sign-in.
+- Every admin in Mongo is an admin in Postgres. v1 stored the role as
+  `ADMIN` in one record and `member` in the rest, so the comparison is
+  case-insensitive — a case-sensitive check silently demotes every admin.
+- Every active membership has a `current_period_end`. Stripe moved that
+  field onto subscription items in the 2025 API versions; reading the old
+  location returns null and members see a card with no expiry.
+
+Manual, before DNS:
+
+- Sign in as a migrated member and confirm the card shows their number.
+- Sign in as the admin and confirm `/admin/members` lists the right count.
+- Scan a card's QR and confirm the public page renders.
+- Buy a membership with a live card, then refund it. This is the only way
+  to prove the live webhook secret, price id and portal config are all
+  correct together, and it costs one refund.
 
 If any gate fails, the cutover stops. Nothing has been destroyed at this
 point — v1 is still live and serving.
@@ -175,3 +236,41 @@ Draft and send from Blueshift; do not send anything without approval.
 
 The reconciliation report runs against read-only credentials only. The write
 migration needs the Supabase connection string and nothing more.
+
+## 12. Environment traps found while building
+
+Recorded because each cost time and none is obvious from the code.
+
+**Supabase's direct database host is IPv6-only.** `db.<ref>.supabase.co`
+resolves to IPv6 only, and Render's free tier has no IPv6 egress, so
+migrations fail with `ENETUNREACH` while working fine from a developer
+laptop. Always use the **session pooler** host. The db client warns if it
+sees the direct host, and disables prepared statements automatically on
+port 6543, since transaction mode cannot hold them.
+
+**`NODE_ENV` is not the environment.** Render sets `NODE_ENV=production` on
+every service including dev, so gating "Stripe required" on it stops the
+dev API from booting. `APP_ENV` (`local | dev | production`) says what the
+environment actually is.
+
+**`npm ci` skips devDependencies when `NODE_ENV=production`** — including
+TypeScript. Build commands pass `--include=dev`.
+
+**Vite bakes `VITE_*` values in at build time.** Changing one in the Render
+dashboard does nothing without a redeploy; runtime vars on the API restart
+in place.
+
+**Do not pin environment hostnames in `render.yaml`.** A value there
+overwrites the working dashboard value on every Blueprint sync, which broke
+the API URL and then the CORS origin in turn.
+
+**Test-mode Stripe cannot see live customers.** A database migrated from
+live Stripe holds live customer ids, so test keys produce
+`No such customer`. The billing routes now forget an unresolvable customer
+id and create a new one, which also covers a customer deleted in Stripe.
+
+**`stripe trigger` invents a new customer**, so the webhook correctly
+declines it as unmatched and records nothing. Verify against a real
+member's subscription instead — for example toggling
+`cancel_at_period_end`, which fires a real event and changes nothing
+material.

@@ -67,11 +67,16 @@ the FE. Mongo/Atlas is retired (see §5).
 ## 2. Target architecture
 
 ```
-Members FE (GH Pages) ──auth──────────► Supabase Auth (Google + email OTP)
+Members FE (Render static) ──auth────► Supabase Auth (Google + email OTP)
 Members FE ──everything else──► API (Render) ──Drizzle──► Supabase Postgres
                                    │
                                    └──► Stripe (checkout, portal, webhooks)
 ```
+
+All three services run on Render from one `render.yaml`. GitHub Pages was
+the original plan and was dropped: it allows one site per repository, which
+would have forced the members build into a separate artifact repo purely to
+get a second domain. Moving also retired `BASE_PATH=/ocra/`.
 
 ### Repo layout — one monorepo, ocra-eng/ocra
 
@@ -93,13 +98,22 @@ Both members repos are archived after cutover; new code lives in ocra-eng.
 
 - **One login screen**: email field + "Send me a code" + Google button.
   `signInWithOtp` auto-creates accounts, so register and login are one flow.
-- **OTP-code-first, link included**: 6-digit codes avoid magic-link failure
-  modes (in-app email browsers, cross-device clicks, link-prefetching mail
-  scanners). The email template carries both code and link.
+- **OTP-code-first, link included**: codes avoid magic-link failure modes
+  (in-app email browsers, cross-device clicks, link-prefetching mail
+  scanners). The email carries both. Length is a Supabase setting that must
+  match `OTP_LENGTH` in the members app; the field is one box per digit and
+  a pasted code fills all of them.
+- **"Confirm email" must be off.** With it on, Supabase treats a first email
+  sign-in as a signup needing confirmation and sends a link regardless of
+  the templates. Entering a code that only arrived in that mailbox is itself
+  proof of control, so the extra step adds nothing.
 - Settings: ~60s resend cooldown, ~10 min OTP expiry.
-- **Email**: custom SMTP (Resend free tier) + SPF/DKIM on ocra.ie, branded
-  OCRA ÉIREANN. Supabase's built-in sender is dev-only (single-digit
-  hourly limit). Stripe sends payment receipts itself.
+- **Email**: custom SMTP via Google Workspace (`smtp.gmail.com`, app
+  password), which needed no DNS change since the sending address is already
+  SPF/DKIM-aligned. Supabase's built-in sender is dev-only — rate-limited and
+  restricted to project members — and custom SMTP is also what unlocks
+  template editing. Templates live in `docs/email-templates/`. Stripe sends
+  payment receipts itself.
 - Sessions: supabase-js manages tokens client-side (localStorage +
   auto-refresh) — an accepted trade, mitigated by short expiry; see §6.
 - The API verifies Supabase JWTs (JWKS) and maps the Supabase user id to a
@@ -112,14 +126,17 @@ Both members repos are archived after cutover; new code lives in ocra-eng.
   viable — final call at Phase 1 kickoff. TS, feature folders, structured
   logging.
 - Endpoints: `GET /health` (with DB probe), `GET/PATCH /me`,
-  `GET /verify/:memberNumber` (public, redacted), `POST /billing/checkout-session`,
+  `GET /verify/:token` (public), `POST /billing/checkout-session`,
   `POST /billing/portal-session`, `POST /webhooks/stripe` (raw body),
   `GET /admin/members` (role-gated).
 - **Billing**: Stripe Checkout + webhooks (`checkout.session.completed`,
   `customer.subscription.updated/deleted`) as the source of truth; billing
   portal for renew/cancel. The client never decides membership status.
-- **Public verification** returns member number, display name, membership
-  status, type. No email, no photo (fixes the GDPR leak).
+- **Public verification** is keyed on an opaque per-membership token, not
+  the member number. Numbers are sequential, so keying on them would make
+  the whole membership enumerable. Because reaching the page requires
+  scanning a real QR, it can safely return the photo and match the member's
+  own card. Never the email.
 
 ### Data (Supabase Postgres + Drizzle)
 
@@ -132,8 +149,9 @@ stays confined to auth.
 members      { id, supabaseUserId, email, displayName, profileName?,
                photoUrl?, role: member|admin, stripeCustomerId?, timestamps }
 memberships  { id, memberId → members, type: athlete|organisation,
-               memberNumber UNIQUE, stripeSubscriptionId, status,
-               currentPeriodEnd, timestamps }
+               memberNumber UNIQUE, verificationToken UNIQUE,
+               stripeSubscriptionId, status, currentPeriodEnd,
+               confirmed, timestamps }
 ```
 
 Member numbers `OCRA-YYYY-NNNN`, minted at first activation, stable across
@@ -186,7 +204,7 @@ consumes it, proving the package), CI matrix per workspace, empty
 `apps/members` and `apps/api` shells deployed to preview URLs.
 *Done when: marketing still ships from the new layout.*
 
-**Phase 1 — API + platform (2–3 sessions)**
+**Phase 1 — API + platform (2–3 sessions) — DONE**
 Supabase project + Google provider + OTP templates; Resend SMTP + SPF/DKIM
 on ocra.ie; Drizzle schema + migrations; JWT verification middleware; member
 endpoints; Stripe checkout + webhooks + portal; redacted verify; health with
@@ -197,7 +215,7 @@ in CI).
 test card, and the webhook flips their membership active with a minted
 member number.*
 
-**Phase 2 — Members FE (2–3 sessions)**
+**Phase 2 — Members FE (2–3 sessions) — DONE**
 Login (OTP + Google), card (QR + share, config-driven URL), purchase/manage
 via portal, public verify page, profile edit, admin members table (read-only
 v1), five locales (en/ga/pl/ru/be, full coverage), light/dark brand theme,
@@ -246,6 +264,27 @@ actions (roles, refunds via portal), revisit PWA/offline card.
 9. **Costs accepted**: ~$0 during preview; at go-live Supabase Pro ~$25/mo
    (free tier pauses are unacceptable for live auth) + Render Starter ~$7/mo.
 
+## 5b. Status, 2026-08-25
+
+Phases 0–2 are complete and proven against real data in the dev
+environment. What was verified end to end, not just built:
+
+- Passwordless sign-in, Google and email OTP, against the real Supabase
+  project with custom SMTP and branded templates
+- A real (sandbox) card payment minting `OCRA-2026-0006`, with the webhook
+  confirming it on the deployed Render service, signature checked
+- `cancel_at_period_end` correctly leaving a membership active until the
+  period ends, rather than expiring someone who has paid
+- Customer portal sessions creating
+- The public card, keyed on an opaque token so the sequential member
+  numbers cannot be enumerated
+- Admin listing over the 23 migrated members and 10 memberships
+- The migration run three times, proving idempotency: no duplicates, no
+  reassigned member numbers
+
+Remaining work is cutover, not building — see the migration plan §6.
+Deployment traps discovered along the way are recorded in §12 there.
+
 ## 6. Risks and accepted trades
 
 - **Stripe webhook correctness** is the heart of the rebuild — Stripe CLI
@@ -260,5 +299,12 @@ actions (roles, refunds via portal), revisit PWA/offline card.
   (a failed cron for 8 days = paused project needing manual restore).
 - **Existing subscribers count unknown** until we query Stripe — migration
   dry-run report before cutover.
-- **Email deliverability** is part of the login path: SPF/DKIM verified in
-  Phase 1, not discovered at cutover.
+- **Email deliverability** is part of the login path: verified before
+  cutover, not after. Sending goes through Google Workspace SMTP, which
+  needed no DNS change; the trade is no delivery logs, so "the code never
+  arrived" cannot be answered definitively. Move to Resend when that first
+  happens.
+- **OTP length is coupled** between Supabase's setting and `OTP_LENGTH` in
+  the members app. They must match or a valid code cannot be entered.
+- **The customer portal must be configured per Stripe environment.**
+  Nothing in the code reveals its absence until a member tries to cancel.
