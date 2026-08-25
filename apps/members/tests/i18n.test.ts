@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { adminResources } from "../src/features/admin/i18n"
 import { authResources } from "../src/features/auth/i18n"
 import { membershipResources } from "../src/features/membership/i18n"
 import { shellResources } from "../src/features/shell/i18n"
@@ -12,6 +13,7 @@ const keyTree = (value: unknown, prefix = ""): string[] => {
 }
 
 const NAMESPACES = [
+  ["admin", adminResources],
   ["auth", authResources],
   ["membership", membershipResources],
   ["shell", shellResources],

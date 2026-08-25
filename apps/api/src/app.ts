@@ -18,6 +18,8 @@ import { handleStripeEvent } from "./features/billing/webhook.js"
 import {
   findMembershipForMember,
   findVerification,
+  listMembersForAdmin,
+  type AdminFilter,
 } from "./features/membership/service.js"
 import { eq } from "drizzle-orm"
 
@@ -194,17 +196,17 @@ export const createApp = ({ config, db, stripe, verifyToken }: AppDeps) => {
 
   // --------------------------------------------------------------- admin
 
+  const ADMIN_FILTERS = ["active", "expired", "none", "all"] as const
+
   app.get("/admin/members", ...authed, requireAdmin, async (c) => {
-    const rows = await db.select().from(members).orderBy(members.createdAt)
-    return c.json({
-      members: rows.map((row) => ({
-        id: row.id,
-        email: row.email,
-        displayName: row.displayName,
-        role: row.role,
-        createdAt: row.createdAt.toISOString(),
-      })),
-    })
+    const requested = c.req.query("status")
+    // Default to active: "members" means people with a live membership.
+    const filter: AdminFilter = ADMIN_FILTERS.includes(
+      requested as AdminFilter
+    )
+      ? (requested as AdminFilter)
+      : "active"
+    return c.json({ filter, ...(await listMembersForAdmin(db, filter)) })
   })
 
   app.onError((error, c) => {

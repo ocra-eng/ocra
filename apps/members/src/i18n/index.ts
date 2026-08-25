@@ -1,6 +1,7 @@
 import i18n from "i18next"
 import { initReactI18next } from "react-i18next"
 import { themeResources } from "@ocra/ui"
+import { adminResources } from "@/features/admin/i18n"
 import { authResources } from "@/features/auth/i18n"
 import { membershipResources } from "@/features/membership/i18n"
 import { shellResources } from "@/features/shell/i18n"
@@ -15,6 +16,7 @@ const buildResources = () =>
       code,
       {
         theme: themeResources[code],
+        admin: adminResources[code],
         auth: authResources[code],
         membership: membershipResources[code],
         shell: shellResources[code],

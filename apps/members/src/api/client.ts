@@ -11,6 +11,28 @@ export interface MeResponse {
   membership: Membership | null
 }
 
+export type AdminFilter = "active" | "expired" | "none" | "all"
+
+export interface AdminMemberRow {
+  id: string
+  email: string
+  displayName: string
+  role: "member" | "admin"
+  createdAt: string
+  membership: {
+    memberNumber: string
+    type: "athlete" | "organisation"
+    status: "active" | "expired" | "pending"
+    currentPeriodEnd?: string
+  } | null
+}
+
+export interface AdminMembersResponse {
+  filter: AdminFilter
+  members: AdminMemberRow[]
+  counts: Record<AdminFilter, number>
+}
+
 export interface HealthResponse {
   status: "ok" | "degraded"
   api: string
@@ -55,6 +77,9 @@ export const membersApi = createApi({
     createPortalSession: builder.mutation<{ url: string }, void>({
       query: () => ({ url: "/billing/portal-session", method: "POST" }),
     }),
+    getAdminMembers: builder.query<AdminMembersResponse, AdminFilter>({
+      query: (status) => `/admin/members?status=${status}`,
+    }),
   }),
 })
 
@@ -65,4 +90,5 @@ export const {
   useGetVerificationQuery,
   useCreateCheckoutSessionMutation,
   useCreatePortalSessionMutation,
+  useGetAdminMembersQuery,
 } = membersApi

@@ -162,11 +162,141 @@ describe("admin", () => {
     })
     const res = await get("/admin/members", "token-admin")
     expect(res.status).toBe(200)
-    expect((await body<{ members: unknown[] }>(res)).members).toHaveLength(1)
+    // Empty by default: this admin holds no membership, and the default
+    // filter is people who do.
+    expect((await body<{ members: unknown[] }>(res)).members).toHaveLength(0)
+
+    const all = await get("/admin/members?status=all", "token-admin")
+    expect((await body<{ members: unknown[] }>(all)).members).toHaveLength(1)
   })
 
   it("refuses an unauthenticated caller", async () => {
     expect((await get("/admin/members")).status).toBe(401)
+  })
+
+  describe("listing", () => {
+    interface AdminResponse {
+      filter: string
+      members: { email: string; membership: { status: string } | null }[]
+      counts: { all: number; active: number; expired: number; none: number }
+    }
+
+    const seed = async () => {
+      await db.insert(members).values({
+        email: "admin@example.com",
+        displayName: "Admin",
+        role: "admin",
+      })
+      const [paid] = await db
+        .insert(members)
+        .values({ email: "paid@example.com", displayName: "Paid" })
+        .returning()
+      const [lapsed] = await db
+        .insert(members)
+        .values({ email: "lapsed@example.com", displayName: "Lapsed" })
+        .returning()
+      // An account that never paid — the majority case after migration.
+      await db
+        .insert(members)
+        .values({ email: "account@example.com", displayName: "Account" })
+
+      await upsertMembership(db, {
+        memberId: paid.id,
+        type: "athlete",
+        status: "active",
+        stripeSubscriptionId: "sub_paid",
+        currentPeriodEnd: null,
+        year: 2026,
+      })
+      await upsertMembership(db, {
+        memberId: lapsed.id,
+        type: "athlete",
+        status: "expired",
+        stripeSubscriptionId: "sub_lapsed",
+        currentPeriodEnd: null,
+        year: 2025,
+      })
+    }
+
+    it("defaults to members with an active membership", async () => {
+      await seed()
+      const body_ = await body<AdminResponse>(
+        await get("/admin/members", "token-admin")
+      )
+
+      expect(body_.filter).toBe("active")
+      expect(body_.members.map((m) => m.email)).toEqual(["paid@example.com"])
+    })
+
+    it("reports counts for every bucket regardless of filter", async () => {
+      await seed()
+      const body_ = await body<AdminResponse>(
+        await get("/admin/members", "token-admin")
+      )
+      expect(body_.counts).toEqual({ all: 4, active: 1, expired: 1, none: 2 })
+    })
+
+    it("filters to expired, none and all", async () => {
+      await seed()
+      for (const [filter, expected] of [
+        ["expired", ["lapsed@example.com"]],
+        ["none", ["admin@example.com", "account@example.com"]],
+      ] as const) {
+        const body_ = await body<AdminResponse>(
+          await get(`/admin/members?status=${filter}`, "token-admin")
+        )
+        expect(body_.members.map((m) => m.email).sort()).toEqual(
+          [...expected].sort()
+        )
+      }
+      const all = await body<AdminResponse>(
+        await get("/admin/members?status=all", "token-admin")
+      )
+      expect(all.members).toHaveLength(4)
+    })
+
+    it("ignores an unknown filter rather than erroring", async () => {
+      await seed()
+      const body_ = await body<AdminResponse>(
+        await get("/admin/members?status=nonsense", "token-admin")
+      )
+      expect(body_.filter).toBe("active")
+    })
+
+    it("lists each member once even after a renewal", async () => {
+      const [member] = await db
+        .insert(members)
+        .values({ email: "renewer@example.com", displayName: "Renewer" })
+        .returning()
+      await db.insert(members).values({
+        email: "admin@example.com",
+        displayName: "Admin",
+        role: "admin",
+      })
+      await upsertMembership(db, {
+        memberId: member.id,
+        type: "athlete",
+        status: "active",
+        stripeSubscriptionId: "sub_1",
+        currentPeriodEnd: null,
+        year: 2025,
+      })
+      await upsertMembership(db, {
+        memberId: member.id,
+        type: "athlete",
+        status: "active",
+        stripeSubscriptionId: "sub_2",
+        currentPeriodEnd: null,
+        year: 2026,
+      })
+
+      const body_ = await body<AdminResponse>(
+        await get("/admin/members?status=all", "token-admin")
+      )
+      expect(
+        body_.members.filter((m) => m.email === "renewer@example.com")
+      ).toHaveLength(1)
+    })
   })
 })
 

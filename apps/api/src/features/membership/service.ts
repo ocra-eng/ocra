@@ -173,3 +173,99 @@ export const findVerification = async (db: Database, memberNumber: string) => {
     currentPeriodEnd: row.currentPeriodEnd?.toISOString(),
   }
 }
+
+export type AdminFilter = "active" | "expired" | "none" | "all"
+
+export interface AdminMemberRow {
+  id: string
+  email: string
+  displayName: string
+  role: "member" | "admin"
+  createdAt: string
+  membership: {
+    memberNumber: string
+    type: "athlete" | "organisation"
+    status: "active" | "expired" | "pending"
+    currentPeriodEnd?: string
+  } | null
+}
+
+/**
+ * Admin listing. "Member" is ambiguous here — an account exists from first
+ * sign-in, but membership only exists once Stripe confirms payment. The
+ * counts make both visible so the filter is an informed choice rather than
+ * a number the admin has to trust.
+ */
+export const listMembersForAdmin = async (
+  db: Database,
+  filter: AdminFilter = "active"
+): Promise<{ members: AdminMemberRow[]; counts: Record<string, number> }> => {
+  const rows = await db
+    .select({
+      id: members.id,
+      email: members.email,
+      displayName: members.displayName,
+      profileName: members.profileName,
+      role: members.role,
+      createdAt: members.createdAt,
+      memberNumber: memberships.memberNumber,
+      type: memberships.type,
+      status: memberships.status,
+      currentPeriodEnd: memberships.currentPeriodEnd,
+      membershipCreatedAt: memberships.createdAt,
+    })
+    .from(members)
+    .leftJoin(
+      memberships,
+      and(
+        eq(memberships.memberId, members.id),
+        eq(memberships.confirmed, true)
+      )
+    )
+    .orderBy(members.createdAt)
+
+  // A member could hold more than one membership row over time; keep the
+  // newest so the list reflects their current standing.
+  const byMember = new Map<string, (typeof rows)[number]>()
+  for (const row of rows) {
+    const existing = byMember.get(row.id)
+    if (
+      !existing ||
+      (row.membershipCreatedAt ?? 0) > (existing.membershipCreatedAt ?? 0)
+    ) {
+      byMember.set(row.id, row)
+    }
+  }
+
+  const all: AdminMemberRow[] = [...byMember.values()].map((row) => ({
+    id: row.id,
+    email: row.email,
+    displayName: row.profileName?.trim() || row.displayName,
+    role: row.role,
+    createdAt: row.createdAt.toISOString(),
+    membership: row.memberNumber
+      ? {
+          memberNumber: row.memberNumber,
+          type: row.type!,
+          status: row.status!,
+          currentPeriodEnd: row.currentPeriodEnd?.toISOString(),
+        }
+      : null,
+  }))
+
+  const counts = {
+    all: all.length,
+    active: all.filter((m) => m.membership?.status === "active").length,
+    expired: all.filter((m) => m.membership?.status === "expired").length,
+    none: all.filter((m) => !m.membership).length,
+  }
+
+  const matches = (row: AdminMemberRow) =>
+    filter === "all"
+      ? true
+      : filter === "none"
+        ? !row.membership
+        : row.membership?.status === filter
+
+  return { members: all.filter(matches), counts }
+}
