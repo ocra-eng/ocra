@@ -171,6 +171,29 @@ describe("stripe webhook", () => {
     expect(row.type).toBe("organisation")
   })
 
+  it("attributes by metadata even when the email does not match", async () => {
+    const [member] = await db
+      .insert(members)
+      .values({ email: "renamed@example.com", displayName: "Renamed" })
+      .returning()
+
+    // Stripe holds a different email, and no customer id is recorded yet:
+    // without metadata this subscription would be unattributable.
+    const result = await handleStripeEvent(
+      deps(
+        stripeStub({
+          metadata: { memberId: member.id },
+          customer: { id: "cus_other", email: "stale@example.com", deleted: false },
+        } as never)
+      ),
+      event("customer.subscription.created")
+    )
+
+    expect(result.handled).toBe(true)
+    const [row] = await db.select().from(memberships)
+    expect(row.memberId).toBe(member.id)
+  })
+
   it("ignores event types it does not handle", async () => {
     const result = await handleStripeEvent(
       deps(stripeStub({})),

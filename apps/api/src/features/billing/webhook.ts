@@ -28,8 +28,22 @@ const normaliseEmail = (email: string | null | undefined) =>
  */
 const resolveMember = async (
   db: Database,
-  { customerId, email }: { customerId: string | null; email: string }
+  {
+    memberId,
+    customerId,
+    email,
+  }: { memberId?: string; customerId: string | null; email: string }
 ) => {
+  // Set by our own checkout, so it is exact where it exists.
+  if (memberId) {
+    const [byMetadata] = await db
+      .select()
+      .from(members)
+      .where(eq(members.id, memberId))
+      .limit(1)
+    if (byMetadata) return byMetadata
+  }
+
   if (customerId) {
     const [byCustomer] = await db
       .select()
@@ -95,7 +109,14 @@ export const handleStripeEvent = async (
       : null
   )
 
-  const member = await resolveMember(db, { customerId, email })
+  const member = await resolveMember(db, {
+    memberId:
+      typeof subscription.metadata?.memberId === "string"
+        ? subscription.metadata.memberId
+        : undefined,
+    customerId,
+    email,
+  })
   if (!member) return { handled: false, reason: "unmatched-member" }
 
   const priceIds = subscription.items.data.map((item) => item.price?.id)

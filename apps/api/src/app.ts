@@ -138,15 +138,40 @@ export const createApp = ({ config, db, stripe, verifyToken }: AppDeps) => {
   // ------------------------------------------------------------- billing
 
   app.post("/billing/checkout-session", ...authed, async (c) => {
+    const client = stripeOrFail()
     const member = c.get("member")
-    const session = await stripeOrFail().checkout.sessions.create({
+
+    /*
+     * Create the customer ourselves rather than letting Checkout do it.
+     * Passing customer_email makes Stripe mint a fresh customer per
+     * session, so a member who abandons checkout and comes back ends up
+     * with duplicate customer records — and duplicate customers make
+     * billing history and the portal incoherent.
+     */
+    let customerId = member.stripeCustomerId
+    if (!customerId) {
+      const customer = await client.customers.create({
+        email: member.email,
+        name: member.profileName ?? member.displayName,
+        metadata: { memberId: member.id },
+      })
+      customerId = customer.id
+      await db
+        .update(members)
+        .set({ stripeCustomerId: customerId, updatedAt: new Date() })
+        .where(eq(members.id, member.id))
+    }
+
+    const session = await client.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: config.STRIPE_ATHLETE_PRICE_ID!, quantity: 1 }],
-      customer: member.stripeCustomerId ?? undefined,
-      customer_email: member.stripeCustomerId ? undefined : member.email,
+      customer: customerId,
       success_url: `${config.MEMBERS_APP_URL}/?checkout=success`,
       cancel_url: `${config.MEMBERS_APP_URL}/membership?checkout=cancelled`,
       client_reference_id: member.id,
+      // Stamped on the subscription so the webhook can attribute it
+      // directly, without inferring from customer id or email.
+      subscription_data: { metadata: { memberId: member.id } },
     })
     return c.json({ url: session.url })
   })
