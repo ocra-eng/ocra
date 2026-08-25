@@ -19,6 +19,8 @@ export {
   SelectValue,
 } from "./ui/select"
 
+export { RouteTransition } from "./motion/RouteTransition"
+
 export { TriskeleMark } from "./brand/TriskeleMark"
 export { Wordmark } from "./brand/Wordmark"
 

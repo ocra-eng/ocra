@@ -23,5 +23,14 @@ export const supabase = createClient(url, publishableKey, {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
+    /**
+     * PKCE, not implicit. The implicit flow returns the access AND refresh
+     * token in the URL fragment, so they land in browser history, get
+     * copied into bug reports, and leak through anything that reads the
+     * URL. PKCE returns a single-use code instead and exchanges it for
+     * tokens over POST. v1 shipped tokens in query strings; we are not
+     * repeating that.
+     */
+    flowType: "pkce",
   },
 })

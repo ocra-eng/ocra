@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { LogOut } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, NavLink, Outlet, useLocation } from "react-router"
-import { ConnectedThemeToggle, Wordmark, cn } from "@ocra/ui"
+import { ConnectedThemeToggle, RouteTransition, Wordmark, cn } from "@ocra/ui"
 import { useSession } from "@/features/auth"
 import { useNavEntries } from "../model/useNavEntries"
 import { ActionBar } from "./ActionBar"
@@ -61,7 +61,9 @@ export const AppShell = () => {
 
       {/* pb clears the fixed action bar on mobile */}
       <main className="flex-1 pb-[calc(var(--bar-total)+8px)] lg:pb-0">
-        <Outlet />
+        <RouteTransition>
+          <Outlet />
+        </RouteTransition>
       </main>
 
       <footer className="hidden border-t border-line bg-panel lg:block">
