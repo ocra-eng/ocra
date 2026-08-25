@@ -41,10 +41,13 @@ services:
         sync: false
       - key: SUPABASE_URL
         sync: false
+      # Dashboard-set, not pinned here. These are the onrender.com URLs
+      # until the .ocra.ie CNAMEs exist, and change again at cutover — a
+      # value in this file would overwrite the working one on every sync.
       - key: MEMBERS_APP_URL
-        value: https://dev-members.ocra.ie
+        sync: false
       - key: ALLOWED_ORIGINS
-        value: https://dev-members.ocra.ie
+        sync: false
       # Billing stays off until Stripe test keys are set; the API reports
       # billing: "disabled" rather than refusing to boot.
       - key: STRIPE_SECRET_KEY
@@ -70,8 +73,10 @@ services:
         name: X-Robots-Tag
         value: noindex
     envVars:
+      # Dashboard-set for the same reason as the API's URLs. Note Vite
+      # bakes this in at build time, so changing it needs a redeploy.
       - key: VITE_API_URL
-        value: https://dev-api.ocra.ie
+        sync: false
       - key: VITE_SUPABASE_URL
         sync: false
       - key: VITE_SUPABASE_PUBLISHABLE_KEY
