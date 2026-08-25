@@ -120,9 +120,17 @@ const loadSubscriptions = async () => {
       customerEmail: norm(customer?.email),
       customerDeleted: Boolean(customer?.deleted),
       created: new Date(sub.created * 1000),
-      currentPeriodEnd: sub.current_period_end
-        ? new Date(sub.current_period_end * 1000)
-        : null,
+      // Stripe moved current_period_end onto subscription items in the 2025
+      // API versions. Read the item first and fall back to the legacy field,
+      // so this works whichever version the account is pinned to.
+      currentPeriodEnd: (() => {
+        const fromItems = sub.items?.data
+          ?.map((item) => item.current_period_end)
+          .filter((value) => typeof value === "number")
+          .sort((a, b) => b - a)[0]
+        const seconds = fromItems ?? sub.current_period_end
+        return seconds ? new Date(seconds * 1000) : null
+      })(),
       cancelAt: sub.cancel_at ? new Date(sub.cancel_at * 1000) : null,
       priceIds: priceIds.join(" "),
     })

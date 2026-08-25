@@ -392,6 +392,85 @@ describe("profile", () => {
   })
 })
 
+describe("billing", () => {
+  /** Minimal Stripe double: enough for the customer-resolution paths. */
+  const missingCustomerStripe = {
+    customers: {
+      retrieve: async () => {
+        throw Object.assign(new Error("No such customer"), {
+          code: "resource_missing",
+        })
+      },
+      create: async () => ({ id: "cus_new" }),
+    },
+    checkout: {
+      sessions: { create: async () => ({ url: "https://checkout.test/session" }) },
+    },
+    billingPortal: {
+      sessions: {
+        create: async () => {
+          throw Object.assign(new Error("No such customer"), {
+            code: "resource_missing",
+          })
+        },
+      },
+    },
+  } as unknown as Stripe
+
+  beforeEach(() => {
+    app = createApp({
+      config: testConfig(),
+      db,
+      stripe: missingCustomerStripe,
+      verifyToken,
+    })
+  })
+
+  const post = (path: string) =>
+    app.request(path, {
+      method: "POST",
+      headers: { authorization: "Bearer token-member" },
+    })
+
+  it("replaces a customer id Stripe no longer knows, and checks out", async () => {
+    // A live-mode id in a database used with test keys, or a customer
+    // deleted in Stripe: either way it cannot be reused.
+    await db.insert(members).values({
+      email: "member@example.com",
+      displayName: "Stale Customer",
+      stripeCustomerId: "cus_from_another_mode",
+    })
+
+    const res = await post("/billing/checkout-session")
+    expect(res.status).toBe(200)
+
+    const [row] = await db.select().from(members)
+    expect(row.stripeCustomerId).toBe("cus_new")
+  })
+
+  it("reports no billing account rather than 500 when the portal customer is gone", async () => {
+    await db.insert(members).values({
+      email: "member@example.com",
+      displayName: "Stale Customer",
+      stripeCustomerId: "cus_from_another_mode",
+    })
+
+    const res = await post("/billing/portal-session")
+    expect(res.status).toBe(409)
+
+    // And the dead id is forgotten, so the next checkout starts clean.
+    const [row] = await db.select().from(members)
+    expect(row.stripeCustomerId).toBeNull()
+  })
+
+  it("409s the portal for a member with no billing account", async () => {
+    await db
+      .insert(members)
+      .values({ email: "member@example.com", displayName: "No Billing" })
+    expect((await post("/billing/portal-session")).status).toBe(409)
+  })
+})
+
 describe("webhook endpoint", () => {
   it("rejects a request with no stripe signature", async () => {
     const res = await app.request("/webhooks/stripe", {

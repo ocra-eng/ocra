@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import { Button } from "@ocra/ui"
+import { OTP_LENGTH } from "../constants"
+import { OtpInput } from "./OtpInput"
 
 interface OtpStepProps {
   email: string
@@ -10,8 +12,6 @@ interface OtpStepProps {
   onResend: () => void
   onBack: () => void
 }
-
-const CODE_LENGTH = 6
 
 export const OtpStep = ({
   email,
@@ -28,7 +28,7 @@ export const OtpStep = ({
     <form
       onSubmit={(event) => {
         event.preventDefault()
-        if (code.length === CODE_LENGTH) onSubmit(code)
+        if (code.length === OTP_LENGTH) onSubmit(code)
       }}
       className="flex flex-col gap-3"
     >
@@ -41,24 +41,19 @@ export const OtpStep = ({
         />
       </p>
 
-      <label
-        htmlFor="code"
-        className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-sub"
-      >
-        {t("otp.label")}
-      </label>
-      <input
-        id="code"
-        inputMode="numeric"
-        autoComplete="one-time-code"
-        maxLength={CODE_LENGTH}
+      <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-sub">
+        {t("otp.label", { length: OTP_LENGTH })}
+      </p>
+      <OtpInput
+        length={OTP_LENGTH}
         value={code}
-        onChange={(event) =>
-          setCode(event.target.value.replace(/\D/g, "").slice(0, CODE_LENGTH))
-        }
-        aria-invalid={error}
-        autoFocus
-        className="w-full border border-line bg-bg px-4 py-3 text-center font-mono text-2xl tracking-[0.5em] text-ink outline-none focus-visible:border-accent"
+        onChange={setCode}
+        // Filling the last box is the member's intent; make them press
+        // nothing extra.
+        onComplete={onSubmit}
+        invalid={error}
+        disabled={isBusy}
+        label={t("otp.label", { length: OTP_LENGTH })}
       />
       {error && (
         <p role="alert" className="text-sm text-tape">
@@ -70,7 +65,7 @@ export const OtpStep = ({
         type="submit"
         variant="tape"
         size="brand"
-        disabled={isBusy || code.length !== CODE_LENGTH}
+        disabled={isBusy || code.length !== OTP_LENGTH}
       >
         {isBusy ? t("otp.verifying") : t("otp.submit")}
       </Button>

@@ -5,7 +5,7 @@ export const authResources = {
     email: {
       title: "Sign in",
       intro:
-        "Enter your email and we'll send you a six-digit code. No password needed.",
+        "Enter your email and we'll send you a {{length}}-digit code. No password needed.",
       label: "Email address",
       placeholder: "you@example.com",
       submit: "Send me a code",
@@ -15,8 +15,8 @@ export const authResources = {
     otp: {
       title: "Enter your code",
       intro: "The code expires in ten minutes.",
-      sentTo: "We sent a six-digit code to <strong>{{email}}</strong>.",
-      label: "Six-digit code",
+      sentTo: "We sent a code to <strong>{{email}}</strong>.",
+      label: "{{length}}-digit code",
       submit: "Sign in",
       verifying: "Checking…",
       error: "That code isn't right. Check it and try again.",
@@ -30,7 +30,7 @@ export const authResources = {
     email: {
       title: "Logáil isteach",
       intro:
-        "Cuir isteach do ríomhphost agus seolfaimid cód sé dhigit chugat. Níl pasfhocal ag teastáil.",
+        "Cuir isteach do ríomhphost agus seolfaimid cód {{length}} digit chugat. Níl pasfhocal ag teastáil.",
       label: "Seoladh ríomhphoist",
       placeholder: "tu@sampla.ie",
       submit: "Seol cód chugam",
@@ -40,8 +40,8 @@ export const authResources = {
     otp: {
       title: "Cuir isteach do chód",
       intro: "Rachaidh an cód in éag i gceann deich nóiméad.",
-      sentTo: "Sheolamar cód sé dhigit chuig <strong>{{email}}</strong>.",
-      label: "Cód sé dhigit",
+      sentTo: "Sheolamar cód chuig <strong>{{email}}</strong>.",
+      label: "Cód {{length}} digit",
       submit: "Logáil isteach",
       verifying: "Á sheiceáil…",
       error: "Níl an cód sin ceart. Seiceáil é agus bain triail eile as.",
@@ -55,7 +55,7 @@ export const authResources = {
     email: {
       title: "Zaloguj się",
       intro:
-        "Podaj adres e-mail, a wyślemy Ci sześciocyfrowy kod. Hasło nie jest potrzebne.",
+        "Podaj adres e-mail, a wyślemy Ci {{length}}-cyfrowy kod. Hasło nie jest potrzebne.",
       label: "Adres e-mail",
       placeholder: "ty@przyklad.pl",
       submit: "Wyślij mi kod",
@@ -65,8 +65,8 @@ export const authResources = {
     otp: {
       title: "Wpisz kod",
       intro: "Kod wygasa po dziesięciu minutach.",
-      sentTo: "Wysłaliśmy sześciocyfrowy kod na <strong>{{email}}</strong>.",
-      label: "Sześciocyfrowy kod",
+      sentTo: "Wysłaliśmy kod na <strong>{{email}}</strong>.",
+      label: "Kod {{length}}-cyfrowy",
       submit: "Zaloguj się",
       verifying: "Sprawdzanie…",
       error: "Ten kod jest nieprawidłowy. Sprawdź go i spróbuj ponownie.",
@@ -80,7 +80,7 @@ export const authResources = {
     email: {
       title: "Вход",
       intro:
-        "Введите электронную почту, и мы отправим шестизначный код. Пароль не нужен.",
+        "Введите электронную почту, и мы отправим код из {{length}} цифр. Пароль не нужен.",
       label: "Электронная почта",
       placeholder: "vy@primer.ru",
       submit: "Отправить код",
@@ -90,8 +90,8 @@ export const authResources = {
     otp: {
       title: "Введите код",
       intro: "Код действует десять минут.",
-      sentTo: "Мы отправили шестизначный код на <strong>{{email}}</strong>.",
-      label: "Шестизначный код",
+      sentTo: "Мы отправили код на <strong>{{email}}</strong>.",
+      label: "Код из {{length}} цифр",
       submit: "Войти",
       verifying: "Проверка…",
       error: "Код неверный. Проверьте его и попробуйте снова.",
@@ -105,7 +105,7 @@ export const authResources = {
     email: {
       title: "Уваход",
       intro:
-        "Увядзіце электронную пошту, і мы дашлём шасцізначны код. Пароль не патрэбны.",
+        "Увядзіце электронную пошту, і мы дашлём код з {{length}} цыфр. Пароль не патрэбны.",
       label: "Электронная пошта",
       placeholder: "vy@pryklad.by",
       submit: "Даслаць код",
@@ -115,8 +115,8 @@ export const authResources = {
     otp: {
       title: "Увядзіце код",
       intro: "Код дзейнічае дзесяць хвілін.",
-      sentTo: "Мы даслалі шасцізначны код на <strong>{{email}}</strong>.",
-      label: "Шасцізначны код",
+      sentTo: "Мы даслалі код на <strong>{{email}}</strong>.",
+      label: "Код з {{length}} цыфр",
       submit: "Увайсці",
       verifying: "Праверка…",
       error: "Код няправільны. Праверце яго і паспрабуйце зноў.",

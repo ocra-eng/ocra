@@ -49,6 +49,25 @@ export const createApp = ({ config, db, stripe, verifyToken }: AppDeps) => {
     }
     return client
   }
+
+  /** True when Stripe says the referenced object does not exist. */
+  const isMissing = (error: unknown) =>
+    typeof error === "object" &&
+    error !== null &&
+    (error as { code?: string }).code === "resource_missing"
+
+  /**
+   * Forgets a Stripe customer id we can no longer resolve. Happens when the
+   * customer was deleted in Stripe, or when a database migrated from live
+   * Stripe is used with test keys — the ids simply do not exist in the
+   * other mode. Clearing it lets the next checkout create a fresh one.
+   */
+  const forgetCustomer = async (memberId: string) => {
+    await db
+      .update(members)
+      .set({ stripeCustomerId: null, updatedAt: new Date() })
+      .where(eq(members.id, memberId))
+  }
   const verify = verifyToken ?? createSupabaseVerifier(config.SUPABASE_URL)
   const authed = [requireAuth(verify), requireMember(db)] as const
 
@@ -149,6 +168,18 @@ export const createApp = ({ config, db, stripe, verifyToken }: AppDeps) => {
      * billing history and the portal incoherent.
      */
     let customerId = member.stripeCustomerId
+    if (customerId) {
+      // Confirm it still resolves before handing it to Checkout.
+      try {
+        const existing = await client.customers.retrieve(customerId)
+        if ((existing as { deleted?: boolean }).deleted) customerId = null
+      } catch (error) {
+        if (!isMissing(error)) throw error
+        customerId = null
+      }
+      if (!customerId) await forgetCustomer(member.id)
+    }
+
     if (!customerId) {
       const customer = await client.customers.create({
         email: member.email,
@@ -181,11 +212,24 @@ export const createApp = ({ config, db, stripe, verifyToken }: AppDeps) => {
     if (!member.stripeCustomerId) {
       throw new HTTPException(409, { message: "No billing account yet" })
     }
-    const session = await stripeOrFail().billingPortal.sessions.create({
-      customer: member.stripeCustomerId,
-      return_url: `${config.MEMBERS_APP_URL}/membership`,
-    })
-    return c.json({ url: session.url })
+
+    try {
+      const session = await stripeOrFail().billingPortal.sessions.create({
+        customer: member.stripeCustomerId,
+        return_url: `${config.MEMBERS_APP_URL}/membership`,
+      })
+      return c.json({ url: session.url })
+    } catch (error) {
+      if (isMissing(error)) {
+        await forgetCustomer(member.id)
+        throw new HTTPException(409, { message: "No billing account yet" })
+      }
+      // The portal also 400s when no configuration exists in this Stripe
+      // environment, which is a setup problem, not the member's.
+      throw new HTTPException(503, {
+        message: "The billing portal is not available",
+      })
+    }
   })
 
   /**

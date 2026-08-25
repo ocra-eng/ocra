@@ -131,15 +131,37 @@ const main = async () => {
         console.log(`  ${k.padEnd(22)} ${v}`)
       }
 
-      // Gate: what is in Postgres must match what Stripe says (§8).
+      /*
+       * Gate: every subscription this migration touched must be active in
+       * Postgres exactly when Stripe says it is (§8).
+       *
+       * Scoped to the migrated subscription ids on purpose. Counting every
+       * active row would fail on any database that also holds memberships
+       * bought directly — which is every environment after go-live, and the
+       * dev database as soon as anyone tests a purchase.
+       */
+      const migratedIds = rows
+        .filter((r) => r.membershipStatus === "active" && r.subscriptionId)
+        .map((r) => r.subscriptionId)
+
       const [{ count: active }] = await sql`
-        select count(*)::int from memberships where status = 'active'`
-      const expected = rows.filter((r) => r.membershipStatus === "active").length
+        select count(*)::int from memberships
+        where status = 'active'
+          and stripe_subscription_id = any(${sql.array(migratedIds)})`
+      const expected = migratedIds.length
       console.log(
-        `\n  Gate — active in Postgres (${active}) === expected (${expected}): ${
+        `\n  Gate — migrated subscriptions active in Postgres (${active}) === active in Stripe (${expected}): ${
           active === expected ? "PASS" : "FAIL"
         }`
       )
+
+      const [{ count: total }] = await sql`
+        select count(*)::int from memberships where status = 'active'`
+      if (total !== expected) {
+        console.log(
+          `  note: ${total - expected} further active membership(s) exist that this migration did not create`
+        )
+      }
       if (active !== expected) process.exitCode = 1
     } else {
       console.log("\nDry run only. Re-run with --commit to write.")

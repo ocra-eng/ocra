@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { Wordmark } from "@ocra/ui"
+import { OTP_LENGTH } from "../constants"
 import { useLogin } from "../model/useLogin"
 import { EmailStep } from "./EmailStep"
 import { OtpStep } from "./OtpStep"
@@ -30,7 +31,9 @@ export const LoginPanel = () => {
         <span className="text-tape">.</span>
       </h1>
       <p className="mb-8 mt-3 text-sub">
-        {awaitingCode ? t("otp.intro") : t("email.intro")}
+        {awaitingCode
+          ? t("otp.intro")
+          : t("email.intro", { length: OTP_LENGTH })}
       </p>
 
       {awaitingCode ? (
