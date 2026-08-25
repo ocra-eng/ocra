@@ -99,65 +99,80 @@ member number (see §7).
 
 ## 6. Order of operations at cutover
 
-Everything up to step 8 is reversible by doing nothing.
+**There is one environment, and it is production.** The Supabase project and
+the Render services (named `ocra-*-dev` for historical reasons — kept
+deliberately) hold real member data. Most of what a cutover plan would
+normally cover is therefore already done: the schema is applied, the tables
+are RLS-locked, auth and SMTP are configured, and the 23 members are
+migrated. What remains is smaller than it looks.
 
-**Prepare (days before, no downtime)**
+Everything before step 5 is reversible by doing nothing: v1 is still live
+and serving until DNS moves.
 
-1. **Supabase production project**, in eu-west-1. Configure, in this order,
-   because each has a lead time:
-   - Google provider, with the production callback added to the *existing*
-     Google OAuth client (add, never replace — v1 must keep working)
-   - Redirect URLs for `https://members.ocra.ie/**` **and** the Render
-     `*.onrender.com` host, so a DNS delay cannot lock everyone out
-   - Custom SMTP (Workspace or Resend) — templates cannot be edited without
-     it, and the built-in sender only reaches project members
-   - Both email templates carrying `{{ .Token }}`. **Confirm signup matters
-     most**: every migrated member hits that one, not Magic Link, because
-     none of them exist in Supabase auth yet
-   - "Confirm email" **off** — otherwise OTP sign-in sends a confirmation
-     link instead of a code
-   - Email OTP length, which must equal `OTP_LENGTH` in
-     `apps/members/src/features/auth/constants.ts`
-2. **Render production services** from `render.yaml`, with:
-   - `DATABASE_URL` from Supabase's **session pooler**, never the direct
-     `db.<ref>.supabase.co` host — that is IPv6-only and unreachable from
-     Render (§12)
-   - `APP_ENV=production`, which makes missing Stripe config fatal rather
-     than silently disabling billing
-   - `ALLOWED_ORIGINS` and `MEMBERS_APP_URL` set to whatever host is
-     actually serving, onrender or custom domain
-3. **Live Stripe**: customer portal configuration (none exists on the live
-   account today, so cancel and card-update would 503), a restricted API
-   key, and a webhook endpoint at `https://api.ocra.ie/webhooks/stripe`
-   subscribed to `checkout.session.completed` and
-   `customer.subscription.created|updated|deleted`. Create the endpoint
-   **at cutover**, not before: Stripe disables endpoints that fail
-   repeatedly, and the URL will not resolve until then.
-4. **Dry run** the migration against production Supabase and read the
-   report. Work every exception bucket while there is time.
+**Already done**
 
-**Cut over (short window)**
+- Supabase project: schema, RLS lockdown, Google provider, email OTP with
+  "Confirm email" off, Workspace SMTP, branded templates carrying
+  `{{ .Token }}`
+- Render services for the API and members app, on the session-pooler
+  connection string
+- Migration run and verified — 23 members, 9 memberships, gate passing
 
-5. **Freeze**: disable v1's Stripe checkout route so no new subscriptions
-   appear mid-migration. Announce the window.
-6. **Final reconciliation**, then the write migration. Idempotent, so this
-   is just the delta.
-7. **Verify** (§8) before touching DNS.
-8. **DNS**: `api.ocra.ie` and `members.ocra.ie` → Render. Specific records
-   override the `*.ocra.ie` wildcard that currently answers for every
-   subdomain.
-9. **Live Stripe webhook** created and its secret set; replay any events
-   from the freeze window with the Stripe CLI.
+**1. Remove the test data.** The build put sandbox artefacts in the
+production database. One of them matters:
+
+| Row | Why it has to go |
+|---|---|
+| Membership `OCRA-2026-0006` | Backed by a **sandbox** subscription. Under live Stripe keys that subscription does not exist, so no webhook can ever correct it: it would stay active forever, never renewing and never expiring. It also holds a member number a real member should get. |
+| 3 rows in `processed_stripe_events` | Sandbox event ids. Harmless, but they make the table lie about what has been processed. |
+| auth user `it+otp@ocra.ie` | A plus-addressed test sign-in. |
+
+The `it@ocra.ie` member row and auth user can stay — an account with no
+membership grants nothing.
+
+**2. Switch Stripe from sandbox to live** on the API service. The sandbox
+keys currently point at production data, a combination that can neither take
+real money nor resolve live customers:
+
+- Restricted live secret key (write on Customers, Subscriptions, Checkout
+  Sessions, Billing Portal; read on Products, Prices)
+- `STRIPE_ATHLETE_PRICE_ID=price_1RgQkERxZ1j3VLtmlWrSFBuE`
+- `APP_ENV=production`, so missing Stripe config fails the boot instead of
+  silently disabling billing
+- **Customer portal configuration on the live account** — the sandbox has
+  one, live has none, and without it cancel and card-update 503
+
+**3. Live webhook endpoint** at the API's URL, subscribed to
+`checkout.session.completed` and `customer.subscription.created|updated|
+deleted`, with its signing secret set. Create this **when the URL resolves**,
+not before: Stripe disables endpoints that fail repeatedly.
+
+**4. Prove it with one real transaction.** Buy a membership with a real
+card, confirm the webhook mints the number, then refund it. Nothing else
+proves the live key, price id, webhook secret and portal config are all
+correct *together*, and it costs one refund.
+
+**5. Freeze v1** by disabling its Stripe checkout route, then run the final
+reconciliation and the migration delta. Idempotent, so this is cheap.
+
+**6. Verify** (§8), then move DNS: `api.ocra.ie` and `members.ocra.ie` →
+Render. Specific records override the `*.ocra.ie` wildcard that currently
+answers for every subdomain. Update `ALLOWED_ORIGINS`, `MEMBERS_APP_URL`,
+`VITE_API_URL` (a build-time value — needs a redeploy) and Supabase's Site
+URL and redirect list to the real hosts.
 
 **After**
 
-10. **Watch for 48 hours.** Then disable the two legacy Stripe webhook
-    endpoints (a Supabase edge function on an unrelated project, and a
-    Firestore Stripe extension) — leaving them means three consumers of the
-    same events and no way to tell which is authoritative.
-11. **Rotate every credential** that has been shared during the build,
-    including the live Stripe secret key and the Mongo admin password.
-12. Archive both v1 repos; tear down the Vercel projects and Atlas.
+7. **Watch for 48 hours.** Then disable the two legacy Stripe webhook
+   endpoints (a Supabase edge function on an unrelated project, and a
+   Firestore Stripe extension) — leaving them means three consumers of the
+   same events and no way to tell which is authoritative.
+8. **Move off free tiers.** A paused Supabase project or a sleeping API is
+   an outage now, not an inconvenience. The keep-alive cron is protecting
+   production until then, so its failure is worth alerting on.
+9. **Rotate every credential shared during the build**: the live Stripe
+   secret key and the Mongo admin password.
+10. Archive both v1 repos; tear down the Vercel projects and Atlas.
 
 ## 7. Idempotency and re-running
 

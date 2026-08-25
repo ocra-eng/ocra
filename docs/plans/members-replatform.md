@@ -175,18 +175,25 @@ with no schema change.
 
 ## 3. Deployment and environments
 
-Two standing environments — dev exists from Phase 0, prod comes alive at
-cutover. Both origins are pre-registered in Google OAuth and Supabase from
-day one, so cutover is a pure DNS change, never an auth-config change.
+**One environment, and it is production.** The original plan called for
+separate dev and production Supabase projects; in practice the project that
+was set up became production, and the 23 real members were migrated into it.
+The Render service names keep their `-dev` suffix — deliberately, since
+renaming after DNS is more disruptive than a misleading name.
 
-| | dev (from Phase 0) | prod (at cutover) |
+The consequence to hold onto: **there is no safe place to test destructively
+any more.** Anything that writes runs against real member data. Sandbox
+Stripe kept payment testing harmless, but a second Supabase project would be
+needed before anyone can safely exercise, say, a migration rewrite.
+
+| | today | at cutover |
 |---|---|---|
 | marketing | Render static site | ocra.ie, once it moves off WordPress |
 | members FE | **dev-members.ocra.ie** — Pages artifact repo, deploys on every main push | **members.ocra.ie** — second Pages artifact repo, deploys on release |
-| API | **dev-api.ocra.ie** — Render free (sleeps; health gate covers it) | **api.ocra.ie** — Render Starter ~$7/mo, next to rops |
-| Auth + Postgres | Supabase dev project (free; keep-alive cron) | Supabase prod project (Pro ~$25/mo) |
-| Stripe | test keys | live keys |
-| Email | Resend + SPF/DKIM on ocra.ie (shared) | same |
+| API | `ocra-api-dev.onrender.com` — Render free (sleeps; health gate covers it) | api.ocra.ie — Render Starter ~$7/mo, next to rops |
+| Auth + Postgres | Supabase, **production data already in it** (free tier; keep-alive cron) | same project, Pro ~$25/mo |
+| Stripe | sandbox keys | live keys, plus a live portal configuration |
+| Email | Google Workspace SMTP (`smtp.gmail.com`, app password) | same |
 
 members.ocra.ie DNS stays pointed at the old Vercel app, untouched, until
 cutover day. Decommissioned at cutover: both Vercel projects, MongoDB Atlas.
@@ -295,8 +302,15 @@ Deployment traps discovered along the way are recorded in §12 there.
 - **Sessions in localStorage** (supabase-js on a static SPA): accepted trade
   vs httpOnly cookies, mitigated by short token expiry and no third-party
   scripts; revisit if the threat model changes.
-- **Supabase free-tier pause** during preview: keep-alive cron; monitor it
-  (a failed cron for 8 days = paused project needing manual restore).
+- **Supabase free-tier pause now risks production.** The keep-alive cron is
+  the only thing preventing a paused project, so a cron that fails silently
+  for eight days is an outage. Alert on it, and move to a paid tier.
+- **Sandbox Stripe keys currently point at production data**, which can
+  neither take real money nor resolve live customers. Switching them is a
+  cutover step, not an optimisation.
+- **Test rows exist in the production database** from the build — one
+  membership backed by a sandbox subscription that no live webhook can ever
+  correct. Listed in the migration plan §6.
 - **Existing subscribers count unknown** until we query Stripe — migration
   dry-run report before cutover.
 - **Email deliverability** is part of the login path: verified before
