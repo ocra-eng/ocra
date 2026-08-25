@@ -181,7 +181,7 @@ day one, so cutover is a pure DNS change, never an auth-config change.
 
 | | dev (from Phase 0) | prod (at cutover) |
 |---|---|---|
-| marketing | — | ocra.ie, GH Pages, this repo (unchanged) |
+| marketing | Render static site | ocra.ie, once it moves off WordPress |
 | members FE | **dev-members.ocra.ie** — Pages artifact repo, deploys on every main push | **members.ocra.ie** — second Pages artifact repo, deploys on release |
 | API | **dev-api.ocra.ie** — Render free (sleeps; health gate covers it) | **api.ocra.ie** — Render Starter ~$7/mo, next to rops |
 | Auth + Postgres | Supabase dev project (free; keep-alive cron) | Supabase prod project (Pro ~$25/mo) |
