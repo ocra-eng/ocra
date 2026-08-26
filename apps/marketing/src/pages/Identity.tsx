@@ -21,10 +21,6 @@ type Colour = {
   line: string
   /** the longer one, for captions and guidelines */
   caption: string
-  /** what the shot has to show, and what it must not be */
-  shot: string
-  /** where to start looking. Categories and searches, not vetted files. */
-  hunt: { label: string; href: string }[]
 }
 
 const COLOURS: Colour[] = [
@@ -34,21 +30,6 @@ const COLOURS: Colour[] = [
     line: "A fifth of the country, and the oldest thing we stand on.",
     caption:
       "Second-highest proportion of peatland in Europe, after Finland. We cut it for fuel for centuries, burnt it for electricity for seventy years, and stopped — and all the while it kept what it swallowed.",
-    shot: "A cut turf bank: the vertical face, sods footed in stacks beside it. Worked ground, not scenery. Failing that, blanket bog under low cloud. Not a sunset.",
-    hunt: [
-      {
-        label: "Commons — turf cutting in Ireland",
-        href: "https://commons.wikimedia.org/w/index.php?search=turf+cutting+Ireland&title=Special:MediaSearch&type=image",
-      },
-      {
-        label: "Commons — peat bogs of Ireland",
-        href: "https://commons.wikimedia.org/w/index.php?search=peat+bog+Ireland&title=Special:MediaSearch&type=image",
-      },
-      {
-        label: "Commons — Landscapes of Ireland",
-        href: "https://commons.wikimedia.org/wiki/Category:Landscapes_of_Ireland",
-      },
-    ],
   },
   {
     name: "Limestone",
@@ -56,25 +37,6 @@ const COLOURS: Colour[] = [
     line: "The rock half the country sits on. Ground down, it turns bog into field.",
     caption:
       "Half the island sits on Carboniferous limestone. Ground down it is the lime spread on sour ground to sweeten it; burnt and slaked it is the wash that made every white cottage white. It is the material that turns bog into field.",
-    shot: "The Burren pavement, low and close so the clints and grikes read as fissured rock. Not the Cliffs of Moher — those are the wrong claim, and they will get used by mistake if they are in the folder.",
-    hunt: [
-      {
-        label: "Commons — The Burren",
-        href: "https://commons.wikimedia.org/w/index.php?search=Burren+limestone+pavement&title=Special:MediaSearch&type=image",
-      },
-      {
-        label: "Commons — File:The Burren, Co. Clare, Ireland.jpg",
-        href: "https://commons.wikimedia.org/wiki/File:The_Burren,Co._Clare,_Ireland.jpg",
-      },
-      {
-        label: "Commons — Landforms of Ireland",
-        href: "https://commons.wikimedia.org/wiki/Category:Landforms_of_Ireland",
-      },
-      {
-        label: "Commons — limekilns",
-        href: "https://commons.wikimedia.org/w/index.php?search=lime+kiln+Ireland&title=Special:MediaSearch&type=image",
-      },
-    ],
   },
   {
     name: "Field",
@@ -82,17 +44,6 @@ const COLOURS: Colour[] = [
     line: "The flag's green is who we came from. This is the green you can stand in.",
     caption:
       "The green on the flag is who we came from. This one is just what is there: 82% of Irish farmland is grass, so the sea of green is a land-use fact rather than a postcard.",
-    shot: "Pasture divided by stone walls or hedge, mid-distance, flat overcast light. Working land with stock in it. Anything golden-hour is the wrong green and the wrong argument.",
-    hunt: [
-      {
-        label: "Commons — Irish pasture and farmland",
-        href: "https://commons.wikimedia.org/w/index.php?search=Ireland+pasture+farmland+field&title=Special:MediaSearch&type=image",
-      },
-      {
-        label: "Commons — Landscapes of Ireland",
-        href: "https://commons.wikimedia.org/wiki/Category:Landscapes_of_Ireland",
-      },
-    ],
   },
   {
     name: "Tape",
@@ -100,13 +51,6 @@ const COLOURS: Colour[] = [
     line: "The other tradition. Ten percent of the layout, and not decoration.",
     caption:
       "Orange on the flag is the other tradition. Here it is the ten percent that marks the route — the one thing on a course you are required to follow.",
-    shot: "Course tape on a real Irish course: orange against wet green, close enough to see the ground. This is the one we should not be sourcing — shoot it at the next race and own the file.",
-    hunt: [
-      {
-        label: "Shoot it ourselves — next sanctioned race",
-        href: "https://commons.wikimedia.org/w/index.php?search=bracken+winter+Ireland+hillside&title=Special:MediaSearch&type=image",
-      },
-    ],
   },
 ]
 
@@ -249,23 +193,6 @@ export const Identity = () => {
               </div>
               <p className="mt-1 max-w-[62ch] text-base">{c.caption}</p>
 
-              <div className="mt-6 border border-line bg-bg p-4">
-                <Meta>The shot</Meta>
-                <p className="mt-1 max-w-[62ch] text-sm">{c.shot}</p>
-                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
-                  {c.hunt.map((h) => (
-                    <a
-                      key={h.href}
-                      href={h.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="font-mono text-[10px] uppercase tracking-[0.14em] text-sub underline decoration-line underline-offset-2 hover:text-ink"
-                    >
-                      {h.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
             </div>
           </section>
         ))}
