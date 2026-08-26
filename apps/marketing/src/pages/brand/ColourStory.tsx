@@ -12,7 +12,18 @@
  *
  * 1080 x 1350 — the tallest ratio the feed allows, which is what a carousel
  * wants. Switch FRAME for stories.
+ *
+ * Laid out as plain HTML in container units rather than SVG. These were
+ * foreignObject inside an <svg> and mobile WebKit neither scales nor clips
+ * that reliably: every slide rendered at its intrinsic 1080px and spilled
+ * over its neighbours, so the eyebrows floated loose and the hex codes
+ * stacked on top of each other. `cqw` gives the same proportional scaling
+ * with none of that, and the export screenshots the div at 1080 for a 1:1
+ * render.
  */
+
+/** a design pixel, as a share of the frame's width */
+const u = (px: number) => `${((px / FRAME.w) * 100).toFixed(3)}cqw`
 
 const FRAME = { w: 1080, h: 1350 }
 const PAD = 88
@@ -94,32 +105,33 @@ const Frame = ({
   slide: Base
   children: React.ReactNode
 }) => (
-  <svg
-    viewBox={`0 0 ${FRAME.w} ${FRAME.h}`}
-    className="block h-auto w-full"
+  <div
+    data-slide={slide.key}
     role="img"
     aria-label={`Palette slide: ${slide.key}`}
+    style={{
+      containerType: "inline-size",
+      aspectRatio: `${FRAME.w} / ${FRAME.h}`,
+      width: "100%",
+      overflow: "hidden",
+      background: slide.ground,
+      color: slide.ink,
+    }}
   >
-    <foreignObject x="0" y="0" width={FRAME.w} height={FRAME.h}>
-      <div
-        // @ts-expect-error -- xmlns is required inside foreignObject
-        xmlns="http://www.w3.org/1999/xhtml"
-        style={{
-          width: FRAME.w,
-          height: FRAME.h,
-          background: slide.ground,
-          color: slide.ink,
-          padding: PAD,
-          boxSizing: "border-box",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        {children}
-      </div>
-    </foreignObject>
-  </svg>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: u(PAD),
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      {children}
+    </div>
+  </div>
 )
 
 /** eyebrow left, mark right — the mark is the one that reads on the ground,
@@ -130,16 +142,14 @@ const Top = ({ label, mark }: { label: string; mark: Mark }) => (
   >
     <p
       className="font-mono uppercase"
-      style={{ opacity: 0.6, fontSize: 26, letterSpacing: "0.18em", margin: 0 }}
+      style={{ opacity: 0.6, fontSize: u(26), letterSpacing: "0.18em", margin: 0 }}
     >
       {label}
     </p>
     <img
       src={`${import.meta.env.BASE_URL}brand/${mark}.svg`}
       alt=""
-      width={116}
-      height={112}
-      style={{ display: "block" }}
+      style={{ display: "block", width: u(116), height: "auto" }}
     />
   </div>
 )
@@ -147,7 +157,7 @@ const Top = ({ label, mark }: { label: string; mark: Mark }) => (
 const Eyebrow = ({ children }: { children: string }) => (
   <p
     className="font-mono uppercase"
-    style={{ opacity: 0.6, fontSize: 26, letterSpacing: "0.18em", margin: 0 }}
+    style={{ opacity: 0.6, fontSize: u(26), letterSpacing: "0.18em", margin: 0 }}
   >
     {children}
   </p>
@@ -156,7 +166,7 @@ const Eyebrow = ({ children }: { children: string }) => (
 const Foot = ({ children }: { children: string }) => (
   <p
     className="font-mono uppercase"
-    style={{ fontSize: 24, letterSpacing: "0.14em", opacity: 0.65, margin: 0 }}
+    style={{ fontSize: u(24), letterSpacing: "0.14em", opacity: 0.65, margin: 0 }}
   >
     {children}
   </p>
@@ -166,10 +176,10 @@ const BarLabel = ({ children }: { children: string }) => (
   <p
     className="font-mono uppercase"
     style={{
-      fontSize: 22,
+      fontSize: u(22),
       letterSpacing: "0.16em",
       opacity: 0.55,
-      margin: "0 0 12px",
+      margin: `0 0 ${u(12)}`,
     }}
   >
     {children}
@@ -177,7 +187,7 @@ const BarLabel = ({ children }: { children: string }) => (
 )
 
 const Bar = ({ parts }: { parts: { w: string; c: string }[] }) => (
-  <div style={{ display: "flex", height: 88 }}>
+  <div style={{ display: "flex", height: u(88) }}>
     {parts.map((p, i) => (
       <div key={i} style={{ width: p.w, background: p.c }} />
     ))}
@@ -192,14 +202,14 @@ const Slide = ({ slide }: { slide: Slide }) => {
         <div>
           <p
             className="font-display uppercase"
-            style={{ fontSize: 172, fontWeight: 800, lineHeight: 0.88, margin: 0 }}
+            style={{ fontSize: u(172), fontWeight: 800, lineHeight: 0.88, margin: 0 }}
           >
             Terrain,
             <br />
             not flag
             <span style={{ color: TAPE }}>.</span>
           </p>
-          <p style={{ fontSize: 42, lineHeight: 1.32, marginTop: 40, maxWidth: 800 }}>
+          <p style={{ fontSize: u(42), lineHeight: 1.32, marginTop: u(40), maxWidth: u(800) }}>
             Four colours, all of them off the ground. None of them painted on.
           </p>
         </div>
@@ -215,7 +225,7 @@ const Slide = ({ slide }: { slide: Slide }) => {
         <div>
           <p
             className="font-display uppercase"
-            style={{ fontSize: 112, fontWeight: 800, lineHeight: 0.9, margin: 0 }}
+            style={{ fontSize: u(112), fontWeight: 800, lineHeight: 0.9, margin: 0 }}
           >
             It was the flag
             <br />
@@ -223,7 +233,7 @@ const Slide = ({ slide }: { slide: Slide }) => {
             <span style={{ color: TAPE }}>.</span>
           </p>
 
-          <div style={{ marginTop: 48 }}>
+          <div style={{ marginTop: u(48) }}>
             <BarLabel>The flag</BarLabel>
             <Bar
               parts={[
@@ -234,7 +244,7 @@ const Slide = ({ slide }: { slide: Slide }) => {
             />
           </div>
 
-          <div style={{ marginTop: 28 }}>
+          <div style={{ marginTop: u(28) }}>
             <BarLabel>Our ratio — 60 / 30 / 10</BarLabel>
             <Bar
               parts={[
@@ -245,7 +255,7 @@ const Slide = ({ slide }: { slide: Slide }) => {
             />
           </div>
 
-          <p style={{ fontSize: 38, lineHeight: 1.32, marginTop: 40, maxWidth: 880 }}>
+          <p style={{ fontSize: u(38), lineHeight: 1.32, marginTop: u(40), maxWidth: u(880) }}>
             White sits between green and orange as a truce. Limestone lands in
             the same place — and ground limestone is an alkali. It does not
             remove the acid, it makes the ground workable.
@@ -262,11 +272,11 @@ const Slide = ({ slide }: { slide: Slide }) => {
       <div>
         <p
           className="font-display uppercase"
-          style={{ fontSize: 196, fontWeight: 800, lineHeight: 0.85, margin: 0 }}
+          style={{ fontSize: u(196), fontWeight: 800, lineHeight: 0.85, margin: 0 }}
         >
           {slide.name}
         </p>
-        <p style={{ fontSize: 42, lineHeight: 1.32, marginTop: 44, maxWidth: 840 }}>
+        <p style={{ fontSize: u(42), lineHeight: 1.32, marginTop: u(44), maxWidth: u(840) }}>
           {slide.body}
         </p>
       </div>

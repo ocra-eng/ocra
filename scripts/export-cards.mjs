@@ -24,13 +24,13 @@ const browser = await puppeteer.launch({ executablePath: exe, headless: true })
 const page = await browser.newPage()
 await page.setViewport({ width: 1240, height: 1500, deviceScaleFactor: 1 })
 await page.goto(URL, { waitUntil: "domcontentloaded" })
-await page.waitForSelector('svg[aria-label^="Palette slide"]', { timeout: 20000 })
+await page.waitForSelector('[data-slide]', { timeout: 20000 })
 
 // Unclamp to true post size. The grid has to go first: widening a slide
 // inside its track just makes it overflow and get overdrawn by the next one,
 // which reads as cropped text.
 const names = await page.evaluate(() => {
-  const slides = [...document.querySelectorAll('svg[aria-label^="Palette slide"]')]
+  const slides = [...document.querySelectorAll('[data-slide]')]
   const grid = slides[0].parentElement.parentElement
   grid.style.cssText = "display:block;width:1080px;max-width:none"
   for (const svg of slides) {
@@ -46,7 +46,7 @@ await page.evaluate(() =>
 )
 await new Promise((r) => setTimeout(r, 1500))
 
-const slides = await page.$$('svg[aria-label^="Palette slide"]')
+const slides = await page.$$('[data-slide]')
 for (const [i, el] of slides.entries()) {
   const file = `${OUT}/${String(i + 1).padStart(2, "0")}-${names[i]}.png`
   await el.screenshot({ path: file })
