@@ -74,6 +74,7 @@ export const FOOTER_META_LINKS: NavItem[] = [
   { key: "whatIsOcr", href: "/about/what-is-ocr", isRoute: true },
   { key: "contact", href: "/about/contact", isRoute: true },
   { key: "constitution", href: "/governance/constitution-bylaws", isRoute: true },
+  { key: "assets", href: "/assets", isRoute: true },
 ]
 
 export interface RecognitionLogo {

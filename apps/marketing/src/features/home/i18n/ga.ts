@@ -38,6 +38,7 @@ export const ga = {
     whatIsOcr: "Cad é OCR?",
     contact: "Teagmháil",
     constitution: "Bunreacht & Fodhlíthe",
+    assets: "Sócmhainní",
   },
   menu: {
     open: "Oscail an roghchlár",

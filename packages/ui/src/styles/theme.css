@@ -31,7 +31,7 @@
   --color-field: #0f7b3f;
   --color-field-bright: #3fb873;
   --color-tape: #f4520b;
-  --color-chalk: #f3f2ec;
+  --color-limestone: #f3f2ec;
   --color-stone: #5c6b60;
   --color-moss: #d9dcd0;
 
@@ -50,7 +50,7 @@
   --logo-filter: grayscale(1);
   --logo-filter-inverse: invert(0.82) grayscale(1);
   --logo-blend: multiply;
-  --bg: var(--color-chalk);
+  --bg: var(--color-limestone);
   --panel: #faf9f4;
   --ink: #12291e;
   --sub: var(--color-stone);

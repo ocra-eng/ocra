@@ -19,7 +19,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-ink/10",
         link: "text-oklch(0.205 0 0) underline-offset-4 hover:underline dark:text-oklch(0.922 0 0)",
         tape: "rounded-none bg-tape font-display font-bold tracking-[0.06em] text-bog uppercase hover:bg-[#D8480A]",
-        chalk: "rounded-none bg-chalk font-display font-bold tracking-[0.06em] text-bog uppercase hover:bg-white",
+        limestone: "rounded-none bg-limestone font-display font-bold tracking-[0.06em] text-bog uppercase hover:bg-white",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

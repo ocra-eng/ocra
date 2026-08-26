@@ -41,13 +41,13 @@ export const MembershipCard = ({
   return (
     <article
       className={cn(
-        "relative isolate overflow-hidden border border-bog-deep bg-bog text-chalk",
+        "relative isolate overflow-hidden border border-bog-deep bg-bog text-limestone",
         muted && "grayscale-[0.85] opacity-70"
       )}
     >
-      <TriskeleMark className="pointer-events-none absolute -right-10 -top-10 -z-10 h-56 w-56 text-chalk/5" />
+      <TriskeleMark className="pointer-events-none absolute -right-10 -top-10 -z-10 h-56 w-56 text-limestone/5" />
 
-      <div className="flex items-start justify-between gap-4 border-b border-chalk/15 px-6 py-5">
+      <div className="flex items-start justify-between gap-4 border-b border-limestone/15 px-6 py-5">
         <Wordmark onDark className="h-8 md:h-8" />
         <StatusBadge status={membership.status} />
       </div>
@@ -60,7 +60,7 @@ export const MembershipCard = ({
             className="h-16 w-16"
           />
           <div className="min-w-0">
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-chalk/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-limestone/60">
             {t(`type.${membership.type}`)}
           </p>
           <p className="mt-1 truncate font-display text-3xl font-bold uppercase leading-tight">
@@ -68,14 +68,14 @@ export const MembershipCard = ({
           </p>
           <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
             <div>
-              <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-chalk/60">
+              <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-limestone/60">
                 {t("card.number")}
               </dt>
               <dd className="mt-0.5 font-mono">{membership.memberNumber}</dd>
             </div>
             {membership.currentPeriodEnd && (
               <div>
-                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-chalk/60">
+                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-limestone/60">
                   {t("card.validUntil")}
                 </dt>
                 <dd className="mt-0.5 font-mono">
@@ -88,7 +88,7 @@ export const MembershipCard = ({
         </div>
 
         {verificationUrl && (
-          <div className="shrink-0 self-center bg-chalk p-2.5">
+          <div className="shrink-0 self-center bg-limestone p-2.5">
             <QRCode
               value={verificationUrl}
               size={112}

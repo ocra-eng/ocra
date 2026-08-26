@@ -38,6 +38,7 @@ export const pl = {
     whatIsOcr: "Czym jest OCR?",
     contact: "Kontakt",
     constitution: "Statut i regulamin",
+    assets: "Zasoby",
   },
   menu: {
     open: "Otwórz menu",

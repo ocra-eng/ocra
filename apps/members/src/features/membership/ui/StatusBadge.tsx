@@ -4,9 +4,9 @@ import { cn } from "@ocra/ui"
 
 const TONE: Record<MembershipStatus, string> = {
   active: "bg-field-bright text-bog-deep",
-  pending: "bg-chalk/20 text-chalk",
-  expired: "bg-tape text-chalk",
-  none: "bg-chalk/20 text-chalk",
+  pending: "bg-limestone/20 text-limestone",
+  expired: "bg-tape text-limestone",
+  none: "bg-limestone/20 text-limestone",
 }
 
 interface StatusBadgeProps {

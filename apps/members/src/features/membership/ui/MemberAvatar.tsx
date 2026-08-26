@@ -22,7 +22,7 @@ const initials = (name: string) =>
 export const MemberAvatar = ({ name, photoUrl, className }: MemberAvatarProps) => (
   <span
     className={cn(
-      "flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-chalk/25 bg-chalk/10",
+      "flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-limestone/25 bg-limestone/10",
       className
     )}
   >
