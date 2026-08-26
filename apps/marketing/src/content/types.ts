@@ -8,7 +8,11 @@ export type ContentBlock =
 
 export interface PageCta {
   label: string
+  /** a path, an absolute URL, or the literal "MEMBERS_URL" — resolved at
+   *  render time so the members app's host can differ per environment */
   href: string
+  /** the one action the page is actually for; rendered in tape */
+  primary?: boolean
 }
 
 export interface PageContent {

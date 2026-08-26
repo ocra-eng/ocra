@@ -39,6 +39,7 @@ export const ru = {
     contact: "Контакты",
     constitution: "Устав и регламенты",
     assets: "Ресурсы",
+    signIn: "Войти",
   },
   menu: {
     open: "Открыть меню",

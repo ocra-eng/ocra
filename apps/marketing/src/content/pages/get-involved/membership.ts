@@ -149,6 +149,15 @@ export const content: PageContent = {
   ],
   "ctas": [
     {
+      "label": "Join OCRA",
+      "href": "MEMBERS_URL",
+      "primary": true
+    },
+    {
+      "label": "Member login",
+      "href": "MEMBERS_URL"
+    },
+    {
       "label": "View Events",
       "href": "/compete/events"
     }

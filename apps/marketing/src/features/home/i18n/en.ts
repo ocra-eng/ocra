@@ -39,6 +39,7 @@ export const en = {
     contact: "Contact",
     constitution: "Constitution & Bylaws",
     assets: "Assets",
+    signIn: "Sign in",
   },
   menu: {
     open: "Open menu",

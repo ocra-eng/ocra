@@ -25,7 +25,14 @@ const FooterLink = ({ item, className }: { item: NavLink; className: string }) =
   )
 
 export const SiteFooter = () => {
-  const { footerColumns, footerMetaLinks, footerRecognition, footerCopyright } =
+  const {
+    footerColumns,
+    footerMetaLinks,
+    footerRecognition,
+    footerCopyright,
+    signInLabel,
+    membersUrl,
+  } =
     useHome()
 
   return (
@@ -62,6 +69,12 @@ export const SiteFooter = () => {
               className="-mx-1.5 rounded-sm px-1.5 py-0.5 text-sm font-medium text-sub hover:bg-mist hover:text-ink hover:underline"
             />
           ))}
+          <a
+            href={membersUrl}
+            className="-mx-1.5 rounded-sm px-1.5 py-0.5 text-sm font-medium text-sub hover:bg-mist hover:text-ink hover:underline"
+          >
+            {signInLabel}
+          </a>
         </div>
 
         <div className="mt-9 flex flex-wrap items-center justify-between gap-x-6 gap-y-8">

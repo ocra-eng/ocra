@@ -1,9 +1,12 @@
 import { Button } from "@ocra/ui"
+import { Link } from "react-router"
+import { useLocalizedPath } from "@/features/language"
 import { useHome } from "../model/useHome"
 import { PhotoSlot } from "./PhotoSlot"
 
 export const Hero = () => {
   const { org, hero } = useHome()
+  const localize = useLocalizedPath()
 
   return (
     <section className="bg-bg text-ink">
@@ -34,7 +37,7 @@ export const Hero = () => {
               asChild
               className="w-full sm:w-auto"
             >
-              <a href="#membership">{hero.ctaLabel}</a>
+              <Link to={localize("/membership")}>{hero.ctaLabel}</Link>
             </Button>
             <span className="text-[13px] text-sub">{hero.ctaNote}</span>
           </div>

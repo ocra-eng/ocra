@@ -39,6 +39,7 @@ export const ga = {
     contact: "Teagmháil",
     constitution: "Bunreacht & Fodhlíthe",
     assets: "Sócmhainní",
+    signIn: "Sínigh isteach",
   },
   menu: {
     open: "Oscail an roghchlár",

@@ -38,7 +38,8 @@ const DrawerLink = ({
   )
 
 export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
-  const { navLinks, joinLabel, menuCloseLabel } = useHome()
+  const { navLinks, joinLabel, signInLabel, membersUrl, menuCloseLabel } =
+    useHome()
   const localize = useLocalizedPath()
   const [expanded, setExpanded] = useState<string | null>(null)
 
@@ -134,12 +135,20 @@ export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
           )}
         </nav>
 
-        <div className="mt-auto flex flex-col gap-6 pt-8">
+        <div className="mt-auto flex flex-col gap-3 pt-8">
           <Button variant="tape" size="brand" asChild className="w-full">
             <Link to={localize("/membership")} onClick={onClose}>
               {joinLabel}
             </Link>
           </Button>
+          {/* separate origin — the members app owns its own auth */}
+          <a
+            href={membersUrl}
+            onClick={onClose}
+            className="w-full border border-limestone/25 px-5 py-2.5 text-center font-display text-sm font-bold uppercase tracking-[0.03em] text-limestone hover:bg-limestone/10"
+          >
+            {signInLabel}
+          </a>
         </div>
       </aside>
     </div>

@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { MEMBERS_URL } from "@/config/site"
 import type { HeroContent, NavItem, Org } from "@ocra/shared"
 import { useLocalizedPath } from "@/features/language"
 import { FOOTER_META_LINKS, FOOTER_SITEMAP, NAV_ITEMS, ORG } from "../constants"
@@ -24,6 +25,8 @@ interface UseHomeResult {
   footerColumns: FooterColumn[]
   footerMetaLinks: NavLink[]
   joinLabel: string
+  signInLabel: string
+  membersUrl: string
   menuOpenLabel: string
   menuCloseLabel: string
   footerRecognition: string
@@ -59,6 +62,8 @@ export const useHome = (): UseHomeResult => {
     })),
     footerMetaLinks: FOOTER_META_LINKS.map(toNavLink),
     joinLabel: t("nav.membership"),
+    signInLabel: t("nav.signIn"),
+    membersUrl: MEMBERS_URL,
     menuOpenLabel: t("menu.open"),
     menuCloseLabel: t("menu.close"),
     footerRecognition: t("footer.recognition"),

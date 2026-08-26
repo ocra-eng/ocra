@@ -39,6 +39,7 @@ export const be = {
     contact: "Кантакты",
     constitution: "Статут і рэгламенты",
     assets: "Рэсурсы",
+    signIn: "Увайсці",
   },
   menu: {
     open: "Адкрыць меню",

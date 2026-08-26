@@ -39,6 +39,7 @@ export const pl = {
     contact: "Kontakt",
     constitution: "Statut i regulamin",
     assets: "Zasoby",
+    signIn: "Zaloguj się",
   },
   menu: {
     open: "Otwórz menu",

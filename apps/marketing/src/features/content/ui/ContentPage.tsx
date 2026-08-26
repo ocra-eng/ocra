@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react"
 import { Link } from "react-router"
 
 import type { ContentBlock, PageContent } from "@/content"
+import { MEMBERS_URL } from "@/config/site"
 import { useLocalizedPath } from "@/features/language"
 import { useContentSeo } from "../model/useContentSeo"
 
@@ -102,8 +103,12 @@ export const ContentPage = ({ content }: { content: PageContent }) => {
           {content.ctas.map((cta) => (
             <SmartLink
               key={cta.label + cta.href}
-              href={cta.href}
-              className="border border-line bg-panel px-5 py-2.5 font-display text-sm font-bold uppercase tracking-[0.03em] transition-colors hover:bg-mist motion-reduce:transition-none"
+              href={cta.href === "MEMBERS_URL" ? MEMBERS_URL : cta.href}
+              className={
+                cta.primary
+                  ? "bg-tape px-5 py-2.5 font-display text-sm font-bold uppercase tracking-[0.03em] text-limestone transition-colors hover:bg-tape/90 motion-reduce:transition-none"
+                  : "border border-line bg-panel px-5 py-2.5 font-display text-sm font-bold uppercase tracking-[0.03em] transition-colors hover:bg-mist motion-reduce:transition-none"
+              }
             >
               {cta.label}
             </SmartLink>

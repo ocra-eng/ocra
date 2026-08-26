@@ -11,7 +11,8 @@ import { Wordmark } from "@ocra/ui"
 
 export const SiteHeader = () => {
   const { isOpen, toggle, close, toggleRef, drawerRef } = useMenu()
-  const { navLinks, joinLabel, menuOpenLabel } = useHome()
+  const { navLinks, joinLabel, signInLabel, membersUrl, menuOpenLabel } =
+    useHome()
   const localize = useLocalizedPath()
 
   return (
@@ -62,6 +63,12 @@ export const SiteHeader = () => {
               </a>
             )
           )}
+          <a
+            href={membersUrl}
+            className="rounded-sm px-2.5 py-1.5 text-[15px] font-semibold text-sub hover:bg-mist hover:text-ink"
+          >
+            {signInLabel}
+          </a>
           <Button variant="tape" size="brand" asChild>
             <Link to={localize("/membership")}>{joinLabel}</Link>
           </Button>
