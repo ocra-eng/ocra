@@ -17,9 +17,27 @@ const RaceOrganisers = lazy(() =>
 const Governance = lazy(() =>
   import("@/pages/Governance").then((m) => ({ default: m.Governance }))
 )
+// Assets and its subroutes are reachable from the footer only, and are
+// noindex — a working reference, not part of the site's navigation.
+const Assets = lazy(() =>
+  import("@/pages/Assets").then((m) => ({ default: m.Assets }))
+)
+const Identity = lazy(() =>
+  import("@/pages/Identity").then((m) => ({ default: m.Identity }))
+)
+const Branding = lazy(() =>
+  import("@/pages/Branding").then((m) => ({ default: m.Branding }))
+)
+const Media = lazy(() =>
+  import("@/pages/Media").then((m) => ({ default: m.Media }))
+)
 
 const pageRoutes = (
   <>
+    <Route path="assets" element={<Assets />} />
+    <Route path="assets/identity" element={<Identity />} />
+    <Route path="assets/branding" element={<Branding />} />
+    <Route path="assets/media" element={<Media />} />
     <Route path="about" element={<ContentRoute section="about" slug="index" />} />
     <Route path="about/:slug" element={<ContentRoute section="about" />} />
     <Route

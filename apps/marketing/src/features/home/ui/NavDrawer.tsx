@@ -16,7 +16,7 @@ interface NavDrawerProps {
 }
 
 const rowClass =
-  "border-b border-[#1E4433] py-4 font-display text-3xl font-bold uppercase tracking-[0.03em] text-chalk hover:text-[#5FBF87]"
+  "border-b border-[#1E4433] py-4 font-display text-3xl font-bold uppercase tracking-[0.03em] text-limestone hover:text-[#5FBF87]"
 
 const DrawerLink = ({
   item,
@@ -60,7 +60,7 @@ export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
         aria-label="Menu"
         inert={!isOpen}
         className={cn(
-          "fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-y-auto bg-bog px-7 pb-8 pt-4 text-chalk",
+          "fixed inset-y-0 right-0 z-50 flex w-full flex-col overflow-y-auto bg-bog px-7 pb-8 pt-4 text-limestone",
           "transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
@@ -73,7 +73,7 @@ export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
             size="icon"
             onClick={onClose}
             aria-label={menuCloseLabel}
-            className="h-10 w-10 rounded-none text-chalk hover:bg-chalk/10 hover:text-chalk"
+            className="h-10 w-10 rounded-none text-limestone hover:bg-limestone/10 hover:text-limestone"
           >
             <X className="h-5 w-5" />
           </Button>
@@ -90,7 +90,7 @@ export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
                   }
                   aria-expanded={expanded === item.key}
                   aria-controls={`drawer-${item.key}`}
-                  className="flex w-full items-center justify-between py-4 font-display text-3xl font-bold uppercase tracking-[0.03em] text-chalk hover:text-[#5FBF87]"
+                  className="flex w-full items-center justify-between py-4 font-display text-3xl font-bold uppercase tracking-[0.03em] text-limestone hover:text-[#5FBF87]"
                 >
                   {item.label}
                   <ChevronDown
@@ -116,7 +116,7 @@ export const NavDrawer = ({ isOpen, onClose, drawerRef }: NavDrawerProps) => {
                           key={child.key}
                           item={child}
                           onClose={onClose}
-                          className="py-2.5 pl-4 text-lg font-semibold text-chalk/85 hover:text-[#5FBF87]"
+                          className="py-2.5 pl-4 text-lg font-semibold text-limestone/85 hover:text-[#5FBF87]"
                         />
                       ))}
                     </div>

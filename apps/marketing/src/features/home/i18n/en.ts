@@ -38,6 +38,7 @@ export const en = {
     whatIsOcr: "What is OCR?",
     contact: "Contact",
     constitution: "Constitution & Bylaws",
+    assets: "Assets",
   },
   menu: {
     open: "Open menu",

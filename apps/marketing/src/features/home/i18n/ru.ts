@@ -38,6 +38,7 @@ export const ru = {
     whatIsOcr: "Что такое OCR?",
     contact: "Контакты",
     constitution: "Устав и регламенты",
+    assets: "Ресурсы",
   },
   menu: {
     open: "Открыть меню",
