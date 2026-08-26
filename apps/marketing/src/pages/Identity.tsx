@@ -270,29 +270,6 @@ export const Identity = () => {
           </section>
         ))}
       </div>
-
-      <div className="mt-12 border border-line bg-panel p-5">
-        <p className="font-display text-xl font-bold uppercase tracking-[0.03em]">
-          Before any of these get used
-        </p>
-        <ul className="mt-3 space-y-2 text-sm text-sub">
-          <li>
-            Those links are entry points, not vetted files — searches and
-            categories. I have not opened the individual images.
-          </li>
-          <li>
-            Licences vary file by file on Commons. Public domain, CC0, CC-BY
-            and CC-BY-SA all live there and only the first two are free of
-            obligations. CC-BY needs a credit; CC-BY-SA infects what it
-            touches. Check each one.
-          </li>
-          <li>
-            Tape should be our own photograph. It is the only claim we can
-            shoot for nothing at the next sanctioned race, and owning the file
-            is worth more than finding one.
-          </li>
-        </ul>
-      </div>
     </div>
   )
 }
