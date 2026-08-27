@@ -2,14 +2,15 @@ export const ga = {
   meta: {
     title: "OCRA Éireann — Comhlacht Náisiúnta Rialaithe an Spóirt Constaicí",
     description:
-      "Is é OCRA Éireann an comhlacht náisiúnta rialaithe don spórt constaicí in Éirinn — rásaí a cheadú, lúthchleasaithe a rangú agus cóitseálaithe a dheimhniú ar fud an oileáin.",
+      "Is é OCRA Éireann an comhlacht náisiúnta rialaithe don spórt constaicí in Éirinn — rásaí a cheadú, caighdeáin a leagan síos agus na lúthchleasaithe a dhéanann ionadaíocht ar Éirinn a roghnú.",
   },
   nav: {
     compete: "Comórtais",
     events: "Imeachtaí",
     championships: "Craobhchomórtais",
+    qualification: "Cáiliú",
     teamIreland: "Foireann na hÉireann",
-    resultsRankings: "Torthaí & Rangú",
+    results: "Torthaí",
     rules: "Rialacha & Rialacháin",
     clubs: "Clubanna",
     findClubGym: "Aimsigh Club nó Giomnáisiam",
@@ -49,9 +50,9 @@ export const ga = {
     statement1: "Thar gach",
     statement2: "constaic",
     support:
-      "An caighdeán do spórt constaicí in Éirinn — rásaí a cheadú, lúthchleasaithe a rangú, agus cóitseálaithe a dheimhniú ar fud an oileáin.",
+      "An caighdeán do spórt constaicí in Éirinn — rásaí a cheadú, caighdeáin a leagan síos, agus na lúthchleasaithe a dhéanann ionadaíocht ar Éirinn a roghnú.",
     ctaLabel: "Bí i do bhall",
-    ctaNote: "Árachas · rangú · conair na foirne náisiúnta",
+    ctaNote: "Craobhchomórtais náisiúnta · conair na foirne náisiúnta",
   },
   recognition: {
     label: "Aitheanta ag",

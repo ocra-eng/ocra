@@ -1,0 +1,100 @@
+---
+url: /coaching
+title: Coaching
+standfirst: Developing the people who develop athletes
+---
+
+Whether someone is introducing beginners to their first obstacles, supporting a
+club, or preparing athletes for international competition, coaches carry real
+responsibility for athlete development, safety and whether people stay in the
+sport.
+
+:::not-live
+The OCRA Coaching Programme is being built. The pathway below is the agreed
+structure, but **no OCRA coaching qualification has been awarded yet** and course
+dates are not yet published. Register your interest and we will tell you when
+levels open.
+:::
+
+## The pathway
+
+Seven progressive levels. Coaches move through as their knowledge, practical
+experience and responsibility develop — this is the canonical description of the
+pathway, and other pages link here rather than restating it.
+
+OCR Coach — Foundations
+: The entry point. The role and responsibilities of a coach, athlete welfare,
+safeguarding, disability awareness and inclusion, health and safety, ethical
+coaching, and creating a safe training environment. Expect safeguarding training,
+first aid and vetting requirements at this level.
+
+OCR Coach — Participation
+: Delivering safe, structured, enjoyable sessions for beginners and recreational
+athletes. Fundamental obstacle movement and introductory technique, running and
+physical preparation, strength and fitness for OCR, safe equipment use, athlete
+readiness, session planning, demonstration and feedback. The level most relevant
+to club and gym coaches.
+
+OCR Coach — Performance
+: Coaching athletes with competitive goals. Performance-focused technique, running
+development, strength and conditioning, performance analysis, programme planning
+and periodisation, competition preparation, recovery, nutrition awareness, athlete
+mindset and adaptive coaching. Coaches here build programmes, not just sessions.
+
+OCR Coach — National
+: Experienced coaches working with advanced and national-level athletes. Long-term
+athlete development, seasonal and annual programming, training load management,
+competition planning, performance review, and preparing athletes for National
+Championships and international competition.
+
+OCR Coach — International
+: Coaching within international and high-performance environments.
+
+OCR Coach — Senior International
+: Substantial experience and increased responsibility at international level.
+
+OCR Coach — Master Coach Trainer
+: Coach education, mentoring, assessment, national coaching development, and
+maintaining the standards of the pathway itself.
+
+## You do not need to have been an elite athlete
+
+Good coaching requires more than being able to complete difficult obstacles. It
+requires understanding athletes, communicating clearly, planning appropriately,
+creating safe environments, and helping people improve over time.
+
+People come into OCR coaching from athletics, strength and conditioning, personal
+training, climbing, gymnastics, ninja sport, parkour, functional fitness and
+endurance sport. Plenty arrive from outside sport entirely.
+
+## Recognition of Prior Learning
+
+If you already hold relevant qualifications or substantial coaching experience,
+OCRA can consider that through a Recognition of Prior Learning process rather than
+making you repeat what you already know.
+
+Recognition does not remove the requirements specific to obstacle sport,
+safeguarding and athlete welfare. Those have to be met regardless of where you
+came from.
+
+## Adaptive and inclusive coaching
+
+Obstacle sport can be adapted to support athletes with different abilities and
+requirements, and inclusive and adaptive principles run through every level of the
+pathway rather than sitting in a module at the end.
+
+OCRA also intends to support specialist development for coaches working
+specifically with adaptive and para-athletes.
+
+## Development does not stop at qualifying
+
+Coaches are expected to keep developing through practical experience, further
+education, workshops, mentoring, rule and technical updates, safeguarding updates,
+and honest reflection on their own performance.
+
+As the sport develops, coaching practice has to develop with it.
+
+## Getting started
+
+Current courses appear under [courses & training](/education/courses-training).
+If nothing suitable is listed, [register your interest](/about/contact).

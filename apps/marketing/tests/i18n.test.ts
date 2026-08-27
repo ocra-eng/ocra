@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { getInvolvedResources } from "../src/features/get-involved/i18n"
-import { governanceResources } from "../src/features/governance/i18n"
 import { homeResources } from "../src/features/home/i18n"
-import { raceOrganisersResources } from "../src/features/race-organisers/i18n"
 import { themeResources } from "@ocra/ui"
 
 const keyTree = (value: unknown, prefix = ""): string[] => {
@@ -12,12 +9,11 @@ const keyTree = (value: unknown, prefix = ""): string[] => {
   )
 }
 
+// Page copy is translated as sibling markdown files in docs/content (see the
+// documents test); what remains here is the site chrome.
 const NAMESPACES = [
   ["home", homeResources],
   ["theme", themeResources],
-  ["getInvolved", getInvolvedResources],
-  ["raceOrganisers", raceOrganisersResources],
-  ["governance", governanceResources],
 ] as const
 
 describe.each(NAMESPACES)("%s resources", (_ns, resources) => {

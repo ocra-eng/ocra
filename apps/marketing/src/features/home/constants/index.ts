@@ -15,13 +15,14 @@ export const ORG: Org = {
 const COMPETE_LINKS: NavItem[] = [
   { key: "events", href: "/compete/events", isRoute: true },
   { key: "championships", href: "/compete/championships", isRoute: true },
+  { key: "qualification", href: "/compete/qualification", isRoute: true },
   { key: "teamIreland", href: "/compete/team-ireland", isRoute: true },
-  { key: "resultsRankings", href: "/compete/results", isRoute: true },
+  { key: "results", href: "/compete/results", isRoute: true },
   { key: "rules", href: "/compete/rules", isRoute: true },
 ]
 
 const CLUB_LINKS: NavItem[] = [
-  { key: "findClubGym", href: "/clubs/find-a-gym", isRoute: true },
+  { key: "findClubGym", href: "/clubs/directory", isRoute: true },
   { key: "startClub", href: "/clubs/start-a-club", isRoute: true },
   { key: "affiliation", href: "/clubs/affiliation", isRoute: true },
   { key: "community", href: "/clubs/community", isRoute: true },

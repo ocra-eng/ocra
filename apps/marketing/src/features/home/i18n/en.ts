@@ -2,14 +2,15 @@ export const en = {
   meta: {
     title: "OCRA ÉIREANN — National Governing Body for Obstacle Sport",
     description:
-      "OCRA ÉIREANN is the national governing body for obstacle sport in Ireland — sanctioning races, ranking athletes, and certifying coaches across the island.",
+      "OCRA ÉIREANN is the national governing body for obstacle sport in Ireland — sanctioning races, setting the standards, and selecting the athletes who represent Ireland.",
   },
   nav: {
     compete: "Compete",
     events: "Events",
     championships: "Championships",
+    qualification: "Qualification",
     teamIreland: "Team Ireland",
-    resultsRankings: "Results & Rankings",
+    results: "Results",
     rules: "Rules & Regulations",
     clubs: "Clubs",
     findClubGym: "Find a Club or Gym",
@@ -49,9 +50,9 @@ export const en = {
     statement1: "Over every",
     statement2: "obstacle",
     support:
-      "The standard for obstacle sport in Ireland — sanctioning races, ranking athletes, and certifying coaches across the island.",
+      "The standard for obstacle sport in Ireland — sanctioning races, setting the standards, and selecting the athletes who represent Ireland.",
     ctaLabel: "Become a member",
-    ctaNote: "Insurance · rankings · national team pathway",
+    ctaNote: "National championships · national team pathway",
   },
   recognition: {
     label: "Recognised by",

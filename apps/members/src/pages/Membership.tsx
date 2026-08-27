@@ -7,7 +7,7 @@ import {
 } from "@/api/client"
 import { StatusBadge, useMembership } from "@/features/membership"
 
-const BENEFIT_KEYS = ["insurance", "rankings", "pathway", "discounts"] as const
+const BENEFIT_KEYS = ["pathway"] as const
 
 export const Membership = () => {
   const { t, i18n } = useTranslation("membership")
