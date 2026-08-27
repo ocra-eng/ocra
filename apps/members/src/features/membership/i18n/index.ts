@@ -24,7 +24,7 @@ export const membershipResources = {
     empty: {
       none: {
         title: "You're not a member yet",
-        body: "Membership covers insurance, national rankings and the Team Ireland pathway.",
+        body: "Membership is your route into the Team Ireland pathway and OCRA competition.",
         cta: "Join OCRA",
       },
       pending: {
@@ -34,7 +34,7 @@ export const membershipResources = {
       },
       expired: {
         title: "Your membership has expired",
-        body: "Renew to get your card back and stay eligible for ranked and qualifying events.",
+        body: "Renew to get your card back and stay eligible for qualifying events.",
         cta: "Renew membership",
       },
     },
@@ -48,10 +48,7 @@ export const membershipResources = {
       joinCta: "Join OCRA",
     },
     benefits: {
-      insurance: "Insurance cover at sanctioned events",
-      rankings: "Eligibility for national rankings",
       pathway: "Access to the Team Ireland qualification pathway",
-      discounts: "Member discounts with OCRA partners",
     },
     verify: {
       title: "Membership check",
@@ -89,7 +86,7 @@ export const membershipResources = {
     empty: {
       none: {
         title: "Níl tú i do bhall fós",
-        body: "Cuimsíonn ballraíocht árachas, rangú náisiúnta agus conair Fhoireann na hÉireann.",
+        body: "Cuimsíonn ballraíocht conair Fhoireann na hÉireann agus comórtais OCRA.",
         cta: "Bí i do bhall",
       },
       pending: {
@@ -99,7 +96,7 @@ export const membershipResources = {
       },
       expired: {
         title: "Tá do bhallraíocht as feidhm",
-        body: "Athnuaigh í chun do chárta a fháil ar ais agus fanacht incháilithe d'imeachtaí rangaithe.",
+        body: "Athnuaigh í chun do chárta a fháil ar ais agus fanacht incháilithe d'imeachtaí cáilithe.",
         cta: "Athnuaigh ballraíocht",
       },
     },
@@ -113,10 +110,7 @@ export const membershipResources = {
       joinCta: "Bí i do bhall",
     },
     benefits: {
-      insurance: "Clúdach árachais ag imeachtaí ceadaithe",
-      rankings: "Incháilitheacht do rangú náisiúnta",
       pathway: "Rochtain ar chonair cháilithe Fhoireann na hÉireann",
-      discounts: "Lascainí ball le comhpháirtithe OCRA",
     },
     verify: {
       title: "Seiceáil ballraíochta",
@@ -154,7 +148,7 @@ export const membershipResources = {
     empty: {
       none: {
         title: "Nie jesteś jeszcze członkiem",
-        body: "Członkostwo obejmuje ubezpieczenie, krajowe rankingi i ścieżkę do Reprezentacji Irlandii.",
+        body: "Członkostwo otwiera ścieżkę do Reprezentacji Irlandii i zawody OCRA.",
         cta: "Dołącz do OCRA",
       },
       pending: {
@@ -164,7 +158,7 @@ export const membershipResources = {
       },
       expired: {
         title: "Twoje członkostwo wygasło",
-        body: "Odnów je, aby odzyskać kartę i zachować prawo startu w zawodach rankingowych.",
+        body: "Odnów je, aby odzyskać kartę i zachować prawo startu w zawodach kwalifikacyjnych.",
         cta: "Odnów członkostwo",
       },
     },
@@ -178,10 +172,7 @@ export const membershipResources = {
       joinCta: "Dołącz do OCRA",
     },
     benefits: {
-      insurance: "Ubezpieczenie na zawodach sankcjonowanych",
-      rankings: "Prawo do udziału w rankingach krajowych",
       pathway: "Dostęp do ścieżki kwalifikacji Reprezentacji Irlandii",
-      discounts: "Zniżki członkowskie u partnerów OCRA",
     },
     verify: {
       title: "Weryfikacja członkostwa",
@@ -219,7 +210,7 @@ export const membershipResources = {
     empty: {
       none: {
         title: "Вы ещё не участник",
-        body: "Членство включает страховку, национальные рейтинги и путь в сборную Ирландии.",
+        body: "Членство открывает путь в сборную Ирландии и соревнования OCRA.",
         cta: "Вступить в OCRA",
       },
       pending: {
@@ -229,7 +220,7 @@ export const membershipResources = {
       },
       expired: {
         title: "Ваше членство истекло",
-        body: "Продлите его, чтобы вернуть карту и сохранить право участия в рейтинговых гонках.",
+        body: "Продлите его, чтобы вернуть карту и сохранить право участия в квалификационных гонках.",
         cta: "Продлить членство",
       },
     },
@@ -243,10 +234,7 @@ export const membershipResources = {
       joinCta: "Вступить в OCRA",
     },
     benefits: {
-      insurance: "Страховое покрытие на санкционированных гонках",
-      rankings: "Право участия в национальных рейтингах",
       pathway: "Доступ к квалификационному пути сборной Ирландии",
-      discounts: "Скидки для участников у партнёров OCRA",
     },
     verify: {
       title: "Проверка членства",
@@ -284,7 +272,7 @@ export const membershipResources = {
     empty: {
       none: {
         title: "Вы яшчэ не ўдзельнік",
-        body: "Сяброўства ўключае страхоўку, нацыянальныя рэйтынгі і шлях у зборную Ірландыі.",
+        body: "Сяброўства адкрывае шлях у зборную Ірландыі і змаганні OCRA.",
         cta: "Далучыцца да OCRA",
       },
       pending: {
@@ -294,7 +282,7 @@ export const membershipResources = {
       },
       expired: {
         title: "Ваша сяброўства скончылася",
-        body: "Падоўжыце яго, каб вярнуць карту і захаваць права ўдзелу ў рэйтынгавых гонках.",
+        body: "Падоўжыце яго, каб вярнуць карту і захаваць права ўдзелу ў кваліфікацыйных гонках.",
         cta: "Падоўжыць сяброўства",
       },
     },
@@ -308,10 +296,7 @@ export const membershipResources = {
       joinCta: "Далучыцца да OCRA",
     },
     benefits: {
-      insurance: "Страхавое пакрыццё на санкцыянаваных гонках",
-      rankings: "Права ўдзелу ў нацыянальных рэйтынгах",
       pathway: "Доступ да кваліфікацыйнага шляху зборнай Ірландыі",
-      discounts: "Зніжкі для ўдзельнікаў у партнёраў OCRA",
     },
     verify: {
       title: "Праверка сяброўства",

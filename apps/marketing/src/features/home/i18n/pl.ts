@@ -2,14 +2,15 @@ export const pl = {
   meta: {
     title: "OCRA ÉIREANN — krajowa federacja sportów przeszkodowych w Irlandii",
     description:
-      "OCRA ÉIREANN to krajowa federacja sportów przeszkodowych w Irlandii — sankcjonuje zawody, prowadzi rankingi zawodników i certyfikuje trenerów w całym kraju.",
+      "OCRA ÉIREANN to krajowa federacja sportów przeszkodowych w Irlandii — sankcjonuje zawody, ustala standardy i wybiera zawodników reprezentujących Irlandię.",
   },
   nav: {
     compete: "Zawody",
     events: "Wydarzenia",
     championships: "Mistrzostwa",
+    qualification: "Kwalifikacje",
     teamIreland: "Reprezentacja Irlandii",
-    resultsRankings: "Wyniki i rankingi",
+    results: "Wyniki",
     rules: "Przepisy i regulaminy",
     clubs: "Kluby",
     findClubGym: "Znajdź klub lub siłownię",
@@ -49,9 +50,9 @@ export const pl = {
     statement1: "Ponad każdą",
     statement2: "przeszkodę",
     support:
-      "Standard sportów przeszkodowych w Irlandii — sankcjonowanie zawodów, ranking zawodników i certyfikacja trenerów w całym kraju.",
+      "Standard sportów przeszkodowych w Irlandii — sankcjonowanie zawodów, ustalanie standardów i wybór zawodników reprezentujących Irlandię.",
     ctaLabel: "Zostań członkiem",
-    ctaNote: "Ubezpieczenie · rankingi · ścieżka do kadry narodowej",
+    ctaNote: "Mistrzostwa krajowe · ścieżka do kadry narodowej",
   },
   recognition: {
     label: "Uznana przez",

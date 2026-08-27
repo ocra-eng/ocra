@@ -17,25 +17,20 @@ const SITE_URL = "https://ocra.ie/"
 const LOCALES = ["ga", "pl", "ru", "be"]
 // Localized routes: prerendered per locale.
 const PAGES = ["", "get-involved/", "governance/", "race-organisers/"]
-// Content pages are English-only for now: prerendered at the default locale,
-// derived from the content registry so the list cannot drift.
-const ROUTE_OVERRIDES = {
-  "about/index": "about",
-  "education/coaching": "coaching",
-  "get-involved/membership": "membership",
-}
-const contentRoot = resolve(
-  import.meta.dirname,
-  "../apps/marketing/src/content/pages"
-)
-const CONTENT_PAGES = readdirSync(contentRoot).flatMap((section) =>
-  readdirSync(join(contentRoot, section))
-    .filter((f) => f.endsWith(".ts"))
-    .map((f) => {
-      const slug = f.replace(/\.ts$/, "")
-      return (ROUTE_OVERRIDES[`${section}/${slug}`] ?? `${section}/${slug}`) + "/"
-    })
-)
+// Documents are English-only for now: prerendered at the default locale. The
+// list is read from the documents themselves — each declares its own url in
+// frontmatter — so there is no route map here to fall out of step with the app.
+const docsRoot = resolve(import.meta.dirname, "../docs/content")
+const CONTENT_PAGES = readdirSync(docsRoot)
+  .filter((f) => f.endsWith(".md") && !f.startsWith("_"))
+  .sort()
+  .map((file) => {
+    const source = readFileSync(join(docsRoot, file), "utf8")
+    const url = source.match(/^url:\s*(\S+)\s*$/m)?.[1]
+    if (!url) throw new Error(`docs/content/${file}: no url in frontmatter`)
+    return url.replace(/^\//, "") + "/"
+  })
+
 const BASE = process.env.BASE_PATH ?? "/"
 
 const root = resolve(import.meta.dirname, "..")
