@@ -49,6 +49,18 @@ export const membershipResources = {
     },
     benefits: {
       pathway: "Access to the Team Ireland qualification pathway",
+      discounts:
+        "Member discounts at partner businesses — currently Tiger Obstacle (10%) and Officine del Grip (12%)",
+    },
+    discounts: {
+      title: "Member discounts",
+      intro:
+        "Offers from partner businesses for OCRA members. The codes and links are for members only — please do not share them.",
+      off: "{{percent}}% off",
+      useCode: "Use code",
+      linkApplies:
+        "Open the shop through this link and the discount is applied at checkout.",
+      openShop: "Open {{name}}",
     },
     verify: {
       title: "Membership check",
@@ -111,6 +123,18 @@ export const membershipResources = {
     },
     benefits: {
       pathway: "Rochtain ar chonair cháilithe Fhoireann na hÉireann",
+      discounts:
+        "Lascainí do bhaill ó ghnólachtaí comhpháirtíochta — Tiger Obstacle (10%) agus Officine del Grip (12%) faoi láthair",
+    },
+    discounts: {
+      title: "Lascainí do bhaill",
+      intro:
+        "Tairiscintí ó ghnólachtaí comhpháirtíochta do bhaill OCRA. Is do bhaill amháin na cóid agus na naisc — ná roinn iad, le do thoil.",
+      off: "{{percent}}% lascaine",
+      useCode: "Úsáid an cód",
+      linkApplies:
+        "Oscail an siopa tríd an nasc seo agus cuirfear an lascaine i bhfeidhm ag an seiceáil amach.",
+      openShop: "Oscail {{name}}",
     },
     verify: {
       title: "Seiceáil ballraíochta",
@@ -173,6 +197,18 @@ export const membershipResources = {
     },
     benefits: {
       pathway: "Dostęp do ścieżki kwalifikacji Reprezentacji Irlandii",
+      discounts:
+        "Zniżki dla członków u firm partnerskich — obecnie Tiger Obstacle (10%) i Officine del Grip (12%)",
+    },
+    discounts: {
+      title: "Zniżki dla członków",
+      intro:
+        "Oferty firm partnerskich dla członków OCRA. Kody i linki są tylko dla członków — prosimy ich nie udostępniać.",
+      off: "{{percent}}% zniżki",
+      useCode: "Użyj kodu",
+      linkApplies:
+        "Otwórz sklep przez ten link, a zniżka zostanie naliczona przy płatności.",
+      openShop: "Otwórz {{name}}",
     },
     verify: {
       title: "Weryfikacja członkostwa",
@@ -235,6 +271,18 @@ export const membershipResources = {
     },
     benefits: {
       pathway: "Доступ к квалификационному пути сборной Ирландии",
+      discounts:
+        "Скидки для членов у партнёров — сейчас Tiger Obstacle (10%) и Officine del Grip (12%)",
+    },
+    discounts: {
+      title: "Скидки для членов",
+      intro:
+        "Предложения партнёров для членов OCRA. Коды и ссылки только для членов — пожалуйста, не делитесь ими.",
+      off: "Скидка {{percent}}%",
+      useCode: "Используйте код",
+      linkApplies:
+        "Откройте магазин по этой ссылке — скидка применится при оформлении заказа.",
+      openShop: "Открыть {{name}}",
     },
     verify: {
       title: "Проверка членства",
@@ -297,6 +345,18 @@ export const membershipResources = {
     },
     benefits: {
       pathway: "Доступ да кваліфікацыйнага шляху зборнай Ірландыі",
+      discounts:
+        "Зніжкі для сяброў у партнёраў — цяпер Tiger Obstacle (10%) і Officine del Grip (12%)",
+    },
+    discounts: {
+      title: "Зніжкі для сяброў",
+      intro:
+        "Прапановы партнёраў для сяброў OCRA. Коды і спасылкі толькі для сяброў — калі ласка, не дзяліцеся імі.",
+      off: "Зніжка {{percent}}%",
+      useCode: "Выкарыстайце код",
+      linkApplies:
+        "Адкрыйце краму па гэтай спасылцы — зніжка прымяніцца пры афармленні заказу.",
+      openShop: "Адкрыць {{name}}",
     },
     verify: {
       title: "Праверка сяброўства",

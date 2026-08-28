@@ -74,10 +74,25 @@ const CALLOUTS = new Set([
   "escalate",
 ])
 
-/** :::cards turns the h3 links inside it into a card grid. Hub pages are
+/** Blocks whose h3 sections become a grid of cards.
+ *
+ *  :::cards turns the h3 links inside it into a card grid. Hub pages are
  *  documents like any other; this is the one block that makes them look like a
- *  hub rather than a list of links. */
-const CARDS = "cards"
+ *  hub rather than a list of links.
+ *
+ *  :::partners does the same for partner offers: one h3 section per partner,
+ *  holding the partner's logo and the offer. */
+const GRIDS = {
+  cards: { hName: "nav", grid: "data-cards", item: "data-card" },
+  partners: { hName: "div", grid: "data-partners", item: "data-partner" },
+} as const
+
+type GridName = keyof typeof GRIDS
+
+const gridFor = (node: Element) =>
+  Object.values(GRIDS).find(
+    (g) => g.hName === node.tagName && g.grid in (node.properties ?? {})
+  )
 
 /** :::name … ::: becomes <aside data-callout="name">, which the components map
  *  turns into a React component. The name is domain vocabulary, not severity. */
@@ -90,14 +105,15 @@ const calloutDirectives = () => (tree: unknown, file: { path?: string }) => {
       attributes?: Record<string, string>
     }
     if (n.type !== "containerDirective") return
-    if (n.name === CARDS) {
-      n.data = { hName: "nav", hProperties: { "data-cards": "" } }
+    if (n.name && n.name in GRIDS) {
+      const grid = GRIDS[n.name as GridName]
+      n.data = { hName: grid.hName, hProperties: { [grid.grid]: "" } }
       return
     }
     if (!n.name || !CALLOUTS.has(n.name)) {
       throw new Error(
         `${file.path}: unknown block ":::${n.name}". ` +
-          `Known: ${[...CALLOUTS, CARDS].join(", ")}`
+          `Known: ${[...CALLOUTS, ...Object.keys(GRIDS)].join(", ")}`
       )
     }
     n.data = {
@@ -143,17 +159,21 @@ const sectionise = () => (tree: Root) => {
   for (const node of top) {
     if (node.type !== "element") continue
     if (node.tagName === "section") subsection(node)
-    // A card grid holds h3 sections directly, with no h2 above them.
-    if (node.tagName === "nav" && "data-cards" in (node.properties ?? {})) {
-      node.children = group(node.children, "h3")
-      for (const card of node.children) {
-        if (card.type === "element" && card.tagName === "section") {
-          card.properties = { ...card.properties, "data-card": "" }
-        }
-      }
-    }
   }
   tree.children = top as Root["children"]
+
+  // A grid holds h3 sections directly, whether it sits at the top of the page
+  // (a hub's :::cards) or inside an h2 section (a page's :::partners).
+  visit(tree, "element", (node: Element) => {
+    const grid = gridFor(node)
+    if (!grid) return
+    node.children = group(node.children, "h3")
+    for (const item of node.children) {
+      if (item.type === "element" && item.tagName === "section") {
+        item.properties = { ...item.properties, [grid.item]: "" }
+      }
+    }
+  })
 }
 
 interface Frontmatter {

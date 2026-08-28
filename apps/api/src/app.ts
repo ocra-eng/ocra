@@ -131,6 +131,18 @@ export const createApp = ({ config, db, stripe, verifyToken }: AppDeps) => {
     })
   })
 
+  // The offers are the benefit, so only an active member gets them and no
+  // cache on the way keeps a copy. Everyone else sees the same 403 — a
+  // lapsed member and a non-member are told the same thing.
+  app.get("/me/offers", ...authed, async (c) => {
+    const membership = await findMembershipForMember(db, c.get("member").id)
+    if (membership?.status !== "active") {
+      throw new HTTPException(403, { message: "Membership is not active" })
+    }
+    c.header("Cache-Control", "private, no-store")
+    return c.json({ offers: config.partnerOffers })
+  })
+
   app.patch("/me", ...authed, async (c) => {
     const body = profileUpdate.safeParse(await c.req.json().catch(() => ({})))
     if (!body.success) {

@@ -11,6 +11,13 @@ import { useLocalizedPath } from "@/features/language"
  *  content has to know which it is. */
 const Anchor = ({ href = "", children }: { href?: string; children?: ReactNode }) => {
   const localize = useLocalizedPath()
+  if (href.startsWith("#")) {
+    return (
+      <a href={href} className="font-semibold text-accent underline underline-offset-4">
+        {children}
+      </a>
+    )
+  }
   if (href.startsWith("/")) {
     return (
       <Link
@@ -65,6 +72,36 @@ const Card = ({ children, ...rest }: { children?: ReactNode }) => (
   </section>
 )
 
+/** A partner grid holds one h3 section per partner offer. */
+const PartnerGrid = ({ children }: { children?: ReactNode }) => (
+  <div className="mt-6 grid gap-4 sm:grid-cols-2">{children}</div>
+)
+
+/** Inside a partner grid an h3 section is the partner's card: logo first, then
+ *  the name, then the offer. The logo sits on white in both themes — it is the
+ *  partner's mark, not ours to recolour. */
+const PartnerCard = ({ children, ...rest }: { children?: ReactNode }) => (
+  <section
+    {...rest}
+    className="flex flex-col border border-line bg-panel [&>h3]:order-2 [&>h3]:mt-0 [&>h3]:px-6 [&>h3]:pt-5 [&>h3]:text-xl [&>h3]:text-ink [&>p]:order-3 [&>p]:mt-2 [&>p]:px-6 [&>p:last-child]:pb-6 [&>p:has(img)]:order-1 [&>p:has(img)]:mt-0 [&>p:has(img)]:flex [&>p:has(img)]:justify-center [&>p:has(img)]:border-b [&>p:has(img)]:border-line [&>p:has(img)]:bg-white [&>p:has(img)]:p-5 [&_img]:h-28 [&_img]:w-auto [&_img]:object-contain"
+  >
+    {children}
+  </section>
+)
+
+/** Content images are addressed from the site root ("/img/…") and live in
+ *  public/. The base path is applied here so the markdown never has to know
+ *  where the site is mounted. */
+const Image = ({ src = "", alt = "" }: { src?: string; alt?: string }) => (
+  <img
+    src={src.startsWith("/") ? `${import.meta.env.BASE_URL}${src.slice(1)}` : src}
+    alt={alt}
+    loading="lazy"
+    decoding="async"
+    className="max-w-full"
+  />
+)
+
 const CALLOUTS = {
   "not-live": {
     icon: Clock,
@@ -115,8 +152,22 @@ const Callout = ({
 
 export const docComponents = {
   a: Anchor,
+  img: Image,
   table: Table,
   aside: Callout,
+  div: ({
+    "data-partners": isPartners,
+    children,
+    ...rest
+  }: {
+    "data-partners"?: string
+    children?: ReactNode
+  }) =>
+    isPartners !== undefined ? (
+      <PartnerGrid>{children}</PartnerGrid>
+    ) : (
+      <div {...rest}>{children}</div>
+    ),
   nav: ({
     "data-cards": isCards,
     children,
@@ -193,14 +244,18 @@ export const docComponents = {
   dd: ({ children }: { children?: ReactNode }) => <dd className="m-0">{children}</dd>,
   section: ({
     "data-card": isCard,
+    "data-partner": isPartner,
     children,
     ...rest
   }: {
     "data-card"?: string
+    "data-partner"?: string
     children?: ReactNode
   }) =>
     isCard !== undefined ? (
       <Card {...rest}>{children}</Card>
+    ) : isPartner !== undefined ? (
+      <PartnerCard {...rest}>{children}</PartnerCard>
     ) : (
       <section {...rest}>{children}</section>
     ),

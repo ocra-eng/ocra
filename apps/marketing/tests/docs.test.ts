@@ -1,11 +1,14 @@
+import { existsSync } from "node:fs"
+import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
 import type { Element, Root, RootContent } from "hast"
 
 import { allDocs, docFor } from "../src/features/doc"
 
 // Pages are authored as markdown in docs/content and declare their own URL.
-// These checks exist to stop the two things that make content untrustworthy: a
-// link that goes nowhere, and two pages claiming the same address.
+// These checks exist to stop the things that make content untrustworthy: a
+// link that goes nowhere, an image that does not ship, and two pages claiming
+// the same address.
 
 const NON_PAGE_ROUTES = [
   "/",
@@ -15,20 +18,25 @@ const NON_PAGE_ROUTES = [
   "/race-organisers",
 ]
 
-const hrefsIn = (tree: Root): string[] => {
+const PUBLIC_DIR = fileURLToPath(new URL("../public", import.meta.url))
+
+const attributeIn = (tree: Root, name: "href" | "src"): string[] => {
   const found: string[] = []
   const walk = (nodes: RootContent[] | Element["children"]) => {
     for (const node of nodes) {
       if (node.type !== "element") continue
       const el = node as Element
-      const href = el.properties?.href
-      if (typeof href === "string") found.push(href)
+      const value = el.properties?.[name]
+      if (typeof value === "string") found.push(value)
       if (el.children) walk(el.children)
     }
   }
   walk(tree.children)
   return found
 }
+
+const hrefsIn = (tree: Root) => attributeIn(tree, "href")
+const srcsIn = (tree: Root) => attributeIn(tree, "src")
 
 describe("authored documents", () => {
   it("resolves every document at its declared path", () => {
@@ -57,6 +65,20 @@ describe("authored documents", () => {
       for (const href of hrefsIn(tree)) {
         if (!href.startsWith("/")) continue
         expect(known, `${doc.source} links to unknown ${href}`).toContain(href)
+      }
+    }
+  })
+
+  it("ships every image the content shows", async () => {
+    for (const doc of allDocs) {
+      const { tree } = await doc.load()
+      for (const src of srcsIn(tree)) {
+        // Content images are root-relative and live in public/.
+        expect(src, doc.source).toMatch(/^\/img\//)
+        expect(
+          existsSync(`${PUBLIC_DIR}${src}`),
+          `${doc.source} shows ${src}, which is not in public/`
+        ).toBe(true)
       }
     }
   })

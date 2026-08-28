@@ -24,11 +24,33 @@ Today, membership gives you:
 - **A say in how the sport is run.** Active members may attend the General
   Assembly, which elects the Board and approves changes to the
   [governing documents](/governance/constitution-bylaws).
+- **Member discounts** at partner businesses. Two are live today — see
+  [member discounts](#member-discounts) below.
 
 :::not-live
-Two things are commonly assumed and are not true yet: there is **no national
-ranking system**, and there is **no member discount scheme**. When either exists it
-will be listed here, not implied.
+One thing is commonly assumed and is not true yet: there is **no national
+ranking system**. When it exists it will be listed here, not implied.
+:::
+
+## Member discounts
+
+Partner businesses offer OCRA members money off. The codes are in the members
+area: sign in and open your membership to get them.
+
+:::partners
+
+### Tiger Obstacle
+
+![Tiger Obstacle](/img/partners/tiger-obstacle.jpeg)
+
+10% off for OCRA members.
+
+### Officine del Grip
+
+![Officine del Grip](/img/partners/officine-del-grip.jpeg)
+
+12% off for OCRA members.
+
 :::
 
 ## Where membership is required
