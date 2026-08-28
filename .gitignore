@@ -7,3 +7,6 @@ dist/
 
 # migration reports contain personal data
 migration-report/
+
+# partner discount QR codes are the discount link itself — never public
+docs/membership/*qr*

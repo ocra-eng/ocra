@@ -3,12 +3,17 @@ import type {
   Member,
   Membership,
   MembershipVerification,
+  PartnerOffer,
 } from "@ocra/shared"
 import { supabase } from "@/lib/supabase"
 
 export interface MeResponse {
   member: Member
   membership: Membership | null
+}
+
+export interface OffersResponse {
+  offers: PartnerOffer[]
 }
 
 export type AdminFilter = "active" | "expired" | "none" | "all"
@@ -66,6 +71,10 @@ export const membersApi = createApi({
       query: () => "/me",
       providesTags: ["Me"],
     }),
+    // Active members only; the API answers 403 to everyone else.
+    getOffers: builder.query<OffersResponse, void>({
+      query: () => "/me/offers",
+    }),
     updateProfile: builder.mutation<{ profileName?: string }, { profileName: string }>({
       query: (body) => ({ url: "/me", method: "PATCH", body }),
       invalidatesTags: ["Me"],
@@ -88,6 +97,7 @@ export const membersApi = createApi({
 export const {
   useGetHealthQuery,
   useGetMeQuery,
+  useGetOffersQuery,
   useUpdateProfileMutation,
   useGetVerificationQuery,
   useCreateCheckoutSessionMutation,

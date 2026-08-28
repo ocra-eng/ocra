@@ -4,16 +4,19 @@ import {
   useCreateCheckoutSessionMutation,
   useCreatePortalSessionMutation,
   useGetHealthQuery,
+  useGetOffersQuery,
 } from "@/api/client"
-import { StatusBadge, useMembership } from "@/features/membership"
+import { MemberDiscounts, StatusBadge, useMembership } from "@/features/membership"
 
-const BENEFIT_KEYS = ["pathway"] as const
+const BENEFIT_KEYS = ["pathway", "discounts"] as const
 
 export const Membership = () => {
   const { t, i18n } = useTranslation("membership")
   const { membership, isLoading } = useMembership()
   const isActive = membership?.status === "active"
   const { data: health } = useGetHealthQuery()
+  // Only asked for when active; the API refuses everyone else anyway.
+  const { data: offers } = useGetOffersQuery(undefined, { skip: !isActive })
   const [createCheckout, checkout] = useCreateCheckoutSessionMutation()
   const [createPortal, portal] = useCreatePortalSessionMutation()
   const billingReady = health?.billing === "ok"
@@ -69,6 +72,12 @@ export const Membership = () => {
           <li key={key}>{t(`benefits.${key}`)}</li>
         ))}
       </ul>
+
+      {isActive && offers && offers.offers.length > 0 && (
+        <div className="mt-12">
+          <MemberDiscounts offers={offers.offers} />
+        </div>
+      )}
 
       <div className="mt-10 flex flex-wrap gap-3 border-t border-line pt-8">
         <Button

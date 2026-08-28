@@ -38,3 +38,17 @@ export interface MembershipVerification {
   status: MembershipStatus
   currentPeriodEnd?: string
 }
+
+/**
+ * A partner discount for members. Served by the API to an active member
+ * only — the code or link is the whole benefit, so it never ships in a
+ * client bundle. `code` is absent when the shopUrl itself carries the
+ * discount (a Shopify `/discount/CODE` link).
+ */
+export interface PartnerOffer {
+  key: string
+  name: string
+  percent: number
+  shopUrl: string
+  code?: string
+}

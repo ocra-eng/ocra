@@ -146,6 +146,80 @@ describe("authentication", () => {
   })
 })
 
+describe("partner offers", () => {
+  const OFFERS = [
+    {
+      key: "shop-a",
+      name: "Shop A",
+      percent: 10,
+      shopUrl: "https://shop-a.example",
+      code: "CODE10",
+    },
+    {
+      key: "shop-b",
+      name: "Shop B",
+      percent: 12,
+      shopUrl: "https://shop-b.example/discount/X",
+    },
+  ]
+
+  const seedMember = async (status?: "active" | "expired") => {
+    const [member] = await db
+      .insert(members)
+      .values({ email: "member@example.com", displayName: "Member" })
+      .returning()
+    if (status) {
+      await upsertMembership(db, {
+        memberId: member.id,
+        type: "athlete",
+        status,
+        stripeSubscriptionId: "sub_1",
+        currentPeriodEnd: new Date("2027-01-01T00:00:00Z"),
+        year: 2026,
+      })
+    }
+  }
+
+  beforeEach(() => {
+    app = createApp({
+      config: testConfig({ partnerOffers: OFFERS }),
+      db,
+      stripe: stripeStub,
+      verifyToken,
+    })
+  })
+
+  it("refuses an unauthenticated caller", async () => {
+    expect((await get("/me/offers")).status).toBe(401)
+  })
+
+  it("refuses a member with no membership", async () => {
+    await seedMember()
+    expect((await get("/me/offers", "token-member")).status).toBe(403)
+  })
+
+  it("refuses a lapsed member", async () => {
+    await seedMember("expired")
+    expect((await get("/me/offers", "token-member")).status).toBe(403)
+  })
+
+  it("gives an active member the offers, uncached", async () => {
+    await seedMember("active")
+    const res = await get("/me/offers", "token-member")
+    expect(res.status).toBe(200)
+    expect(res.headers.get("cache-control")).toBe("private, no-store")
+    expect(await res.json()).toEqual({ offers: OFFERS })
+  })
+
+  it("gives an empty list when no offers are configured", async () => {
+    app = createApp({ config: testConfig(), db, stripe: stripeStub, verifyToken })
+    await seedMember("active")
+    const res = await get("/me/offers", "token-member")
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ offers: [] })
+  })
+})
+
 describe("admin", () => {
   it("refuses a non-admin", async () => {
     await db
