@@ -14,7 +14,5 @@ export const testConfig = (overrides: Partial<Config> = {}): Config => ({
   ALLOWED_ORIGINS: "http://localhost:5174",
   allowedOrigins: ["http://localhost:5174"],
   billingEnabled: true,
-  PARTNER_OFFERS: "[]",
-  partnerOffers: [],
   ...overrides,
 })

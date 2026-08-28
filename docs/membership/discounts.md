@@ -7,9 +7,10 @@ when a new offer is agreed; move a row to "Ended" rather than deleting it.
 Started 2026-08-28.
 
 **The codes, discount links and QR codes are not in this repo.** The repo is
-public and the codes are the benefit. They live in the `PARTNER_OFFERS`
-environment variable on the API service (Render dashboard) and are served by
-`GET /me/offers` to a signed-in member with an active membership only. See
+public and the codes are the benefit. They live in the `partner_offers` table
+in the API's Postgres (Supabase), each row with an `active` switch, and are
+served by `GET /me/offers` to a signed-in member with an active membership
+only. The table is closed to the Supabase Data API like `members` is. See
 `docs/plans/partner-offers-api.md`.
 
 ## Live offers
@@ -51,10 +52,14 @@ None.
   `apps/members/public/img/partners/<key>.jpeg`. Copy is in all five
   languages in `apps/members/src/features/membership/i18n/index.ts`.
 
-## Adding a partner
+## Adding, pausing or ending a partner
 
-1. Add the offer to `PARTNER_OFFERS` on the API service (Render → Environment).
-   Saving restarts the API; no deploy.
+1. Insert a row in `partner_offers` (Supabase → Table editor, or SQL):
+   `key` (kebab-case, also names the logo), `name`, `percent`, `shop_url`,
+   `code` (null when the URL carries it). It is live immediately; no deploy.
 2. Add the logo as `apps/members/public/img/partners/<key>.jpeg` and a
    logo-and-headline card to `docs/content/membership.md`. Deploy.
 3. Add a row above.
+
+To pause or end an offer, set `active = false` on its row. Do not delete
+rows; the history of what was offered stays.

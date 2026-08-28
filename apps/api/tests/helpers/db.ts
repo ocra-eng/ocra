@@ -58,6 +58,19 @@ export const createTestDb = async (): Promise<Database> => {
       type text not null,
       processed_at timestamptz not null default now()
     );
+
+    create table partner_offers (
+      id uuid primary key default gen_random_uuid(),
+      key text not null,
+      name text not null,
+      percent integer not null,
+      shop_url text not null,
+      code text,
+      active boolean not null default true,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    );
+    create unique index partner_offers_key_idx on partner_offers (key);
   `)
 
   return db as unknown as Database

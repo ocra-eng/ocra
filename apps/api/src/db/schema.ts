@@ -1,6 +1,7 @@
 import {
   boolean,
   index,
+  integer,
   pgEnum,
   pgTable,
   text,
@@ -101,7 +102,39 @@ export const processedEvents = pgTable("processed_stripe_events", {
     .defaultNow(),
 })
 
+/**
+ * Partner discounts for members. The code or link is the benefit, so this
+ * table is served only by GET /me/offers to an active member, and is closed
+ * off from the Supabase Data API like the others (migration 0003).
+ *
+ * Toggle `active` to switch an offer on or off. Rows are never deleted, so
+ * the history of what was offered stays.
+ */
+export const partnerOffers = pgTable(
+  "partner_offers",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    /** Stable kebab-case handle; also names the logo in the members app. */
+    key: text("key").notNull(),
+    name: text("name").notNull(),
+    percent: integer("percent").notNull(),
+    shopUrl: text("shop_url").notNull(),
+    /** Null when the shop URL itself carries the discount. */
+    code: text("code"),
+    active: boolean("active").notNull().default(true),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [uniqueIndex("partner_offers_key_idx").on(table.key)]
+)
+
 export type Member = typeof members.$inferSelect
 export type NewMember = typeof members.$inferInsert
 export type Membership = typeof memberships.$inferSelect
 export type NewMembership = typeof memberships.$inferInsert
+export type PartnerOfferRow = typeof partnerOffers.$inferSelect
+export type NewPartnerOffer = typeof partnerOffers.$inferInsert
