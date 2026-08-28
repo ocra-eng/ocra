@@ -56,10 +56,6 @@ services:
         sync: false
       - key: STRIPE_ATHLETE_PRICE_ID
         sync: false
-      # Partner discount codes for active members, JSON — see
-      # apps/api/.env.example. Dashboard-set: the values are the benefit.
-      - key: PARTNER_OFFERS
-        sync: false
 
   # ------------------------------------------------------------ members
   - type: web

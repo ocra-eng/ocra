@@ -38,19 +38,22 @@ GET /me/offers            Authorization: Bearer <supabase jwt>
 
 ## 3. Where the codes live
 
-An env var on the API service, JSON, validated at boot like everything else
-in `apps/api/src/config.ts`:
+A `partner_offers` table in the API's Postgres (revised 2026-08-28 — shipped
+first as an env var, replaced the same day):
 
-```
-PARTNER_OFFERS=[{"key":"tiger-obstacle","name":"Tiger Obstacle","percent":10,"shopUrl":"https://www.tigerobstacle.com","code":"<code>"},{"key":"officine-del-grip","name":"Officine del Grip","percent":12,"shopUrl":"https://officinedelgrip.com/discount/<code>"}]
-```
+| column | |
+|---|---|
+| `key` | kebab-case handle, unique; also names the logo in the members app |
+| `name`, `percent`, `shop_url` | what the card shows |
+| `code` | null when the shop URL carries the discount |
+| `active` | **the on/off switch**; rows are never deleted |
 
-- Missing or empty → `offers: []`, not fatal. Two partners do not justify a
-  table and an admin screen; revisit if the list passes ~ten or partners
-  need to self-serve.
-- Set in the Render dashboard (`sync: false` in `render.yaml`, same as the
-  Stripe keys). Changing it restarts the API; no rebuild.
-- Locally: one line in `apps/api/.env` (gitignored).
+- Locked away from the Supabase Data API the same way as `members` (RLS on,
+  privileges revoked from `anon`/`authenticated`), so the anon key in the
+  members bundle cannot read it.
+- Managed in Supabase's table editor or SQL. Changes are live at once; no
+  restart, no deploy.
+- Empty table → `offers: []`.
 
 ## 4. Work, in order
 
@@ -69,10 +72,11 @@ PARTNER_OFFERS=[{"key":"tiger-obstacle","name":"Tiger Obstacle","percent":10,"sh
    }
    ```
 
-2. `src/config.ts`: `PARTNER_OFFERS: z.string().default("[]")`, parsed with
-   a zod array schema for `PartnerOffer` (`key` kebab-case, `percent` 1–100,
-   `shopUrl` https). Expose as `config.partnerOffers`. A malformed value
-   fails boot with the usual "Invalid environment configuration" message.
+2. `src/db/schema.ts`: `partner_offers` table — `key` (unique), `name`,
+   `percent`, `shop_url`, `code` (nullable), `active`. Migration
+   `drizzle/0003_partner_offers.sql`, generated, plus the same RLS-on and
+   REVOKE-from-`anon`/`authenticated` as 0001. `listActiveOffers(db)` in
+   `features/membership/service.ts` returns the switched-on rows, oldest first.
 
 3. `src/app.ts`, next to `GET /me`:
 
@@ -91,12 +95,11 @@ PARTNER_OFFERS=[{"key":"tiger-obstacle","name":"Tiger Obstacle","percent":10,"sh
    middleware, no new query.
 
 4. `tests/app.test.ts` (pglite, `createApp({ config, db, verifyToken })`
-   already set up): unauthenticated → 401; active → 200 with the configured
-   offers and the `no-store` header; expired → 403; no membership → 403;
-   `PARTNER_OFFERS` unset → 200 `[]`. Plus one config test: malformed JSON
-   refuses to boot.
+   already set up): unauthenticated → 401; active → 200 with the inserted
+   rows and the `no-store` header; expired → 403; no membership → 403; a row
+   with `active = false` left out; empty table → 200 `[]`.
 
-5. `.env.example` and `render.yaml`: document `PARTNER_OFFERS`, `sync: false`.
+5. `tests/helpers/db.ts`: create the table for pglite alongside the others.
 
 ### Members app — `apps/members`
 
@@ -121,8 +124,8 @@ PARTNER_OFFERS=[{"key":"tiger-obstacle","name":"Tiger Obstacle","percent":10,"sh
 ### Repo hygiene — before the first commit
 
 11. Strip the codes from `docs/membership/discounts.md`: keep partner,
-    offer, how to redeem *in words*, and "value held in `PARTNER_OFFERS` on
-    the API service". No code, no link with the code in it.
+    offer, how to redeem *in words*, and "values held in the `partner_offers`
+    table". No code, no link with the code in it.
 12. Do not commit `docs/membership/officienedelgrip_qr_code.jpeg` — the QR
     *is* the discount link. Delete it or add it to `.gitignore`. The two
     logos are fine to commit.
@@ -134,8 +137,8 @@ with the partners.
 ## 5. Rollout
 
 1. PR with 1–13. CI runs both apps' tests.
-2. Render dashboard → `ocra-api-dev` → Environment → add `PARTNER_OFFERS`.
-   Save restarts the service.
+2. After the API deploys (the migration creates the table), insert the two
+   rows in Supabase → SQL editor. Values in the team's hands, not here.
 3. Merge. API deploys; members app deploys (static, `VITE_API_URL` already
    points at `api.ocra.ie`).
 4. Check, in this order:

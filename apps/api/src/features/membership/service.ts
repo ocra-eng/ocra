@@ -3,7 +3,7 @@ import type { Database } from "../../db/index.js"
 
 /** The transaction handle drizzle hands to db.transaction callbacks. */
 type Tx = Parameters<Parameters<Database["transaction"]>[0]>[0]
-import { members, memberships } from "../../db/schema.js"
+import { members, memberships, partnerOffers } from "../../db/schema.js"
 import type { Membership } from "../../db/schema.js"
 
 /** Stripe statuses that entitle someone to membership right now. */
@@ -283,4 +283,23 @@ export const listMembersForAdmin = async (
         : row.membership?.status === filter
 
   return { members: all.filter(matches), counts }
+}
+
+/**
+ * Partner offers currently switched on, oldest first. The caller has already
+ * established the member is active; this never runs for anyone else.
+ */
+export const listActiveOffers = async (db: Database) => {
+  const rows = await db
+    .select()
+    .from(partnerOffers)
+    .where(eq(partnerOffers.active, true))
+    .orderBy(partnerOffers.createdAt)
+  return rows.map((row) => ({
+    key: row.key,
+    name: row.name,
+    percent: row.percent,
+    shopUrl: row.shopUrl,
+    code: row.code ?? undefined,
+  }))
 }

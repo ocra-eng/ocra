@@ -18,6 +18,7 @@ import { handleStripeEvent } from "./features/billing/webhook.js"
 import {
   findMembershipForMember,
   findVerification,
+  listActiveOffers,
   listMembersForAdmin,
   type AdminFilter,
 } from "./features/membership/service.js"
@@ -140,7 +141,7 @@ export const createApp = ({ config, db, stripe, verifyToken }: AppDeps) => {
       throw new HTTPException(403, { message: "Membership is not active" })
     }
     c.header("Cache-Control", "private, no-store")
-    return c.json({ offers: config.partnerOffers })
+    return c.json({ offers: await listActiveOffers(db) })
   })
 
   app.patch("/me", ...authed, async (c) => {

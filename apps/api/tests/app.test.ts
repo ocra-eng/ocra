@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm"
 import type Stripe from "stripe"
 import { createApp } from "../src/app.js"
 import type { Database } from "../src/db/index.js"
-import { members } from "../src/db/schema.js"
+import { members, partnerOffers } from "../src/db/schema.js"
 import { upsertMembership } from "../src/features/membership/service.js"
 import { testConfig } from "./helpers/config.js"
 import { createTestDb } from "./helpers/db.js"
@@ -180,13 +180,8 @@ describe("partner offers", () => {
     }
   }
 
-  beforeEach(() => {
-    app = createApp({
-      config: testConfig({ partnerOffers: OFFERS }),
-      db,
-      stripe: stripeStub,
-      verifyToken,
-    })
+  beforeEach(async () => {
+    await db.insert(partnerOffers).values(OFFERS)
   })
 
   it("refuses an unauthenticated caller", async () => {
@@ -211,8 +206,19 @@ describe("partner offers", () => {
     expect(await res.json()).toEqual({ offers: OFFERS })
   })
 
-  it("gives an empty list when no offers are configured", async () => {
-    app = createApp({ config: testConfig(), db, stripe: stripeStub, verifyToken })
+  it("leaves out an offer that is switched off", async () => {
+    await db
+      .insert(partnerOffers)
+      .values({ ...OFFERS[0], key: "shop-off", name: "Shop Off", active: false })
+    await seedMember("active")
+    const payload = await body<{ offers: { key: string }[] }>(
+      await get("/me/offers", "token-member")
+    )
+    expect(payload.offers.map((o) => o.key)).toEqual(["shop-a", "shop-b"])
+  })
+
+  it("gives an empty list when nothing is switched on", async () => {
+    await db.delete(partnerOffers)
     await seedMember("active")
     const res = await get("/me/offers", "token-member")
     expect(res.status).toBe(200)
